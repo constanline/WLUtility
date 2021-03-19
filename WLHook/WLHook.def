@@ -1,0 +1,5 @@
+EXPORTS
+   SetTargetPid
+   GetTargetPid
+SECTIONS
+	BBShared   Read Write Shared
