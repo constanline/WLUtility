@@ -1,91 +1,93 @@
-﻿#include "pch.h"
+﻿// DllMain.cpp : 定义 DLL 应用程序的入口点。
+#include "pch.h"
 
-#include <map>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
+#include "HookApi.h"
+
 #pragma comment(lib,"ws2_32.lib")
+#pragma comment(linker,"/SECTION:WLShared,RWS")
 
-extern CHAR		g_sendName[20];
-extern HWND		g_hWndClient;
-extern DWORD	g_dwTarget;
+typedef struct tagProxyMapping {
+	char remoteIp[16];
+	USHORT remotePort;
+	char localIp[16];
+	USHORT localPort;
+	int isEnabled;
+} PROXYMAPPING, *PPROXYMAPPING;
+#define MAX_SOCKET_SERVER_COUNT 20
 
-const WORD	POS_NOT_FOUND = 0xFFFF;
-const BYTE	ANY_CHAR = 0xFF;
-const BYTE	XOR_BYTE = 0x6E;
-const WORD	XOR_WORD = 0x6E6E;
-const DWORD	XOR_DWORD = 0x6E6E6E6E;
+#pragma data_seg("WLShared")
+DWORD			g_dwTarget = 0;
+PROXYMAPPING	g_pmList[MAX_SOCKET_SERVER_COUNT] = { 0 };
+DWORD			g_dwConnectionCount = 0;
+#pragma data_seg()
 
-typedef struct tagSOCKETINFO
+PHOOKENVIRONMENT g_pHookConnect = nullptr;
+
+extern void ProxyConnect(SOCKADDR_IN* addrIn);
+
+//-------------------------------------connect------------------------------------
+typedef int (WSAAPI __pFnConnect)(
+	SOCKET s,
+	sockaddr FAR* addr,
+	int len
+);
+
+int WSAAPI HookConnect(
+	DWORD retAddr,
+	__pFnConnect pFnConnect,
+	const SOCKET s,
+	sockaddr FAR* addr,
+	const int len
+)
 {
-	DWORD id;
-	BOOL needWaiting;
-	BOOL interruptTask;
-	BOOL needOffsetSkill;
-	BOOL needOffsetPet;
-	CHAR chip[50000];
-	WORD lenChip;
-	WORD lenPacket;
-	BOOL ackMapMonster;
-	BOOL allowMove;
-} SOCKETINFO, *PSOCKETINFO;
+	auto* const addrIn = reinterpret_cast<SOCKADDR_IN*>(addr);
+	ProxyConnect(addrIn);
 
-void PrintLog(const CHAR* logInfo, int len = NULL, const DWORD id = NULL, const BYTE printLen = 1)
-{
-	const auto dwAttribute = GetFileAttributes("IsDebug");
-	if (INVALID_FILE_ATTRIBUTES == dwAttribute) return;
-
-	CreateDirectory("Log", nullptr);
-
-	auto* const logFileName = new CHAR[20];
-	if (id != NULL)
-	{
-		if (id == 999)
-		{
-			sprintf_s(logFileName, sizeof logFileName, "Log\\Adjust.log");
-		}
-		else
-		{
-			sprintf_s(logFileName, sizeof logFileName, "Log\\%d.log", id);
-		}
-	}
-	else
-	{
-		sprintf_s(logFileName, sizeof logFileName, "Log\\Default.log");
-	}
-	auto* const hFile = CreateFile(logFileName, GENERIC_WRITE, FILE_SHARE_WRITE, 
-	                               nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
-	delete[] logFileName;
-	if (INVALID_HANDLE_VALUE == hFile)
-		return;
-
-	if (len == NULL)
-		len = strlen(logInfo);
-
-	DWORD out;
-	SetFilePointer(hFile, 0, nullptr, FILE_END);
-
-	if (printLen)
-	{
-		auto* cLen = new char[7];
-		sprintf_s(cLen, sizeof cLen, "%d|", len);
-		WriteFile(hFile, cLen, strlen(cLen), &out, nullptr);
-		delete[] cLen;
-	}
-	WriteFile(hFile, logInfo, len, &out, nullptr);
-	WriteFile(hFile, "\r\n", 2, &out, nullptr);
-	
-	if (hFile)
-		CloseHandle(hFile);
+	const auto iRet = pFnConnect(s, addr, len);
+	return iRet;
 }
 
-void SwitchAddress(SOCKADDR_IN* addrIn)
+//-------------------------------------connect------------------------------------
+
+BOOL APIENTRY DllMain(HMODULE hModule,
+                      DWORD ul_reason_for_call,
+                      LPVOID lpReserved
+)
+{
+	switch (ul_reason_for_call)
+	{
+	case DLL_PROCESS_ATTACH:
+
+		DisableThreadLibraryCalls(static_cast<HMODULE>(hModule));
+		if (GetCurrentProcessId() == g_dwTarget) //必须在loadlibary之前设置g_dwTarget
+		{
+			g_pHookConnect = InstallHookApi("ws2_32.dll", "connect", HookConnect);
+		}
+		break;
+	case DLL_PROCESS_DETACH:
+		if (g_pHookConnect)
+			UnInstallHookApi(g_pHookConnect);
+		break;
+	default:
+		break;
+	}
+	return TRUE;
+}
+
+void ProxyConnect(SOCKADDR_IN* addrIn)
 {
 	char str[INET_ADDRSTRLEN];
 	inet_ntop(AF_INET, &addrIn->sin_addr, str, sizeof str);
-	if(strcmp(str, "123.123.123.123") == 0)
-	{
-		inet_pton(AF_INET, "127.0.0.1", &addrIn->sin_addr);
+	for (int i = 0; i < 1; i++) {
+		if (g_pmList[i].isEnabled && strcmp(str, g_pmList[i].remoteIp) == 0 && addrIn->sin_port == g_pmList[i].remotePort) {
+			inet_pton(AF_INET, g_pmList[i].localIp, &addrIn->sin_addr);
+			addrIn->sin_port = g_pmList[i].localPort;
+			g_dwConnectionCount++;
+			break;
+		}
 	}
 }
 
@@ -93,7 +95,22 @@ void WINAPI SetTargetPid(const DWORD dwPid)
 {
 	g_dwTarget = dwPid;
 }
-DWORD WINAPI GetTargetPid()		//为多开补丁特别设置的
+
+void WINAPI SetProxyMapping(PROXYMAPPING pmList[20])
 {
-	return g_dwTarget;
+	for (int i = 0; i < 20; i++) {
+		if (pmList[i].isEnabled) {
+			memcpy(&g_pmList[i], &pmList[i], sizeof(PROXYMAPPING));
+		}
+	}
+}
+
+void WINAPI DecConnectionCount()
+{
+	g_dwConnectionCount--;
+}
+
+DWORD WINAPI GetConnectionCount()
+{
+	return g_dwConnectionCount;
 }

@@ -4,7 +4,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace WLUtility
+namespace WLUtility.Helper
 {
     public enum DllInjectionResult
     {
@@ -16,7 +16,7 @@ namespace WLUtility
     }
 
 
-    class DllInjector
+    class InjectHelper
     {
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern IntPtr OpenProcess(uint dwDesiredAccess, int bInheritHandle, uint dwProcessId);
@@ -49,15 +49,15 @@ namespace WLUtility
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern IntPtr GetExitCodeThread(IntPtr hThread, IntPtr lpExitCode);
 
-        static DllInjector _instance;
+        static InjectHelper _instance;
 
-        public static DllInjector GetInstance
+        public static InjectHelper GetInstance
         {
             get
             {
                 if (_instance == null)
                 {
-                    _instance = new DllInjector();
+                    _instance = new InjectHelper();
                 }
                 return _instance;
             }

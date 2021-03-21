@@ -117,7 +117,46 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <metadata name="skinMenuStrip1.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-    <value>17, 17</value>
-  </metadata>
+  <data name="$this.Text" xml:space="preserve">
+    <value>飘流实用工具</value>
+  </data>
+  <data name="btnInject.Text" xml:space="preserve">
+    <value>注入</value>
+  </data>
+  <data name="btnUnInject.Text" xml:space="preserve">
+    <value>解除</value>
+  </data>
+  <data name="InjectSucess" xml:space="preserve">
+    <value>注入成功</value>
+  </data>
+  <data name="IsRunning" xml:space="preserve">
+    <value>正在运行</value>
+  </data>
+  <data name="tsmiAbout.Text" xml:space="preserve">
+    <value>关于(&amp;A)</value>
+  </data>
+  <data name="tsmiEnglish.Text" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="tsmiExit.Text" xml:space="preserve">
+    <value>退出(&amp;X)</value>
+  </data>
+  <data name="tsmiFile.Text" xml:space="preserve">
+    <value>文件(&amp;F)</value>
+  </data>
+  <data name="tsmiLanguage.Text" xml:space="preserve">
+    <value>语言(&amp;L)</value>
+  </data>
+  <data name="tsmiOption.Text" xml:space="preserve">
+    <value>选项(&amp;O)</value>
+  </data>
+  <data name="tsmiSetting.Text" xml:space="preserve">
+    <value>设置(&amp;S)</value>
+  </data>
+  <data name="tsmiSimplifiedChinese.Text" xml:space="preserve">
+    <value>简体中文</value>
+  </data>
+  <data name="tsmiTraditionalChinese.Text" xml:space="preserve">
+    <value>繁體中文</value>
+  </data>
 </root>

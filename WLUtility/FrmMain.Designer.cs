@@ -30,77 +30,199 @@ namespace WLUtility
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.skinButton1 = new CCWin.SkinControl.SkinButton();
+            this.btnInject = new CCWin.SkinControl.SkinButton();
+            this.skinMenuStrip1 = new CCWin.SkinControl.SkinMenuStrip();
+            this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiExit = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiOption = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSetting = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiLanguage = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiSimplifiedChinese = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiTraditionalChinese = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiEnglish = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiAbout = new System.Windows.Forms.ToolStripMenuItem();
+            this.btnUnInject = new CCWin.SkinControl.SkinButton();
+            this.skinMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // button1
+            // btnInject
             // 
-            this.button1.Location = new System.Drawing.Point(202, 110);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(65, 31);
-            this.button1.TabIndex = 0;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnInject.BackColor = System.Drawing.Color.Transparent;
+            this.btnInject.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.btnInject.DownBack = null;
+            this.btnInject.Location = new System.Drawing.Point(26, 88);
+            this.btnInject.MouseBack = null;
+            this.btnInject.Name = "btnInject";
+            this.btnInject.NormlBack = null;
+            this.btnInject.Size = new System.Drawing.Size(75, 29);
+            this.btnInject.TabIndex = 1;
+            this.btnInject.Text = "注入";
+            this.btnInject.UseVisualStyleBackColor = false;
+            this.btnInject.Click += new System.EventHandler(this.btnInject_Click);
             // 
-            // button2
+            // skinMenuStrip1
             // 
-            this.button2.Location = new System.Drawing.Point(273, 110);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(65, 31);
-            this.button2.TabIndex = 1;
-            this.button2.Text = "button2";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.skinMenuStrip1.Arrow = System.Drawing.Color.Black;
+            this.skinMenuStrip1.Back = System.Drawing.Color.White;
+            this.skinMenuStrip1.BackRadius = 4;
+            this.skinMenuStrip1.BackRectangle = new System.Drawing.Rectangle(10, 10, 10, 10);
+            this.skinMenuStrip1.Base = System.Drawing.Color.FromArgb(((int)(((byte)(105)))), ((int)(((byte)(200)))), ((int)(((byte)(254)))));
+            this.skinMenuStrip1.BaseFore = System.Drawing.Color.Black;
+            this.skinMenuStrip1.BaseForeAnamorphosis = false;
+            this.skinMenuStrip1.BaseForeAnamorphosisBorder = 4;
+            this.skinMenuStrip1.BaseForeAnamorphosisColor = System.Drawing.Color.White;
+            this.skinMenuStrip1.BaseHoverFore = System.Drawing.Color.White;
+            this.skinMenuStrip1.BaseItemAnamorphosis = true;
+            this.skinMenuStrip1.BaseItemBorder = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(148)))), ((int)(((byte)(212)))));
+            this.skinMenuStrip1.BaseItemBorderShow = true;
+            this.skinMenuStrip1.BaseItemDown = null;
+            this.skinMenuStrip1.BaseItemHover = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(148)))), ((int)(((byte)(212)))));
+            this.skinMenuStrip1.BaseItemMouse = null;
+            this.skinMenuStrip1.BaseItemPressed = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(148)))), ((int)(((byte)(212)))));
+            this.skinMenuStrip1.BaseItemRadius = 4;
+            this.skinMenuStrip1.BaseItemRadiusStyle = CCWin.SkinClass.RoundStyle.All;
+            this.skinMenuStrip1.BaseItemSplitter = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(148)))), ((int)(((byte)(212)))));
+            this.skinMenuStrip1.DropDownImageSeparator = System.Drawing.Color.FromArgb(((int)(((byte)(197)))), ((int)(((byte)(197)))), ((int)(((byte)(197)))));
+            this.skinMenuStrip1.Fore = System.Drawing.Color.Black;
+            this.skinMenuStrip1.HoverFore = System.Drawing.Color.White;
+            this.skinMenuStrip1.ItemAnamorphosis = true;
+            this.skinMenuStrip1.ItemBorder = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(148)))), ((int)(((byte)(212)))));
+            this.skinMenuStrip1.ItemBorderShow = true;
+            this.skinMenuStrip1.ItemHover = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(148)))), ((int)(((byte)(212)))));
+            this.skinMenuStrip1.ItemPressed = System.Drawing.Color.FromArgb(((int)(((byte)(60)))), ((int)(((byte)(148)))), ((int)(((byte)(212)))));
+            this.skinMenuStrip1.ItemRadius = 4;
+            this.skinMenuStrip1.ItemRadiusStyle = CCWin.SkinClass.RoundStyle.All;
+            this.skinMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiFile,
+            this.tsmiOption,
+            this.tsmiAbout});
+            this.skinMenuStrip1.Location = new System.Drawing.Point(4, 28);
+            this.skinMenuStrip1.Name = "skinMenuStrip1";
+            this.skinMenuStrip1.RadiusStyle = CCWin.SkinClass.RoundStyle.All;
+            this.skinMenuStrip1.Size = new System.Drawing.Size(588, 25);
+            this.skinMenuStrip1.SkinAllColor = true;
+            this.skinMenuStrip1.TabIndex = 2;
+            this.skinMenuStrip1.TitleAnamorphosis = true;
+            this.skinMenuStrip1.TitleColor = System.Drawing.Color.FromArgb(((int)(((byte)(209)))), ((int)(((byte)(228)))), ((int)(((byte)(236)))));
+            this.skinMenuStrip1.TitleRadius = 4;
+            this.skinMenuStrip1.TitleRadiusStyle = CCWin.SkinClass.RoundStyle.All;
             // 
-            // textBox1
+            // tsmiFile
             // 
-            this.textBox1.Location = new System.Drawing.Point(199, 63);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(159, 21);
-            this.textBox1.TabIndex = 3;
-            this.textBox1.Text = "47.100.116.187";
+            this.tsmiFile.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiExit});
+            this.tsmiFile.Name = "tsmiFile";
+            this.tsmiFile.Size = new System.Drawing.Size(58, 21);
+            this.tsmiFile.Text = "文件(&F)";
             // 
-            // skinButton1
+            // tsmiExit
             // 
-            this.skinButton1.BackColor = System.Drawing.Color.Transparent;
-            this.skinButton1.ControlState = CCWin.SkinClass.ControlState.Normal;
-            this.skinButton1.DownBack = null;
-            this.skinButton1.Location = new System.Drawing.Point(176, 235);
-            this.skinButton1.MouseBack = null;
-            this.skinButton1.Name = "skinButton1";
-            this.skinButton1.NormlBack = null;
-            this.skinButton1.Size = new System.Drawing.Size(60, 25);
-            this.skinButton1.TabIndex = 4;
-            this.skinButton1.Text = "skinButton1";
-            this.skinButton1.UseVisualStyleBackColor = false;
+            this.tsmiExit.Name = "tsmiExit";
+            this.tsmiExit.Size = new System.Drawing.Size(116, 22);
+            this.tsmiExit.Text = "退出(&X)";
+            this.tsmiExit.Click += new System.EventHandler(this.tsmiExit_Click);
+            // 
+            // tsmiOption
+            // 
+            this.tsmiOption.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSetting,
+            this.tsmiLanguage});
+            this.tsmiOption.Name = "tsmiOption";
+            this.tsmiOption.Size = new System.Drawing.Size(62, 21);
+            this.tsmiOption.Text = "选项(&O)";
+            // 
+            // tsmiSetting
+            // 
+            this.tsmiSetting.Name = "tsmiSetting";
+            this.tsmiSetting.Size = new System.Drawing.Size(115, 22);
+            this.tsmiSetting.Text = "设置(&S)";
+            // 
+            // tsmiLanguage
+            // 
+            this.tsmiLanguage.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSimplifiedChinese,
+            this.tsmiTraditionalChinese,
+            this.tsmiEnglish});
+            this.tsmiLanguage.Name = "tsmiLanguage";
+            this.tsmiLanguage.Size = new System.Drawing.Size(115, 22);
+            this.tsmiLanguage.Text = "语言(&L)";
+            // 
+            // tsmiSimplifiedChinese
+            // 
+            this.tsmiSimplifiedChinese.Name = "tsmiSimplifiedChinese";
+            this.tsmiSimplifiedChinese.Size = new System.Drawing.Size(124, 22);
+            this.tsmiSimplifiedChinese.Text = "简体中文";
+            this.tsmiSimplifiedChinese.Click += new System.EventHandler(this.tsmiSimplifiedChinese_Click);
+            // 
+            // tsmiTraditionalChinese
+            // 
+            this.tsmiTraditionalChinese.Name = "tsmiTraditionalChinese";
+            this.tsmiTraditionalChinese.Size = new System.Drawing.Size(124, 22);
+            this.tsmiTraditionalChinese.Text = "繁体中文";
+            this.tsmiTraditionalChinese.Click += new System.EventHandler(this.tsmiTraditionalChinese_Click);
+            // 
+            // tsmiEnglish
+            // 
+            this.tsmiEnglish.Name = "tsmiEnglish";
+            this.tsmiEnglish.Size = new System.Drawing.Size(124, 22);
+            this.tsmiEnglish.Text = "English";
+            this.tsmiEnglish.Click += new System.EventHandler(this.tsmiEnglish_Click);
+            // 
+            // tsmiAbout
+            // 
+            this.tsmiAbout.Name = "tsmiAbout";
+            this.tsmiAbout.Size = new System.Drawing.Size(60, 21);
+            this.tsmiAbout.Text = "关于(&A)";
+            this.tsmiAbout.Click += new System.EventHandler(this.tsmiAbout_Click);
+            // 
+            // btnUnInject
+            // 
+            this.btnUnInject.BackColor = System.Drawing.Color.Transparent;
+            this.btnUnInject.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.btnUnInject.DownBack = null;
+            this.btnUnInject.Enabled = false;
+            this.btnUnInject.Location = new System.Drawing.Point(107, 88);
+            this.btnUnInject.MouseBack = null;
+            this.btnUnInject.Name = "btnUnInject";
+            this.btnUnInject.NormlBack = null;
+            this.btnUnInject.Size = new System.Drawing.Size(75, 29);
+            this.btnUnInject.TabIndex = 0;
+            this.btnUnInject.Text = "解除";
+            this.btnUnInject.UseVisualStyleBackColor = false;
+            this.btnUnInject.Click += new System.EventHandler(this.btnUnInject_Click);
             // 
             // FrmMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.skinButton1);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.button1);
+            this.ClientSize = new System.Drawing.Size(596, 446);
+            this.Controls.Add(this.btnUnInject);
+            this.Controls.Add(this.btnInject);
+            this.Controls.Add(this.skinMenuStrip1);
+            this.MainMenuStrip = this.skinMenuStrip1;
             this.Name = "FrmMain";
-            this.Text = "飘流工具箱";
+            this.Text = "飘流实用工具";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmMain_FormClosed);
+            this.skinMenuStrip1.ResumeLayout(false);
+            this.skinMenuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.TextBox textBox1;
-        private CCWin.SkinControl.SkinButton skinButton1;
+        private CCWin.SkinControl.SkinButton btnInject;
+        private CCWin.SkinControl.SkinMenuStrip skinMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem tsmiFile;
+        private System.Windows.Forms.ToolStripMenuItem tsmiOption;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAbout;
+        private System.Windows.Forms.ToolStripMenuItem tsmiExit;
+        private System.Windows.Forms.ToolStripMenuItem tsmiLanguage;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSimplifiedChinese;
+        private System.Windows.Forms.ToolStripMenuItem tsmiTraditionalChinese;
+        private System.Windows.Forms.ToolStripMenuItem tsmiEnglish;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSetting;
+        private CCWin.SkinControl.SkinButton btnUnInject;
     }
 }
 

@@ -1,5 +1,7 @@
 EXPORTS
    SetTargetPid
-   GetTargetPid
+   SetProxyMapping
+   DecConnectionCount
+   GetConnectionCount
 SECTIONS
-	BBShared   Read Write Shared
+	WLShared   Read Write Shared
