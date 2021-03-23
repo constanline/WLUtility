@@ -114,7 +114,7 @@ namespace WLUtility.Engine
                     socketPair.IsReceived = true;
                     if (read > 0)
                     {
-                        DataAnalyzer.AnalyzePacket(XorByte(data, read), socketPair);
+                        PacketAnalyzer.AnalyzePacket(XorByte(data, read), socketPair);
                     }
                     else
                     {

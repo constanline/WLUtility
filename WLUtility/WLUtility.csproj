@@ -86,7 +86,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Data\DataAnalyzer.cs" />
+    <Compile Include="Data\PacketAnalyzer.cs" />
+    <Compile Include="Data\Rule.cs" />
     <Compile Include="FrmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
