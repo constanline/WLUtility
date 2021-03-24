@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using WLUtility.Helper;
 using static WLUtility.Helper.SocketHelper;
 
 namespace WLUtility.Data
@@ -10,8 +9,7 @@ namespace WLUtility.Data
     {
         internal static byte XorByte = 0xAD;
         internal static byte[] HeadByte = {0x10, 0x6B};
-
-        //private static List<RuleWithType> _listRules = InitRules();
+        
         private static Dictionary<byte, Dictionary<byte, Rule>> _dicRules;
 
         private static void AddRule(byte typeA, byte typeB, Rule rule)
@@ -63,69 +61,6 @@ namespace WLUtility.Data
             AddRule(15, 8, Rule.BuildLoopRule(children, 6));
         }
 
-        //List Way
-        //static void HandleRule(RuleWithType rule, byte typeA, byte typeB, List<byte> listBuffer, ref int len, ref bool isSkip, ref int offset)
-        //{
-        //    if (typeA == rule.TypeA)
-        //    {
-        //        if ((rule.CmpTypeB == ECmpTypeB.None) ||
-        //            (rule.CmpTypeB == ECmpTypeB.Equal && typeB == rule.TypeB) ||
-        //            (rule.CmpTypeB == ECmpTypeB.MoreThen && typeB > rule.TypeB) ||
-        //            (rule.CmpTypeB == ECmpTypeB.LessThen && typeB < rule.TypeB))
-        //        {
-        //            if (rule.RuleType == ERuleType.Skip)
-        //            {
-        //                isSkip = true;
-        //            }
-        //            else if (rule.RuleType == ERuleType.Remove)
-        //            {
-        //                if (rule.Index <= 0 && rule.Len <= 0)
-        //                {
-        //                }
-        //                else if (rule.Index <= 0)
-        //                {
-        //                    len -= rule.Len;
-        //                    listBuffer.RemoveRange(len, rule.Len);
-        //                }
-        //                else if (rule.Len <= 0)
-        //                {
-        //                    listBuffer.RemoveRange(rule.Index, len - rule.Index);
-        //                    len = rule.Index;
-        //                }
-        //                else
-        //                {
-        //                    len -= rule.Len;
-        //                    listBuffer.RemoveRange(rule.Index, rule.Len);
-        //                }
-
-        //                if (rule.Offset > 0)
-        //                {
-        //                    offset += rule.Offset;
-        //                }
-        //            }
-        //            else if (rule.RuleType == ERuleType.Parent)
-        //            {
-        //                foreach (var childRule in rule.Children)
-        //                {
-        //                    HandleRule(childRule, typeA, typeB, listBuffer, ref len, ref isSkip, ref offset);
-        //                }
-        //            }
-        //            else if (rule.RuleType == ERuleType.Loop)
-        //            {
-        //                offset += rule.Offset;
-        //                while (offset < len)
-        //                {
-        //                    foreach (var childRule in rule.Children)
-        //                    {
-        //                        HandleRule(childRule, typeA, typeB, listBuffer, ref len, ref isSkip, ref offset);
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-        //Dic Way
         private static void HandleRule(Rule rule, List<byte> listBuffer, ref int len, ref bool isSkip, ref int offset)
         {
             switch (rule.RuleType)
@@ -224,7 +159,7 @@ namespace WLUtility.Data
             }
         }
 
-        public static byte LastTypeA = 0, LastTypeB = 0;
+        public static byte LastTypeA, LastTypeB;
 
         internal static void AnalyzePacket(IEnumerable<byte> data, SocketPair socketPair)
         {

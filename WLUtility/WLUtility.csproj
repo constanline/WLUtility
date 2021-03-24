@@ -87,7 +87,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\PacketAnalyzer.cs" />
-    <Compile Include="Data\RuleWithType.cs" />
     <Compile Include="Data\Rule.cs" />
     <Compile Include="FrmAbout.cs">
       <SubType>Form</SubType>
