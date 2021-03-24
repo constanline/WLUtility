@@ -1,6 +1,8 @@
 ﻿// DllMain.cpp : 定义 DLL 应用程序的入口点。
 #include "pch.h"
 
+
+#include <cstdio>
 #include <WinSock2.h>
 #include <WS2tcpip.h>
 
@@ -16,13 +18,47 @@ typedef struct tagProxyMapping {
 	USHORT localPort;
 	int isEnabled;
 } PROXYMAPPING, *PPROXYMAPPING;
-#define MAX_SOCKET_SERVER_COUNT 20
+
+constexpr auto MAX_SOCKET_SERVER_COUNT = 20;
 
 #pragma data_seg("WLShared")
 DWORD			g_dwTarget = 0;
 PROXYMAPPING	g_pmList[MAX_SOCKET_SERVER_COUNT] = { 0 };
 DWORD			g_dwConnectionCount = 0;
 #pragma data_seg()
+
+
+void SimpleLog(const CHAR* logInfo)
+{
+	const auto dwAttribute = GetFileAttributes("IsDebug");
+	if (INVALID_FILE_ATTRIBUTES == dwAttribute) return;
+
+	CreateDirectory("Log", nullptr);
+	
+	auto* const hFile = CreateFile("Log\\Default.log", GENERIC_WRITE, FILE_SHARE_WRITE,
+		nullptr, OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, nullptr);
+	
+	if (INVALID_HANDLE_VALUE == hFile)
+		return;
+
+	const auto len = strlen(logInfo);
+
+	DWORD out;
+	SetFilePointer(hFile, 0, nullptr, FILE_END);
+	
+	WriteFile(hFile, logInfo, len, &out, nullptr);
+	WriteFile(hFile, "\r\n", 2, &out, nullptr);
+
+	if (hFile)
+		CloseHandle(hFile);
+}
+
+void SimpleLog(const int i)
+{
+	char logInfo[16] = { 0 };
+	sprintf_s(logInfo, "%d", i);
+	SimpleLog(logInfo);
+}
 
 PHOOKENVIRONMENT g_pHookConnect = nullptr;
 
@@ -79,14 +115,21 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 
 void ProxyConnect(SOCKADDR_IN* addrIn)
 {
-	char str[INET_ADDRSTRLEN];
-	inet_ntop(AF_INET, &addrIn->sin_addr, str, sizeof str);
-	for (int i = 0; i < 1; i++) {
-		if (g_pmList[i].isEnabled && strcmp(str, g_pmList[i].remoteIp) == 0 && addrIn->sin_port == g_pmList[i].remotePort) {
-			inet_pton(AF_INET, g_pmList[i].localIp, &addrIn->sin_addr);
-			addrIn->sin_port = g_pmList[i].localPort;
-			g_dwConnectionCount++;
-			break;
+	char connIp[INET_ADDRSTRLEN];
+	inet_ntop(AF_INET, &addrIn->sin_addr, connIp, sizeof connIp);
+	
+	for (auto& i : g_pmList)
+	{
+		if (i.isEnabled)
+		{
+			const auto connPort = ntohs(addrIn->sin_port);
+
+			if (strcmp(connIp, i.remoteIp) == 0 && connPort == i.remotePort) {
+				inet_pton(AF_INET, i.localIp, &addrIn->sin_addr);
+				addrIn->sin_port = htons(i.localPort);
+				g_dwConnectionCount++;
+				break;
+			}
 		}
 	}
 }

@@ -126,7 +126,7 @@
   <data name="btnUnInject.Text" xml:space="preserve">
     <value>UnInject</value>
   </data>
-  <data name="InjectSucess" xml:space="preserve">
+  <data name="InjectSuccess" xml:space="preserve">
     <value>Inject success</value>
   </data>
   <data name="IsRunning" xml:space="preserve">
@@ -149,5 +149,8 @@
   </data>
   <data name="tsmiSetting.Text" xml:space="preserve">
     <value>Setting(&amp;S)</value>
+  </data>
+  <data name="UnInjectSuccess" xml:space="preserve">
+    <value>Cancel inject success</value>
   </data>
 </root>

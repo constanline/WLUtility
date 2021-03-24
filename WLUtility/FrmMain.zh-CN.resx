@@ -126,7 +126,7 @@
   <data name="btnUnInject.Text" xml:space="preserve">
     <value>解除</value>
   </data>
-  <data name="InjectSucess" xml:space="preserve">
+  <data name="InjectSuccess" xml:space="preserve">
     <value>注入成功</value>
   </data>
   <data name="IsRunning" xml:space="preserve">
@@ -158,5 +158,8 @@
   </data>
   <data name="tsmiTraditionalChinese.Text" xml:space="preserve">
     <value>繁體中文</value>
+  </data>
+  <data name="UnInjectSuccess" xml:space="preserve">
+    <value>解除注入成功</value>
   </data>
 </root>

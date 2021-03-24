@@ -1,28 +1,230 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using WLUtility.Helper;
 using static WLUtility.Helper.SocketHelper;
 
 namespace WLUtility.Data
 {
-    internal class PacketAnalyzer
+    internal static class PacketAnalyzer
     {
         internal static byte XorByte = 0xAD;
-        internal static byte[] HeadByte = new byte[2];
+        internal static byte[] HeadByte = {0x10, 0x6B};
 
-        static void HandleRule(Rule rule, byte typeA, byte typeB, List<byte> listBuffer)
+        //private static List<RuleWithType> _listRules = InitRules();
+        private static Dictionary<byte, Dictionary<byte, Rule>> _dicRules;
+
+        private static void AddRule(byte typeA, byte typeB, Rule rule)
         {
-            if (typeA == rule.TypeA)
-            {
-                if ((rule.CmpTypeB == ECmpTypeB.None) ||
-                    (rule.CmpTypeB == ECmpTypeB.Equal && typeB == rule.TypeB) ||
-                    (rule.CmpTypeB == ECmpTypeB.MoreThen && typeB > rule.TypeB) ||
-                    (rule.CmpTypeB == ECmpTypeB.LessThen && typeB < rule.TypeB))
-                {
+            if(!_dicRules.ContainsKey(typeA))
+                _dicRules.Add(typeA, new Dictionary<byte, Rule>());
 
+            _dicRules[typeA][typeB] = rule;
+        }
+
+        public static void InitRules()
+        {
+            if (_dicRules != null) return;
+
+            _dicRules = new Dictionary<byte, Dictionary<byte, Rule>>();
+            var skipRule = Rule.BuildSkipRule();
+            AddRule(1, 30, skipRule);
+            AddRule(1, 31, skipRule);
+            AddRule(1, 32, skipRule);
+
+            //在线人员信息？记不清了
+            AddRule(4, 0, Rule.BuildRemoveRule(-1, 3));
+
+            //人物信息
+            AddRule(5, 3, Rule.BuildRemoveRule(66, 8));
+            
+            //战斗
+            var children = new List<Rule>(2);
+            var rule = Rule.BuildRemoveRule(41);
+            children.Add(rule);
+            rule = Rule.BuildRemoveRule(6, 1);
+            children.Add(rule);
+            AddRule(11, 5, Rule.BuildParentRule(children));
+
+            //战斗队友
+            children = new List<Rule>();
+            rule = Rule.BuildRemoveRule(30, 27, 30, new List<int> { 44 });
+            children.Add(rule);
+            rule = Rule.BuildLoopRule(children, 9, 8);
+            children = new List<Rule> { rule, Rule.BuildRemoveRule(8, 1) };
+            AddRule(11, 250, Rule.BuildParentRule(children));
+
+            //好友
+            children = new List<Rule> { Rule.BuildRemoveRule(25, 1, 25, new List<int> { 4, 19, 20, 25 }) };
+            AddRule(14, 5, Rule.BuildLoopRule(children, 6));
+
+            //宠物
+            children = new List<Rule> { Rule.BuildRemoveRule(181, 2, 181,new List<int> { 29 }) };
+            AddRule(15, 8, Rule.BuildLoopRule(children, 6));
+        }
+
+        //List Way
+        //static void HandleRule(RuleWithType rule, byte typeA, byte typeB, List<byte> listBuffer, ref int len, ref bool isSkip, ref int offset)
+        //{
+        //    if (typeA == rule.TypeA)
+        //    {
+        //        if ((rule.CmpTypeB == ECmpTypeB.None) ||
+        //            (rule.CmpTypeB == ECmpTypeB.Equal && typeB == rule.TypeB) ||
+        //            (rule.CmpTypeB == ECmpTypeB.MoreThen && typeB > rule.TypeB) ||
+        //            (rule.CmpTypeB == ECmpTypeB.LessThen && typeB < rule.TypeB))
+        //        {
+        //            if (rule.RuleType == ERuleType.Skip)
+        //            {
+        //                isSkip = true;
+        //            }
+        //            else if (rule.RuleType == ERuleType.Remove)
+        //            {
+        //                if (rule.Index <= 0 && rule.Len <= 0)
+        //                {
+        //                }
+        //                else if (rule.Index <= 0)
+        //                {
+        //                    len -= rule.Len;
+        //                    listBuffer.RemoveRange(len, rule.Len);
+        //                }
+        //                else if (rule.Len <= 0)
+        //                {
+        //                    listBuffer.RemoveRange(rule.Index, len - rule.Index);
+        //                    len = rule.Index;
+        //                }
+        //                else
+        //                {
+        //                    len -= rule.Len;
+        //                    listBuffer.RemoveRange(rule.Index, rule.Len);
+        //                }
+
+        //                if (rule.Offset > 0)
+        //                {
+        //                    offset += rule.Offset;
+        //                }
+        //            }
+        //            else if (rule.RuleType == ERuleType.Parent)
+        //            {
+        //                foreach (var childRule in rule.Children)
+        //                {
+        //                    HandleRule(childRule, typeA, typeB, listBuffer, ref len, ref isSkip, ref offset);
+        //                }
+        //            }
+        //            else if (rule.RuleType == ERuleType.Loop)
+        //            {
+        //                offset += rule.Offset;
+        //                while (offset < len)
+        //                {
+        //                    foreach (var childRule in rule.Children)
+        //                    {
+        //                        HandleRule(childRule, typeA, typeB, listBuffer, ref len, ref isSkip, ref offset);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
+
+        //Dic Way
+        private static void HandleRule(Rule rule, List<byte> listBuffer, ref int len, ref bool isSkip, ref int offset)
+        {
+            switch (rule.RuleType)
+            {
+                case Rule.ERuleType.Skip:
+                    isSkip = true;
+                    break;
+                case Rule.ERuleType.Remove:
+                {
+                    if (rule.Index > 0 || rule.Len > 0)
+                    {
+                        int removeLen;
+
+                        var startIndex = rule.Offset > 0 ? offset : 0;
+
+                        if (rule.Index <= 0)
+                        {
+                            startIndex += len - rule.Len;
+                            removeLen = rule.Len;
+                        }
+                        else if (rule.Len <= 0)
+                        {
+                            startIndex += rule.Index;
+                            removeLen = len - rule.Index;
+                        }
+                        else
+                        {
+                            startIndex += rule.Index;
+                            removeLen = rule.Len;
+                        }
+
+                        if (rule.StrIndex != null)
+                        {
+                            foreach (var strIdx in rule.StrIndex)
+                            {
+                                var strLen = listBuffer[offset + strIdx] ^ XorByte;
+                                if (strIdx < startIndex)
+                                {
+                                    startIndex += strLen;
+                                    offset += strLen;
+                                }
+                                else if (strIdx > startIndex + removeLen)
+                                    offset += strLen;
+                                else
+                                    removeLen += strLen;
+                            }
+                        }
+
+                        len -= removeLen;
+                        listBuffer.RemoveRange(startIndex, removeLen);
+                    }
+
+                    if (rule.Offset > 0)
+                    {    
+                        offset += rule.Offset;
+                    }
+
+                    break;
                 }
+                case Rule.ERuleType.Parent:
+                {
+                    foreach (var childRule in rule.Children)
+                    {
+                        offset = 0;
+                        HandleRule(childRule, listBuffer, ref len, ref isSkip, ref offset);
+                    }
+
+                    break;
+                }
+                case Rule.ERuleType.Loop:
+                {
+                    var totalCount = int.MaxValue;
+                    if (rule.Index > 0)
+                    {
+                        totalCount = listBuffer[rule.Index] ^ XorByte;
+                    }
+                    if (rule.Offset > 0)
+                    {
+                        offset += rule.Offset;
+                    }
+
+                    var runCount = 0;
+                    while (offset < len && runCount < totalCount)
+                    {
+                        runCount++;
+                        foreach (var childRule in rule.Children)
+                        {
+                            HandleRule(childRule, listBuffer, ref len, ref isSkip, ref offset);
+                        }
+                    }
+
+                    break;
+                }
+                default:
+                    throw new ArgumentOutOfRangeException();
             }
         }
+
+        public static byte LastTypeA = 0, LastTypeB = 0;
 
         internal static void AnalyzePacket(IEnumerable<byte> data, SocketPair socketPair)
         {
@@ -52,131 +254,36 @@ namespace WLUtility.Data
                                     else
                                         typeB = 0;
 
-                                    Rule rule;
-                                    switch (typeA)
+                                    var offset = 0;
+
+                                    if (_dicRules.ContainsKey(typeA))
                                     {
-                                        case 1:
-                                            if (typeB >= 30) isSkip = true;
-                                            //rule = new Rule(1, ECmpTypeB.MoreThen, 29);
-                                            break;
-                                        case 4:
-                                            len -= 3;
-                                            socketPair.ListBuffer.RemoveRange(len, 3);
-                                            //rule = new Rule(4, ECmpTypeB.None, 0, ERuleType.CutOff, 0, 3);
-                                            break;
-                                        case 5:
-                                            if (typeB == 3)
-                                            {
-                                                len -= 8;
-                                                socketPair.ListBuffer.RemoveRange(66, 8);
-                                                //rule = new Rule(5, ECmpTypeB.Equal, 3, ERuleType.Remove, 66);
-                                            }
-
-                                            break;
-                                        case 11:
+                                        if (_dicRules[typeA].ContainsKey(0))
                                         {
-                                            if (typeB == 5)
-                                            {
-                                                var removeLen = len - 4 - 36;
-                                                len -= removeLen;
-                                                socketPair.ListBuffer.RemoveRange(41, removeLen - 1);
-                                                socketPair.ListBuffer.RemoveRange(6, 1);
-                                                //List<Rule> children = new List<Rule>();
-                                                //rule = new Rule(ERuleType.Remove, 41);
-                                                //children.Add(rule); 
-                                                //children = new List<Rule>();
-                                                //rule = new Rule(ERuleType.Remove, 6, 1);
-                                                //children.Add(rule);
-                                                //rule = new Rule(11, ECmpTypeB.Equal, 5, ERuleType.Parent, children);
-                                            }
-                                            else if (typeB == 250)
-                                            {
-                                                var currentPos = 8;
-                                                var count = socketPair.ListBuffer[currentPos] ^ XorByte;
-                                                socketPair.ListBuffer.RemoveRange(currentPos, 1);
-                                                var removeLen = 1;
-                                                for (var i = 0; i < count; i++)
-                                                {
-                                                    currentPos += 30;
-                                                    var nameLen = socketPair.ListBuffer[currentPos + 14] ^ XorByte;
-                                                    socketPair.ListBuffer.RemoveRange(currentPos, 15 + nameLen + 12);
-                                                    removeLen += 15 + nameLen + 12;
-                                                }
-
-                                                len -= removeLen;
-                                            }
-
-                                            break;
+                                            LastTypeA = typeA;
+                                            LastTypeB = 0;
+                                            HandleRule(_dicRules[typeA][0], socketPair.ListBuffer, ref len, ref isSkip, ref offset);
                                         }
-                                        case 14:
+                                        else if (_dicRules[typeA].ContainsKey(typeB))
                                         {
-                                            if (typeB == 5)
-                                            {
-                                                var removeLen = 0;
-                                                var currentPos = 6;
-                                                while (currentPos + removeLen < len)
-                                                {
-                                                    currentPos += 4;
-                                                    var nameLen = socketPair.ListBuffer[currentPos] ^ XorByte;
-                                                    currentPos += 1 + nameLen + 14;
-
-                                                    //NickName
-                                                    nameLen = socketPair.ListBuffer[currentPos] ^ XorByte;
-                                                    currentPos += 1 + nameLen;
-
-                                                    //OrgName
-                                                    nameLen = socketPair.ListBuffer[currentPos] ^ XorByte;
-                                                    currentPos += 1 + nameLen + 4;
-
-                                                    //此处缺数据，不确定是Byte(StrLen)+Str还是Byte，暂时认为Byte(StrLen)+Str
-                                                    nameLen = socketPair.ListBuffer[currentPos] ^ XorByte;
-
-                                                    socketPair.ListBuffer.RemoveRange(currentPos, 1 + nameLen);
-                                                    removeLen += 1 + nameLen;
-                                                }
-
-                                                len -= removeLen;
-                                            }
-
-                                            break;
-                                        }
-                                        case 15 when typeB == 8:
-                                        {
-                                            if (typeB == 8)
-                                            {
-                                                var removeLen = 0;
-                                                var currentPos = 6;
-                                                var count = len / 183;
-                                                for (var i = 0; i < count; i++)
-                                                {
-                                                    currentPos += 29;
-                                                    var nameLen = socketPair.ListBuffer[currentPos] ^ XorByte;
-                                                    currentPos += nameLen + 151;
-                                                    socketPair.ListBuffer.RemoveRange(currentPos + 1, 2);
-                                                    removeLen += 2;
-                                                }
-
-                                                len -= removeLen;
-                                            }
-
-                                            break;
+                                            LastTypeA = typeA;
+                                            LastTypeB = typeB;
+                                            HandleRule(_dicRules[typeA][typeB], socketPair.ListBuffer, ref len, ref isSkip, ref offset);
                                         }
                                     }
+                                    
 
                                     var byteLen = BitConverter.GetBytes((short) (len - 4));
                                     socketPair.ListBuffer[2] = (byte) (byteLen[0] ^ XorByte);
                                     socketPair.ListBuffer[3] = (byte) (byteLen[1] ^ XorByte);
                                 }
 
-                                while (len > 1024) len -= SendPacket(socketPair, 1024, isSkip);
-
-                                SendPacket(socketPair, len, isSkip);
+                                while (len > 0) len -= SendPacket(socketPair, len, isSkip);
                             }
                         }
                         else
                         {
-                            Console.WriteLine(socketPair.ListBuffer[0]);
-                            Console.WriteLine(socketPair.ListBuffer[1]);
+                            Console.WriteLine(BitConverter.ToString(LastPacket, 0).Replace("-", string.Empty).ToLower());
                         }
                     }
                 }

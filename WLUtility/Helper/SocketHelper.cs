@@ -5,8 +5,12 @@ using System.Net.Sockets;
 
 namespace WLUtility.Helper
 {
-    class SocketHelper
+    internal class SocketHelper
     {
+        internal const int SINGLE_SEND_MAX_LENGTH = 1024;
+
+        internal static byte[] LastPacket;
+
         internal class SocketPair
         {
             public readonly Socket LocalSocket;
@@ -24,11 +28,15 @@ namespace WLUtility.Helper
                 ListBuffer = new List<byte>();
             }
         }
+
         public static int SendPacket(SocketPair socketPair, int len, bool isSkip = false)
         {
-            len = Math.Min(socketPair.ListBuffer.Count, len);
             if (!isSkip)
-                socketPair.LocalSocket.Send(socketPair.ListBuffer.Take(len).ToArray());
+            {
+                len = Math.Min(SINGLE_SEND_MAX_LENGTH, len);
+                LastPacket = socketPair.ListBuffer.Take(len).ToArray();
+                socketPair.LocalSocket.Send(LastPacket);
+            }
             socketPair.ListBuffer.RemoveRange(0, len);
             return len;
         }

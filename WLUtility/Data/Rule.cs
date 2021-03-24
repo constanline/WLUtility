@@ -2,14 +2,8 @@
 
 namespace WLUtility.Data
 {
-    class Rule
+    internal class Rule
     {
-        public byte TypeA { get; }
-
-        public ECmpTypeB CmpTypeB { get; }
-
-        public byte TypeB { get; }
-
         public ERuleType RuleType { get; }
 
         public List<Rule> Children { get; }
@@ -22,76 +16,49 @@ namespace WLUtility.Data
 
         public int Offset { get; }
 
-        /// <summary>
-        /// 封包规则，此构造器仅用来创建跳过的封包规则
-        /// </summary>
-        /// <param name="typeA"></param>
-        /// <param name="cmpTypeB"></param>
-        /// <param name="typeB"></param>
-        public Rule(byte typeA, ECmpTypeB cmpTypeB, byte typeB)
+        public static Rule BuildSkipRule()
         {
-            TypeA = typeA;
-            CmpTypeB = cmpTypeB;
-            TypeB = typeB;
-            RuleType = ERuleType.Skip;
+            return new Rule(ERuleType.Skip, null, null, -1, -1, -1);
         }
 
-        public Rule(ERuleType ruleType, int index, int len = -1)
+        public static Rule BuildRemoveRule(int index, int len, List<int> strIndex)
         {
-            RuleType = ruleType;
-            Index = index;
-            Len = len;
+            return BuildRemoveRule(index, len, 0, strIndex);
         }
 
-        public Rule(byte typeA, ECmpTypeB cmpTypeB, byte typeB, ERuleType ruleType, int index, int len = -1)
+        public static Rule BuildRemoveRule(int index, int len = -1, int offset = 0, List<int> strIndex = null)
         {
-            TypeA = typeA;
-            CmpTypeB = cmpTypeB;
-            TypeB = typeB;
-            RuleType = ruleType;
-            Index = index;
-            Len = len;
+            return new Rule(ERuleType.Remove, null, strIndex, index, len, offset);
         }
 
-        public Rule(byte typeA, ECmpTypeB cmpTypeB, byte typeB, ERuleType ruleType, List<Rule> children)
+        public static Rule BuildParentRule(List<Rule> children)
         {
-            TypeA = typeA;
-            CmpTypeB = cmpTypeB;
-            TypeB = typeB;
-            RuleType = ruleType;
-            Index = index;
-            Children = children;
+            return new Rule(ERuleType.Parent, children, null, -1, -1, -1);
         }
 
-        public Rule(byte typeA, ECmpTypeB cmpTypeB, byte typeB, ERuleType ruleType, List<Rule> children, List<int> strIndex, 
-            int index, int len, int offset)
+        public static Rule BuildLoopRule(List<Rule> children, int offset, int index = -1)
         {
-            TypeA = typeA;
-            CmpTypeB = cmpTypeB;
-            TypeB = typeB;
+            return new Rule(ERuleType.Loop, children, null, index, -1, offset);
+        }
+
+        private Rule(ERuleType ruleType, List<Rule> children, List<int> strIndex, int index, int len, int offset)
+        {
             RuleType = ruleType;
             Children = children;
+            strIndex?.Sort();
             StrIndex = strIndex;
             Index = index;
             Len = len;
             Offset = offset;
         }
-    }
 
-    internal enum ECmpTypeB
-    {
-        None,
-        Equal,
-        MoreThen,
-        LessThen,
-    }
+        internal enum ERuleType
+        {
+            Skip,
+            Remove,
+            Parent,
+            Loop
 
-    internal enum ERuleType
-    {
-        Skip,
-        Remove,
-        Parent,
-        Loop
-
+        }
     }
 }

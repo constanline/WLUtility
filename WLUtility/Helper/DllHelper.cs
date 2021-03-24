@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 
 namespace WLUtility.Helper
 {
-    class DllHelper
+    internal class DllHelper
 
     {
         public static char[] Str2Char16(string str)
@@ -38,16 +38,14 @@ namespace WLUtility.Helper
                 IsEnabled = 1;
             }
 
-            public IPEndPoint GetLocalIPEP()
+            public IPEndPoint GetLocalEndPoint()
             {
-                var locapIpStr = new string(LocalIp).TrimEnd('\0');
-                if (locapIpStr == "0.0.0.0")
-                    return new IPEndPoint(IPAddress.Any, LocalPort);
-                else
-                    return new IPEndPoint(IPAddress.Parse(locapIpStr), LocalPort);
+                //var localIpStr = new string(LocalIp).TrimEnd('\0');
+                //return localIpStr == "0.0.0.0" ? new IPEndPoint(IPAddress.Any, LocalPort) : new IPEndPoint(IPAddress.Parse(localIpStr), LocalPort);
+                return new IPEndPoint(IPAddress.Any, LocalPort);
             }
 
-            public IPEndPoint GetRemoteIPEP()
+            public IPEndPoint GetRemoteEndPoint()
             {
                 return new IPEndPoint(IPAddress.Parse(new string(RemoteIp).TrimEnd('\0')), LocalPort);
             }

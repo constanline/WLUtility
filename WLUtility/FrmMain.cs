@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using Magician.Common.Core;
 using Magician.Common.CustomControl;
+using WLUtility.Data;
 using WLUtility.Engine;
 using WLUtility.Helper;
 
@@ -20,6 +21,8 @@ namespace WLUtility
 
             _socketHelper = new SocketEngine();
             _socketHelper.CbException += HandleException;
+
+            PacketAnalyzer.InitRules();
             //ThreadPool.SetMaxThreads(MAX_SOCKET_SERVER_COUNT, MAX_SOCKET_SERVER_COUNT * 3);
         }
 
@@ -58,7 +61,7 @@ namespace WLUtility
                     btnInject.Enabled = false;
                     btnUnInject.Enabled = true;
                     _socketHelper.StartForward();
-                    MessageBox.Show(GetLanguageString("InjectSucess"));
+                    MessageBox.Show(GetLanguageString("InjectSuccess"));
                 }
             }
         }
@@ -67,7 +70,7 @@ namespace WLUtility
         {
             if (InjectHelper.GetInstance.UnInject(_processId, "WLHook.dll") == DllInjectionResult.Success)
             {
-                MessageBox.Show("UnInjectSucess");
+                MessageBox.Show(GetLanguageString("UnInjectSuccess"));
             }
             btnInject.Enabled = true;
             btnUnInject.Enabled = false;
