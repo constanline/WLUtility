@@ -101,5 +101,10 @@ namespace WLUtility
         {
             new FrmAbout().ShowDialog();
         }
+
+        private void tsmiProxySetting_Click(object sender, EventArgs e)
+        {
+            new FrmProxySetting().ShowDialog();
+        }
     }
 }

@@ -141,7 +141,7 @@ void WINAPI SetTargetPid(const DWORD dwPid)
 
 void WINAPI SetProxyMapping(PROXYMAPPING pmList[20])
 {
-	for (int i = 0; i < 20; i++) {
+	for (auto i = 0; i < 20; i++) {
 		if (pmList[i].isEnabled) {
 			memcpy(&g_pmList[i], &pmList[i], sizeof(PROXYMAPPING));
 		}

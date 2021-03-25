@@ -42,6 +42,7 @@ namespace WLUtility
             this.tsmiEnglish = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.btnUnInject = new CCWin.SkinControl.SkinButton();
+            this.tsmiProxySetting = new System.Windows.Forms.ToolStripMenuItem();
             this.skinMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -133,8 +134,10 @@ namespace WLUtility
             // 
             // tsmiSetting
             // 
+            this.tsmiSetting.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiProxySetting});
             this.tsmiSetting.Name = "tsmiSetting";
-            this.tsmiSetting.Size = new System.Drawing.Size(115, 22);
+            this.tsmiSetting.Size = new System.Drawing.Size(180, 22);
             this.tsmiSetting.Text = "设置(&S)";
             // 
             // tsmiLanguage
@@ -144,7 +147,7 @@ namespace WLUtility
             this.tsmiTraditionalChinese,
             this.tsmiEnglish});
             this.tsmiLanguage.Name = "tsmiLanguage";
-            this.tsmiLanguage.Size = new System.Drawing.Size(115, 22);
+            this.tsmiLanguage.Size = new System.Drawing.Size(180, 22);
             this.tsmiLanguage.Text = "语言(&L)";
             // 
             // tsmiSimplifiedChinese
@@ -191,6 +194,13 @@ namespace WLUtility
             this.btnUnInject.UseVisualStyleBackColor = false;
             this.btnUnInject.Click += new System.EventHandler(this.btnUnInject_Click);
             // 
+            // tsmiProxySetting
+            // 
+            this.tsmiProxySetting.Name = "tsmiProxySetting";
+            this.tsmiProxySetting.Size = new System.Drawing.Size(180, 22);
+            this.tsmiProxySetting.Text = "转发配置";
+            this.tsmiProxySetting.Click += new System.EventHandler(this.tsmiProxySetting_Click);
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -223,6 +233,7 @@ namespace WLUtility
         private System.Windows.Forms.ToolStripMenuItem tsmiEnglish;
         private System.Windows.Forms.ToolStripMenuItem tsmiSetting;
         private CCWin.SkinControl.SkinButton btnUnInject;
+        private System.Windows.Forms.ToolStripMenuItem tsmiProxySetting;
     }
 }
 

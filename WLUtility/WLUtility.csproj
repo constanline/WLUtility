@@ -86,6 +86,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CustomControl\ProxyServerInfo.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControl\ProxyServerInfo.Designer.cs">
+      <DependentUpon>ProxyServerInfo.cs</DependentUpon>
+    </Compile>
     <Compile Include="Data\PacketAnalyzer.cs" />
     <Compile Include="Data\Rule.cs" />
     <Compile Include="FrmAbout.cs">
@@ -93,6 +99,12 @@
     </Compile>
     <Compile Include="FrmAbout.Designer.cs">
       <DependentUpon>FrmAbout.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FrmProxySetting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmProxySetting.Designer.cs">
+      <DependentUpon>FrmProxySetting.cs</DependentUpon>
     </Compile>
     <Compile Include="Helper\DllHelper.cs" />
     <Compile Include="Helper\InjectHelper.cs" />
@@ -106,6 +118,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Engine\SocketEngine.cs" />
+    <EmbeddedResource Include="CustomControl\ProxyServerInfo.resx">
+      <DependentUpon>ProxyServerInfo.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmAbout.en-US.resx">
       <DependentUpon>FrmAbout.cs</DependentUpon>
     </EmbeddedResource>
@@ -124,6 +139,9 @@
     <EmbeddedResource Include="FrmMain.zh-CN.resx">
       <DependentUpon>FrmMain.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="FrmProxySetting.resx">
+      <DependentUpon>FrmProxySetting.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -132,6 +150,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -143,5 +162,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

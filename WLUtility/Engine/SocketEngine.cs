@@ -11,41 +11,46 @@ namespace WLUtility.Engine
 {
     internal class SocketEngine
     {
-        internal const int MAX_SOCKET_SERVER_COUNT = 20;
-        private readonly Socket[] _arrSocketServer = new Socket[MAX_SOCKET_SERVER_COUNT];
-        private readonly Thread[] _arrThreadForward = new Thread[MAX_SOCKET_SERVER_COUNT];
-        private readonly Dictionary<int, SocketPair> _dicSocketPairs = new Dictionary<int, SocketPair>();
-        private readonly ProxyMapping[] _arrProxyMapping = new ProxyMapping[MAX_SOCKET_SERVER_COUNT];
-
-        private int _numSocket;
+        internal const int MAX_SOCKET_SERVER_COUNT = 4;
+        public static readonly ProxyMapping[] ArrProxyMapping = new ProxyMapping[MAX_SOCKET_SERVER_COUNT];
+        private static readonly Socket[] ArrSocketServer = new Socket[MAX_SOCKET_SERVER_COUNT];
+        private static readonly Thread[] ArrThreadForward = new Thread[MAX_SOCKET_SERVER_COUNT];
+        private static readonly Dictionary<int, SocketPair> DicSocketPairs = new Dictionary<int, SocketPair>();
 
         private readonly byte _xorByte = 0x05;
+
+        private int _numSocket;
 
         internal Action<Exception> CbException;
 
         internal SocketEngine()
         {
-            _arrProxyMapping[0] = new ProxyMapping("47.100.107.72", 6414, "127.0.0.1", 6414);
-            _arrProxyMapping[1] = new ProxyMapping("47.102.211.215", 6414, "127.0.0.1", 6415);
-            _arrProxyMapping[2] = new ProxyMapping("47.100.116.187", 6414, "127.0.0.1", 6416);
+            InitProxyMapping();
         }
 
         public bool IsRunning { get; set; }
 
-        private byte[] XorByte(byte[] buffer, int len)
+        private static void InitProxyMapping()
+        {
+            ArrProxyMapping[0].SetValue("47.100.107.72", 6414, "127.0.0.1", 5000,10000);
+            ArrProxyMapping[1].SetValue("47.102.211.215", 6414, "127.0.0.1", 5000, 10000);
+            ArrProxyMapping[2].SetValue("47.100.116.187", 6414, "127.0.0.1", 5000, 10000);
+        }
+
+        private byte[] XorByte(IEnumerable<byte> buffer, int len)
         {
             var result = buffer.Take(len).ToArray();
-            if (_xorByte != 0)
-                for (var i = 0; i < len; i++)
-                    result[i] ^= _xorByte;
+            if (_xorByte == 0) return result;
+            for (var i = 0; i < len; i++)
+                result[i] ^= _xorByte;
             return result;
         }
 
         private void StopSocketPair(int socketId)
         {
-            if (_dicSocketPairs.ContainsKey(socketId))
+            if (DicSocketPairs.ContainsKey(socketId))
             {
-                var socketPair = _dicSocketPairs[socketId];
+                var socketPair = DicSocketPairs[socketId];
                 if (socketPair.LocalSocket.Connected)
                 {
                     //socketPair.LocalSocket.Disconnect(false);
@@ -60,16 +65,16 @@ namespace WLUtility.Engine
                     socketPair.RemoteSocket.Dispose();
                 }
 
-                _dicSocketPairs.Remove(socketId);
+                DicSocketPairs.Remove(socketId);
             }
         }
 
         private void SendHandler(object obj)
         {
             var socketId = (int) obj;
-            while (IsRunning && !_dicSocketPairs.ContainsKey(socketId)) Thread.Sleep(50);
+            while (IsRunning && !DicSocketPairs.ContainsKey(socketId)) Thread.Sleep(50);
             if (!IsRunning) return;
-            var socketPair = _dicSocketPairs[socketId];
+            var socketPair = DicSocketPairs[socketId];
             while (!socketPair.IsReceived) Thread.Sleep(50);
             while (socketPair.LocalSocket.Connected && socketPair.RemoteSocket.Connected)
                 try
@@ -81,7 +86,7 @@ namespace WLUtility.Engine
                     else
                         break;
                 }
-                catch
+                catch (Exception)
                 {
                     break;
                 }
@@ -92,9 +97,9 @@ namespace WLUtility.Engine
         private void ReceiveHandler(object obj)
         {
             var socketId = (int) obj;
-            while (IsRunning && !_dicSocketPairs.ContainsKey(socketId)) Thread.Sleep(50);
+            while (IsRunning && !DicSocketPairs.ContainsKey(socketId)) Thread.Sleep(50);
             if (!IsRunning) return;
-            var socketPair = _dicSocketPairs[socketId];
+            var socketPair = DicSocketPairs[socketId];
             while (socketPair.LocalSocket.Connected && socketPair.RemoteSocket.Connected)
                 try
                 {
@@ -106,7 +111,7 @@ namespace WLUtility.Engine
                     else
                         break;
                 }
-                catch(Exception ex)
+                catch (Exception)
                 {
                     break;
                 }
@@ -117,26 +122,26 @@ namespace WLUtility.Engine
         private void SocketForward(object obj)
         {
             var idx = (int) obj;
-            var pm = _arrProxyMapping[idx];
+            var pm = ArrProxyMapping[idx];
 
-            _arrSocketServer[idx] = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            _arrSocketServer[idx].SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+            ArrSocketServer[idx] = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            ArrSocketServer[idx].SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
 
-            _arrSocketServer[idx].Bind(pm.GetLocalEndPoint());
-            _arrSocketServer[idx].Listen(int.MaxValue);
+            ArrSocketServer[idx].Bind(pm.GetLocalEndPoint());
+            ArrSocketServer[idx].Listen(int.MaxValue);
             try
             {
                 while (IsRunning)
                 {
                     var curNum = Interlocked.Increment(ref _numSocket);
-                    var localSocket = _arrSocketServer[idx].Accept();
+                    var localSocket = ArrSocketServer[idx].Accept();
                     ThreadPool.QueueUserWorkItem(SendHandler, curNum);
 
                     var remoteSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     remoteSocket.Connect(pm.GetRemoteEndPoint());
                     ThreadPool.QueueUserWorkItem(ReceiveHandler, curNum);
 
-                    _dicSocketPairs.Add(curNum, new SocketPair(localSocket, remoteSocket));
+                    DicSocketPairs.Add(curNum, new SocketPair(localSocket, remoteSocket));
                 }
             }
             catch (Exception ex)
@@ -148,12 +153,12 @@ namespace WLUtility.Engine
         internal void StartForward()
         {
             IsRunning = true;
-            SetProxyMapping(_arrProxyMapping);
+            SetProxyMapping(ArrProxyMapping);
             for (var i = 0; i < MAX_SOCKET_SERVER_COUNT; i++)
-                if (_arrProxyMapping[i].IsEnabled > 0)
+                if (ArrProxyMapping[i].IsEnabled > 0)
                 {
-                    _arrThreadForward[i] = new Thread(SocketForward);
-                    _arrThreadForward[i].Start(i);
+                    ArrThreadForward[i] = new Thread(SocketForward);
+                    ArrThreadForward[i].Start(i);
                 }
         }
 
@@ -162,10 +167,10 @@ namespace WLUtility.Engine
             IsRunning = false;
             for (var i = 0; i < MAX_SOCKET_SERVER_COUNT; i++)
             {
-                _arrSocketServer[i]?.Close();
-                _arrSocketServer[i] = null;
-                _arrThreadForward[i]?.Abort();
-                _arrThreadForward[i] = null;
+                ArrSocketServer[i]?.Close();
+                ArrSocketServer[i] = null;
+                ArrThreadForward[i]?.Abort();
+                ArrThreadForward[i] = null;
             }
         }
     }

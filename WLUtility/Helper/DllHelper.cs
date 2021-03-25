@@ -3,14 +3,19 @@ using System.Runtime.InteropServices;
 
 namespace WLUtility.Helper
 {
-    internal class DllHelper
+    internal static class DllHelper
 
     {
-        public static char[] Str2Char16(string str)
+        public static char[] StrToChar16(string str)
         {
             var result = new char[16];
             str.ToCharArray().CopyTo(result, 0);
             return result;
+        }
+
+        public static string Char16ToStr(char[] chrArray)
+        {
+            return new string(chrArray);
         }
 
         public struct ProxyMapping
@@ -27,15 +32,30 @@ namespace WLUtility.Helper
 
             public int IsEnabled;
 
-            public ProxyMapping(string remoteIp, ushort remotePort, string localIp, ushort localPort)
+            public ushort LocalMinPort { get; set; }
+
+            public ushort LocalMaxPort { get; set; }
+
+            public void Enable()
             {
-                RemoteIp = Str2Char16(remoteIp);
+                IsEnabled = 1;
+            }
+
+            public void Disable()
+            {
+                IsEnabled = 0;
+            }
+
+            public void SetValue(string remoteIp, ushort remotePort, string localIp, ushort localMinPort, ushort localMaxPort)
+            {
+                RemoteIp = StrToChar16(remoteIp);
                 RemotePort = remotePort;
 
-                LocalIp = Str2Char16(localIp);
-                LocalPort = localPort;
+                LocalIp = StrToChar16(localIp);
+                LocalMinPort = localMinPort;
+                LocalMaxPort = localMaxPort;
 
-                IsEnabled = 1;
+                IsEnabled = 0;
             }
 
             public IPEndPoint GetLocalEndPoint()
@@ -49,7 +69,7 @@ namespace WLUtility.Helper
             {
                 return new IPEndPoint(IPAddress.Parse(new string(RemoteIp).TrimEnd('\0')), LocalPort);
             }
-        };
+        }
 
         [DllImport("WLHook.dll")]
         public static extern void SetTargetPid(uint dwPid);

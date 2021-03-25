@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
+using System.Text.RegularExpressions;
 
 namespace WLUtility.Helper
 {
-    internal class SocketHelper
+    internal static class SocketHelper
     {
         internal const int SINGLE_SEND_MAX_LENGTH = 1024;
 
