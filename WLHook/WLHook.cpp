@@ -19,7 +19,7 @@ typedef struct tagProxyMapping {
 	int isEnabled;
 } PROXYMAPPING, *PPROXYMAPPING;
 
-constexpr auto MAX_SOCKET_SERVER_COUNT = 20;
+constexpr auto MAX_SOCKET_SERVER_COUNT = 4;
 
 #pragma data_seg("WLShared")
 DWORD			g_dwTarget = 0;
@@ -139,9 +139,9 @@ void WINAPI SetTargetPid(const DWORD dwPid)
 	g_dwTarget = dwPid;
 }
 
-void WINAPI SetProxyMapping(PROXYMAPPING pmList[20])
+void WINAPI SetProxyMapping(PROXYMAPPING pmList[])
 {
-	for (auto i = 0; i < 20; i++) {
+	for (auto i = 0; i < MAX_SOCKET_SERVER_COUNT; i++) {
 		if (pmList[i].isEnabled) {
 			memcpy(&g_pmList[i], &pmList[i], sizeof(PROXYMAPPING));
 		}

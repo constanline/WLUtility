@@ -23,7 +23,20 @@ namespace WLUtility
             _socketHelper.CbException += HandleException;
 
             PacketAnalyzer.InitRules();
+            LogHelper.CbRecordPacket += LogPacket;
             //ThreadPool.SetMaxThreads(MAX_SOCKET_SERVER_COUNT, MAX_SOCKET_SERVER_COUNT * 3);
+        }
+
+        private void LogPacket(string msg)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<string>(LogPacket), msg);
+            }
+            else
+            {
+                rtxtPacket.AppendText(msg);
+            }
         }
 
         private void HandleException(Exception ex)
@@ -40,7 +53,7 @@ namespace WLUtility
         {
             if (_socketHelper.IsRunning)
             {
-                MessageBox.Show(GetLanguageString("IsRunning"));
+                LogHelper.Log(GetLanguageString("IsRunning"));
                 return;
             }
 
@@ -61,7 +74,7 @@ namespace WLUtility
                     btnInject.Enabled = false;
                     btnUnInject.Enabled = true;
                     _socketHelper.StartForward();
-                    MessageBox.Show(GetLanguageString("InjectSuccess"));
+                    LogHelper.Log(GetLanguageString("InjectSuccess"));
                 }
             }
         }
@@ -70,7 +83,7 @@ namespace WLUtility
         {
             if (InjectHelper.GetInstance.UnInject(_processId, "WLHook.dll") == DllInjectionResult.Success)
             {
-                MessageBox.Show(GetLanguageString("UnInjectSuccess"));
+                LogHelper.Log(GetLanguageString("UnInjectSuccess"));
             }
             btnInject.Enabled = true;
             btnUnInject.Enabled = false;
@@ -105,6 +118,11 @@ namespace WLUtility
         private void tsmiProxySetting_Click(object sender, EventArgs e)
         {
             new FrmProxySetting().ShowDialog();
+        }
+
+        private void chkRecordPacket_CheckedChanged(object sender, EventArgs e)
+        {
+            SocketEngine.RecordPacket = chkRecordPacket.Checked;
         }
     }
 }

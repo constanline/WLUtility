@@ -30,20 +30,31 @@ namespace WLUtility
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.btnInject = new CCWin.SkinControl.SkinButton();
             this.skinMenuStrip1 = new CCWin.SkinControl.SkinMenuStrip();
             this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiExit = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSetting = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiProxySetting = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiLanguage = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSimplifiedChinese = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiTraditionalChinese = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiEnglish = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiAbout = new System.Windows.Forms.ToolStripMenuItem();
             this.btnUnInject = new CCWin.SkinControl.SkinButton();
-            this.tsmiProxySetting = new System.Windows.Forms.ToolStripMenuItem();
+            this.skinTabControl1 = new CCWin.SkinControl.SkinTabControl();
+            this.skinTabPage1 = new CCWin.SkinControl.SkinTabPage();
+            this.skinTabPage2 = new CCWin.SkinControl.SkinTabPage();
+            this.rtxtPacket = new CCWin.SkinControl.RtfRichTextBox();
+            this.skinPanel1 = new CCWin.SkinControl.SkinPanel();
+            this.chkRecordPacket = new CCWin.SkinControl.SkinCheckBox();
             this.skinMenuStrip1.SuspendLayout();
+            this.skinTabControl1.SuspendLayout();
+            this.skinTabPage1.SuspendLayout();
+            this.skinTabPage2.SuspendLayout();
+            this.skinPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnInject
@@ -51,7 +62,7 @@ namespace WLUtility
             this.btnInject.BackColor = System.Drawing.Color.Transparent;
             this.btnInject.ControlState = CCWin.SkinClass.ControlState.Normal;
             this.btnInject.DownBack = null;
-            this.btnInject.Location = new System.Drawing.Point(26, 88);
+            this.btnInject.Location = new System.Drawing.Point(44, 18);
             this.btnInject.MouseBack = null;
             this.btnInject.Name = "btnInject";
             this.btnInject.NormlBack = null;
@@ -140,6 +151,13 @@ namespace WLUtility
             this.tsmiSetting.Size = new System.Drawing.Size(180, 22);
             this.tsmiSetting.Text = "设置(&S)";
             // 
+            // tsmiProxySetting
+            // 
+            this.tsmiProxySetting.Name = "tsmiProxySetting";
+            this.tsmiProxySetting.Size = new System.Drawing.Size(124, 22);
+            this.tsmiProxySetting.Text = "转发配置";
+            this.tsmiProxySetting.Click += new System.EventHandler(this.tsmiProxySetting_Click);
+            // 
             // tsmiLanguage
             // 
             this.tsmiLanguage.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -184,7 +202,7 @@ namespace WLUtility
             this.btnUnInject.ControlState = CCWin.SkinClass.ControlState.Normal;
             this.btnUnInject.DownBack = null;
             this.btnUnInject.Enabled = false;
-            this.btnUnInject.Location = new System.Drawing.Point(107, 88);
+            this.btnUnInject.Location = new System.Drawing.Point(125, 18);
             this.btnUnInject.MouseBack = null;
             this.btnUnInject.Name = "btnUnInject";
             this.btnUnInject.NormlBack = null;
@@ -194,20 +212,108 @@ namespace WLUtility
             this.btnUnInject.UseVisualStyleBackColor = false;
             this.btnUnInject.Click += new System.EventHandler(this.btnUnInject_Click);
             // 
-            // tsmiProxySetting
+            // skinTabControl1
             // 
-            this.tsmiProxySetting.Name = "tsmiProxySetting";
-            this.tsmiProxySetting.Size = new System.Drawing.Size(180, 22);
-            this.tsmiProxySetting.Text = "转发配置";
-            this.tsmiProxySetting.Click += new System.EventHandler(this.tsmiProxySetting_Click);
+            this.skinTabControl1.AnimatorType = CCWin.SkinControl.AnimationType.HorizSlide;
+            this.skinTabControl1.CloseRect = new System.Drawing.Rectangle(2, 2, 12, 12);
+            this.skinTabControl1.Controls.Add(this.skinTabPage1);
+            this.skinTabControl1.Controls.Add(this.skinTabPage2);
+            this.skinTabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.skinTabControl1.HeadBack = null;
+            this.skinTabControl1.ImgTxtOffset = new System.Drawing.Point(0, 0);
+            this.skinTabControl1.ItemSize = new System.Drawing.Size(70, 36);
+            this.skinTabControl1.Location = new System.Drawing.Point(4, 53);
+            this.skinTabControl1.Name = "skinTabControl1";
+            this.skinTabControl1.PageArrowDown = ((System.Drawing.Image)(resources.GetObject("skinTabControl1.PageArrowDown")));
+            this.skinTabControl1.PageArrowHover = ((System.Drawing.Image)(resources.GetObject("skinTabControl1.PageArrowHover")));
+            this.skinTabControl1.PageCloseHover = ((System.Drawing.Image)(resources.GetObject("skinTabControl1.PageCloseHover")));
+            this.skinTabControl1.PageCloseNormal = ((System.Drawing.Image)(resources.GetObject("skinTabControl1.PageCloseNormal")));
+            this.skinTabControl1.PageDown = ((System.Drawing.Image)(resources.GetObject("skinTabControl1.PageDown")));
+            this.skinTabControl1.PageHover = ((System.Drawing.Image)(resources.GetObject("skinTabControl1.PageHover")));
+            this.skinTabControl1.PageImagePosition = CCWin.SkinControl.SkinTabControl.ePageImagePosition.Left;
+            this.skinTabControl1.PageNorml = null;
+            this.skinTabControl1.SelectedIndex = 1;
+            this.skinTabControl1.Size = new System.Drawing.Size(588, 389);
+            this.skinTabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
+            this.skinTabControl1.TabIndex = 3;
+            // 
+            // skinTabPage1
+            // 
+            this.skinTabPage1.BackColor = System.Drawing.Color.White;
+            this.skinTabPage1.Controls.Add(this.btnInject);
+            this.skinTabPage1.Controls.Add(this.btnUnInject);
+            this.skinTabPage1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.skinTabPage1.Location = new System.Drawing.Point(0, 36);
+            this.skinTabPage1.Name = "skinTabPage1";
+            this.skinTabPage1.Size = new System.Drawing.Size(588, 353);
+            this.skinTabPage1.TabIndex = 0;
+            this.skinTabPage1.TabItemImage = null;
+            this.skinTabPage1.Text = "配置";
+            // 
+            // skinTabPage2
+            // 
+            this.skinTabPage2.BackColor = System.Drawing.Color.White;
+            this.skinTabPage2.Controls.Add(this.rtxtPacket);
+            this.skinTabPage2.Controls.Add(this.skinPanel1);
+            this.skinTabPage2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.skinTabPage2.Location = new System.Drawing.Point(0, 36);
+            this.skinTabPage2.Name = "skinTabPage2";
+            this.skinTabPage2.Size = new System.Drawing.Size(588, 353);
+            this.skinTabPage2.TabIndex = 1;
+            this.skinTabPage2.TabItemImage = null;
+            this.skinTabPage2.Text = "封包";
+            // 
+            // rtxtPacket
+            // 
+            this.rtxtPacket.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtxtPacket.HiglightColor = CCWin.SkinControl.RtfRichTextBox.RtfColor.White;
+            this.rtxtPacket.Location = new System.Drawing.Point(0, 30);
+            this.rtxtPacket.Name = "rtxtPacket";
+            this.rtxtPacket.Size = new System.Drawing.Size(588, 323);
+            this.rtxtPacket.TabIndex = 0;
+            this.rtxtPacket.Text = "";
+            this.rtxtPacket.TextColor = CCWin.SkinControl.RtfRichTextBox.RtfColor.Black;
+            // 
+            // skinPanel1
+            // 
+            this.skinPanel1.BackColor = System.Drawing.Color.Transparent;
+            this.skinPanel1.Controls.Add(this.chkRecordPacket);
+            this.skinPanel1.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.skinPanel1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.skinPanel1.DownBack = null;
+            this.skinPanel1.Location = new System.Drawing.Point(0, 0);
+            this.skinPanel1.MouseBack = null;
+            this.skinPanel1.Name = "skinPanel1";
+            this.skinPanel1.NormlBack = null;
+            this.skinPanel1.Size = new System.Drawing.Size(588, 30);
+            this.skinPanel1.TabIndex = 1;
+            // 
+            // chkRecordPacket
+            // 
+            this.chkRecordPacket.AutoSize = true;
+            this.chkRecordPacket.BackColor = System.Drawing.Color.Transparent;
+            this.chkRecordPacket.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.chkRecordPacket.DownBack = null;
+            this.chkRecordPacket.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.chkRecordPacket.Location = new System.Drawing.Point(13, 5);
+            this.chkRecordPacket.MouseBack = null;
+            this.chkRecordPacket.Name = "chkRecordPacket";
+            this.chkRecordPacket.NormlBack = null;
+            this.chkRecordPacket.SelectedDownBack = null;
+            this.chkRecordPacket.SelectedMouseBack = null;
+            this.chkRecordPacket.SelectedNormlBack = null;
+            this.chkRecordPacket.Size = new System.Drawing.Size(75, 21);
+            this.chkRecordPacket.TabIndex = 0;
+            this.chkRecordPacket.Text = "记录封包";
+            this.chkRecordPacket.UseVisualStyleBackColor = false;
+            this.chkRecordPacket.CheckedChanged += new System.EventHandler(this.chkRecordPacket_CheckedChanged);
             // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(596, 446);
-            this.Controls.Add(this.btnUnInject);
-            this.Controls.Add(this.btnInject);
+            this.Controls.Add(this.skinTabControl1);
             this.Controls.Add(this.skinMenuStrip1);
             this.MainMenuStrip = this.skinMenuStrip1;
             this.Name = "FrmMain";
@@ -215,6 +321,11 @@ namespace WLUtility
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmMain_FormClosed);
             this.skinMenuStrip1.ResumeLayout(false);
             this.skinMenuStrip1.PerformLayout();
+            this.skinTabControl1.ResumeLayout(false);
+            this.skinTabPage1.ResumeLayout(false);
+            this.skinTabPage2.ResumeLayout(false);
+            this.skinPanel1.ResumeLayout(false);
+            this.skinPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -234,6 +345,12 @@ namespace WLUtility
         private System.Windows.Forms.ToolStripMenuItem tsmiSetting;
         private CCWin.SkinControl.SkinButton btnUnInject;
         private System.Windows.Forms.ToolStripMenuItem tsmiProxySetting;
+        private CCWin.SkinControl.SkinTabControl skinTabControl1;
+        private CCWin.SkinControl.SkinTabPage skinTabPage1;
+        private CCWin.SkinControl.SkinTabPage skinTabPage2;
+        private CCWin.SkinControl.RtfRichTextBox rtxtPacket;
+        private CCWin.SkinControl.SkinPanel skinPanel1;
+        private CCWin.SkinControl.SkinCheckBox chkRecordPacket;
     }
 }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Forms;
+using WLUtility.Helper;
 using static WLUtility.Helper.DllHelper;
 
 namespace WLUtility.CustomControl
@@ -42,16 +43,26 @@ namespace WLUtility.CustomControl
 
         private void TxtLocalPort_TextChanged(object sender, EventArgs e)
         {
-            _pm.LocalMinPort = Convert.ToUInt16(TxtMinLocalPort.Value);
-            _pm.LocalMaxPort = Convert.ToUInt16(TxtMaxLocalPort.Value);
+            var localMinPort = Convert.ToUInt16(TxtMinLocalPort.Value);
+            var localMaxPort = Convert.ToUInt16(TxtMaxLocalPort.Value);
+            for (var i = localMinPort; i <= localMaxPort; i++)
+            {
+                if (SocketHelper.PortInUse(i)) continue;
 
-            if (_pm.LocalMinPort <= _pm.LocalMaxPort) return;
-            var tmp = _pm.LocalMinPort;
-            _pm.LocalMinPort = _pm.LocalMaxPort;
-            _pm.LocalMaxPort = tmp;
-
-            TxtMinLocalPort.Text = _pm.LocalMinPort.ToString();
-            TxtMaxLocalPort.Text = _pm.LocalMaxPort.ToString();
+                _pm.IsEnabled = 1;
+                _pm.LocalPort = i;
+                break;
+            }
+            // _pm.LocalMinPort = Convert.ToUInt16(TxtMinLocalPort.Value);
+            // _pm.LocalMaxPort = Convert.ToUInt16(TxtMaxLocalPort.Value);
+            //
+            // if (_pm.LocalMinPort <= _pm.LocalMaxPort) return;
+            // var tmp = _pm.LocalMinPort;
+            // _pm.LocalMinPort = _pm.LocalMaxPort;
+            // _pm.LocalMaxPort = tmp;
+            //
+            // TxtMinLocalPort.Text = _pm.LocalMinPort.ToString();
+            // TxtMaxLocalPort.Text = _pm.LocalMaxPort.ToString();
         }
 
         private void ChangeEnabled(bool isEnabled)

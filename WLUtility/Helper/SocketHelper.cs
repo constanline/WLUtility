@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Net.Sockets;
-using System.Text.RegularExpressions;
+using WLUtility.Engine;
 
 namespace WLUtility.Helper
 {
@@ -30,16 +31,50 @@ namespace WLUtility.Helper
             }
         }
 
-        public static int SendPacket(SocketPair socketPair, int len, bool isSkip = false)
+        public static int SendPacket(SocketPair socketPair, byte[] buffer)
+        {
+            if (SocketEngine.RecordPacket)
+            {
+                LogHelper.LogPacket(buffer, true);
+            }
+            return socketPair.RemoteSocket.Send(buffer);
+        }
+
+        public static int RecvPacket(SocketPair socketPair, int len, bool isSkip = false)
         {
             if (!isSkip)
             {
-                len = Math.Min(SINGLE_SEND_MAX_LENGTH, len);
-                LastPacket = socketPair.ListBuffer.Take(len).ToArray();
-                socketPair.LocalSocket.Send(LastPacket);
+                if (SocketEngine.RecordPacket)
+                {
+                    LogHelper.LogPacket(socketPair.ListBuffer.Take(len).ToArray(), false);
+                }
+
+                while (len > 0)
+                {
+                    lock (socketPair.ListBuffer)
+                    {
+                        var currentLen = Math.Min(SINGLE_SEND_MAX_LENGTH, len);
+                        LastPacket = socketPair.ListBuffer.Take(currentLen).ToArray();
+                        socketPair.LocalSocket.Send(LastPacket);
+                        socketPair.ListBuffer.RemoveRange(0, currentLen);
+                        len -= currentLen;
+                    }
+                }
             }
-            socketPair.ListBuffer.RemoveRange(0, len);
+            else
+            {
+                socketPair.ListBuffer.RemoveRange(0, len);
+            }
+
             return len;
+        }
+
+        public static bool PortInUse(int port)
+        {
+            var ipProperties = IPGlobalProperties.GetIPGlobalProperties();
+            
+            return ipProperties.GetActiveTcpListeners().Any(endPoint => endPoint.Port == port) || 
+                   ipProperties.GetActiveUdpListeners().Any(endPoint => endPoint.Port == port);
         }
     }
 }

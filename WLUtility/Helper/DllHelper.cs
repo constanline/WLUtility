@@ -32,10 +32,6 @@ namespace WLUtility.Helper
 
             public int IsEnabled;
 
-            public ushort LocalMinPort { get; set; }
-
-            public ushort LocalMaxPort { get; set; }
-
             public void Enable()
             {
                 IsEnabled = 1;
@@ -46,16 +42,23 @@ namespace WLUtility.Helper
                 IsEnabled = 0;
             }
 
-            public void SetValue(string remoteIp, ushort remotePort, string localIp, ushort localMinPort, ushort localMaxPort)
+            public bool SetValue(string remoteIp, ushort remotePort, string localIp, ushort localMinPort, ushort localMaxPort)
             {
                 RemoteIp = StrToChar16(remoteIp);
                 RemotePort = remotePort;
 
                 LocalIp = StrToChar16(localIp);
-                LocalMinPort = localMinPort;
-                LocalMaxPort = localMaxPort;
 
-                IsEnabled = 0;
+                for (var i = localMinPort; i <= localMaxPort; i++)
+                {
+                    if (SocketHelper.PortInUse(i)) continue;
+
+                    IsEnabled = 1;
+                    LocalPort = i;
+                    break;
+                }
+
+                return LocalPort != 0;
             }
 
             public IPEndPoint GetLocalEndPoint()
@@ -67,7 +70,7 @@ namespace WLUtility.Helper
 
             public IPEndPoint GetRemoteEndPoint()
             {
-                return new IPEndPoint(IPAddress.Parse(new string(RemoteIp).TrimEnd('\0')), LocalPort);
+                return new IPEndPoint(IPAddress.Parse(new string(RemoteIp).TrimEnd('\0')), RemotePort);
             }
         }
 

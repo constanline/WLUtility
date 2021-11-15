@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using WLUtility.Data;
+using WLUtility.Helper;
 using static WLUtility.Helper.DllHelper;
 using static WLUtility.Helper.SocketHelper;
 
@@ -12,6 +13,9 @@ namespace WLUtility.Engine
     internal class SocketEngine
     {
         internal const int MAX_SOCKET_SERVER_COUNT = 4;
+
+        public static bool RecordPacket = false;
+
         public static readonly ProxyMapping[] ArrProxyMapping = new ProxyMapping[MAX_SOCKET_SERVER_COUNT];
         private static readonly Socket[] ArrSocketServer = new Socket[MAX_SOCKET_SERVER_COUNT];
         private static readonly Thread[] ArrThreadForward = new Thread[MAX_SOCKET_SERVER_COUNT];
@@ -32,9 +36,14 @@ namespace WLUtility.Engine
 
         private static void InitProxyMapping()
         {
-            ArrProxyMapping[0].SetValue("47.100.107.72", 6414, "127.0.0.1", 5000,10000);
-            ArrProxyMapping[1].SetValue("47.102.211.215", 6414, "127.0.0.1", 5000, 10000);
-            ArrProxyMapping[2].SetValue("47.100.116.187", 6414, "127.0.0.1", 5000, 10000);
+            var flag =
+                ArrProxyMapping[0].SetValue("47.100.107.72", 6414, "127.0.0.1", 5001, 6000) &&
+                ArrProxyMapping[1].SetValue("47.102.211.215", 6414, "127.0.0.1", 6001, 7000) &&
+                ArrProxyMapping[2].SetValue("47.100.116.187", 6414, "127.0.0.1", 7001, 8000);
+            if (!flag)
+            {
+                LogHelper.Log("No available port");
+            }
         }
 
         private byte[] XorByte(IEnumerable<byte> buffer, int len)
@@ -82,7 +91,7 @@ namespace WLUtility.Engine
                     var data = new byte[1024];
                     var read = socketPair.LocalSocket.Receive(data);
                     if (read > 0)
-                        socketPair.RemoteSocket.Send(XorByte(data, read));
+                        SendPacket(socketPair, XorByte(data, read));
                     else
                         break;
                 }

@@ -32,9 +32,6 @@ namespace WLUtility.Data
 
             //在线人员信息？记不清了
             AddRule(4, 0, Rule.BuildRemoveRule(-1, 3));
-
-            //人物信息
-            AddRule(5, 3, Rule.BuildRemoveRule(66, 8));
             
             //战斗
             var children = new List<Rule>(2);
@@ -56,9 +53,13 @@ namespace WLUtility.Data
             children = new List<Rule> { Rule.BuildRemoveRule(25, 1, 25, new List<int> { 4, 19, 20, 25 }) };
             AddRule(14, 5, Rule.BuildLoopRule(children, 6));
 
+
+            // 4.09不再需要
+            //人物信息
+            // AddRule(5, 3, Rule.BuildRemoveRule(66, 8));
             //宠物
-            children = new List<Rule> { Rule.BuildRemoveRule(181, 2, 181,new List<int> { 29 }) };
-            AddRule(15, 8, Rule.BuildLoopRule(children, 6));
+            // children = new List<Rule> { Rule.BuildRemoveRule(181, 2, 181,new List<int> { 29 }) };
+            // AddRule(15, 8, Rule.BuildLoopRule(children, 6));
         }
 
         private static void HandleRule(Rule rule, List<byte> listBuffer, ref int len, ref bool isSkip, ref int offset)
@@ -67,6 +68,35 @@ namespace WLUtility.Data
             {
                 case Rule.ERuleType.Skip:
                     isSkip = true;
+                    break;
+                case Rule.ERuleType.Add:
+                    var insStartIndex = rule.Offset > 0 ? offset : 0;
+
+                    if (rule.Index <= 0)
+                    {
+                        insStartIndex += len - rule.Len;
+                    }
+                    else if (rule.Len <= 0)
+                    {
+                        insStartIndex += rule.Index;
+                    }
+                    else
+                    {
+                        insStartIndex += rule.Index;
+                    }
+
+                    if (rule.StrIndex != null)
+                    {
+                        foreach (var strIdx in rule.StrIndex)
+                        {
+                            var strLen = listBuffer[offset + strIdx] ^ XorByte;
+                            if (strIdx < insStartIndex)
+                            {
+                                insStartIndex += strLen;
+                            }
+                        }
+                    }
+                    listBuffer.InsertRange(insStartIndex, rule.AddBuffer);
                     break;
                 case Rule.ERuleType.Remove:
                 {
@@ -157,6 +187,11 @@ namespace WLUtility.Data
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+
+            if (rule.NextRule != null)
+            {
+                HandleRule(rule.NextRule, listBuffer, ref len, ref isSkip, ref offset);
+            }
         }
 
         public static byte LastTypeA, LastTypeB;
@@ -213,7 +248,8 @@ namespace WLUtility.Data
                                     socketPair.ListBuffer[3] = (byte) (byteLen[1] ^ XorByte);
                                 }
 
-                                while (len > 0) len -= SendPacket(socketPair, len, isSkip);
+                                // while (len > 0) len -= RecvPacket(socketPair, len, isSkip);
+                                RecvPacket(socketPair, len, isSkip);
                             }
                         }
                         else
