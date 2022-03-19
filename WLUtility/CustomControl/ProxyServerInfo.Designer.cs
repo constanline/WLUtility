@@ -29,129 +29,33 @@ namespace WLUtility.CustomControl
         /// </summary>
         private void InitializeComponent()
         {
-            this.IpRemote = new Magician.Common.CustomControl.IpBox();
-            this.TxtRemotePort = new Magician.Common.CustomControl.NumberText();
+            this.ChkEnabled = new CCWin.SkinControl.SkinCheckBox();
+            this.TxtMaxLocalPort = new Magician.Common.CustomControl.NumberText();
             this.TxtMinLocalPort = new Magician.Common.CustomControl.NumberText();
             this.IpLocal = new Magician.Common.CustomControl.IpBox();
-            this.TxtMaxLocalPort = new Magician.Common.CustomControl.NumberText();
-            this.ChkEnabled = new CCWin.SkinControl.SkinCheckBox();
+            this.TxtRemotePort = new Magician.Common.CustomControl.NumberText();
+            this.IpRemote = new Magician.Common.CustomControl.IpBox();
             this.SuspendLayout();
             // 
-            // IpRemote
+            // ChkEnabled
             // 
-            this.IpRemote.BackColor = System.Drawing.Color.White;
-            this.IpRemote.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.IpRemote.Location = new System.Drawing.Point(57, 2);
-            this.IpRemote.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.IpRemote.Name = "IpRemote";
-            this.IpRemote.Size = new System.Drawing.Size(182, 32);
-            this.IpRemote.TabIndex = 1;
-            // 
-            // TxtRemotePort
-            // 
-            this.TxtRemotePort.BackColor = System.Drawing.Color.Transparent;
-            this.TxtRemotePort.DecimalPlaces = 0;
-            this.TxtRemotePort.DownBack = null;
-            this.TxtRemotePort.Icon = null;
-            this.TxtRemotePort.IconIsButton = false;
-            this.TxtRemotePort.IconMouseState = CCWin.SkinClass.ControlState.Normal;
-            this.TxtRemotePort.IsPasswordChat = '\0';
-            this.TxtRemotePort.IsSystemPasswordChar = false;
-            this.TxtRemotePort.Lines = new string[] {
-        "12345"};
-            this.TxtRemotePort.Location = new System.Drawing.Point(243, 4);
-            this.TxtRemotePort.Margin = new System.Windows.Forms.Padding(0);
-            this.TxtRemotePort.MaxLength = 5;
-            this.TxtRemotePort.MaxValue = 65535;
-            this.TxtRemotePort.MinimumSize = new System.Drawing.Size(28, 28);
-            this.TxtRemotePort.MinValue = 1024;
-            this.TxtRemotePort.MouseBack = null;
-            this.TxtRemotePort.MouseState = CCWin.SkinClass.ControlState.Normal;
-            this.TxtRemotePort.Multiline = false;
-            this.TxtRemotePort.Name = "TxtRemotePort";
-            this.TxtRemotePort.NormlBack = null;
-            this.TxtRemotePort.Padding = new System.Windows.Forms.Padding(5);
-            this.TxtRemotePort.ReadOnly = false;
-            this.TxtRemotePort.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.TxtRemotePort.Size = new System.Drawing.Size(50, 28);
-            // 
-            // 
-            // 
-            this.TxtRemotePort.SkinTxt.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.TxtRemotePort.SkinTxt.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TxtRemotePort.SkinTxt.Font = new System.Drawing.Font("微软雅黑", 9.75F);
-            this.TxtRemotePort.SkinTxt.Location = new System.Drawing.Point(5, 5);
-            this.TxtRemotePort.SkinTxt.MaxLength = 5;
-            this.TxtRemotePort.SkinTxt.Name = "BaseText";
-            this.TxtRemotePort.SkinTxt.Size = new System.Drawing.Size(40, 18);
-            this.TxtRemotePort.SkinTxt.TabIndex = 0;
-            this.TxtRemotePort.SkinTxt.Text = "12345";
-            this.TxtRemotePort.SkinTxt.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
-            this.TxtRemotePort.SkinTxt.WaterText = "端口号";
-            this.TxtRemotePort.TabIndex = 2;
-            this.TxtRemotePort.Text = "12345";
-            this.TxtRemotePort.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.TxtRemotePort.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
-            this.TxtRemotePort.WaterText = "端口号";
-            this.TxtRemotePort.WordWrap = true;
-            // 
-            // TxtMinLocalPort
-            // 
-            this.TxtMinLocalPort.BackColor = System.Drawing.Color.Transparent;
-            this.TxtMinLocalPort.DecimalPlaces = 0;
-            this.TxtMinLocalPort.DownBack = null;
-            this.TxtMinLocalPort.Icon = null;
-            this.TxtMinLocalPort.IconIsButton = false;
-            this.TxtMinLocalPort.IconMouseState = CCWin.SkinClass.ControlState.Normal;
-            this.TxtMinLocalPort.IsPasswordChat = '\0';
-            this.TxtMinLocalPort.IsSystemPasswordChar = false;
-            this.TxtMinLocalPort.Lines = new string[] {
-        "12345"};
-            this.TxtMinLocalPort.Location = new System.Drawing.Point(493, 4);
-            this.TxtMinLocalPort.Margin = new System.Windows.Forms.Padding(0);
-            this.TxtMinLocalPort.MaxLength = 5;
-            this.TxtMinLocalPort.MaxValue = 65535;
-            this.TxtMinLocalPort.MinimumSize = new System.Drawing.Size(28, 28);
-            this.TxtMinLocalPort.MinValue = 1024;
-            this.TxtMinLocalPort.MouseBack = null;
-            this.TxtMinLocalPort.MouseState = CCWin.SkinClass.ControlState.Normal;
-            this.TxtMinLocalPort.Multiline = false;
-            this.TxtMinLocalPort.Name = "TxtMinLocalPort";
-            this.TxtMinLocalPort.NormlBack = null;
-            this.TxtMinLocalPort.Padding = new System.Windows.Forms.Padding(5);
-            this.TxtMinLocalPort.ReadOnly = false;
-            this.TxtMinLocalPort.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.TxtMinLocalPort.Size = new System.Drawing.Size(50, 28);
-            // 
-            // 
-            // 
-            this.TxtMinLocalPort.SkinTxt.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.TxtMinLocalPort.SkinTxt.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.TxtMinLocalPort.SkinTxt.Font = new System.Drawing.Font("微软雅黑", 9.75F);
-            this.TxtMinLocalPort.SkinTxt.Location = new System.Drawing.Point(5, 5);
-            this.TxtMinLocalPort.SkinTxt.MaxLength = 5;
-            this.TxtMinLocalPort.SkinTxt.Name = "BaseText";
-            this.TxtMinLocalPort.SkinTxt.Size = new System.Drawing.Size(40, 18);
-            this.TxtMinLocalPort.SkinTxt.TabIndex = 0;
-            this.TxtMinLocalPort.SkinTxt.Text = "12345";
-            this.TxtMinLocalPort.SkinTxt.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
-            this.TxtMinLocalPort.SkinTxt.WaterText = "端口号";
-            this.TxtMinLocalPort.TabIndex = 4;
-            this.TxtMinLocalPort.Text = "12345";
-            this.TxtMinLocalPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.TxtMinLocalPort.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
-            this.TxtMinLocalPort.WaterText = "端口号";
-            this.TxtMinLocalPort.WordWrap = true;
-            // 
-            // IpLocal
-            // 
-            this.IpLocal.BackColor = System.Drawing.Color.White;
-            this.IpLocal.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.IpLocal.Location = new System.Drawing.Point(307, 2);
-            this.IpLocal.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.IpLocal.Name = "IpLocal";
-            this.IpLocal.Size = new System.Drawing.Size(182, 32);
-            this.IpLocal.TabIndex = 3;
+            this.ChkEnabled.AutoSize = true;
+            this.ChkEnabled.BackColor = System.Drawing.Color.Transparent;
+            this.ChkEnabled.ControlState = CCWin.SkinClass.ControlState.Normal;
+            this.ChkEnabled.DownBack = null;
+            this.ChkEnabled.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.ChkEnabled.Location = new System.Drawing.Point(6, 7);
+            this.ChkEnabled.MouseBack = null;
+            this.ChkEnabled.Name = "ChkEnabled";
+            this.ChkEnabled.NormlBack = null;
+            this.ChkEnabled.SelectedDownBack = null;
+            this.ChkEnabled.SelectedMouseBack = null;
+            this.ChkEnabled.SelectedNormlBack = null;
+            this.ChkEnabled.Size = new System.Drawing.Size(51, 21);
+            this.ChkEnabled.TabIndex = 7;
+            this.ChkEnabled.Text = "启用";
+            this.ChkEnabled.UseVisualStyleBackColor = false;
+            this.ChkEnabled.CheckedChanged += new System.EventHandler(this.ChkEnabled_CheckedChanged);
             // 
             // TxtMaxLocalPort
             // 
@@ -179,6 +83,7 @@ namespace WLUtility.CustomControl
             this.TxtMaxLocalPort.Padding = new System.Windows.Forms.Padding(5);
             this.TxtMaxLocalPort.ReadOnly = false;
             this.TxtMaxLocalPort.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TxtMaxLocalPort.ShowErrorProvider = true;
             this.TxtMaxLocalPort.Size = new System.Drawing.Size(50, 28);
             // 
             // 
@@ -201,25 +106,123 @@ namespace WLUtility.CustomControl
             this.TxtMaxLocalPort.WaterText = "端口号";
             this.TxtMaxLocalPort.WordWrap = true;
             // 
-            // ChkEnabled
+            // TxtMinLocalPort
             // 
-            this.ChkEnabled.AutoSize = true;
-            this.ChkEnabled.BackColor = System.Drawing.Color.Transparent;
-            this.ChkEnabled.ControlState = CCWin.SkinClass.ControlState.Normal;
-            this.ChkEnabled.DownBack = null;
-            this.ChkEnabled.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.ChkEnabled.Location = new System.Drawing.Point(6, 7);
-            this.ChkEnabled.MouseBack = null;
-            this.ChkEnabled.Name = "ChkEnabled";
-            this.ChkEnabled.NormlBack = null;
-            this.ChkEnabled.SelectedDownBack = null;
-            this.ChkEnabled.SelectedMouseBack = null;
-            this.ChkEnabled.SelectedNormlBack = null;
-            this.ChkEnabled.Size = new System.Drawing.Size(51, 21);
-            this.ChkEnabled.TabIndex = 7;
-            this.ChkEnabled.Text = "启用";
-            this.ChkEnabled.UseVisualStyleBackColor = false;
-            this.ChkEnabled.CheckedChanged += new System.EventHandler(this.ChkEnabled_CheckedChanged);
+            this.TxtMinLocalPort.BackColor = System.Drawing.Color.Transparent;
+            this.TxtMinLocalPort.DecimalPlaces = 0;
+            this.TxtMinLocalPort.DownBack = null;
+            this.TxtMinLocalPort.Icon = null;
+            this.TxtMinLocalPort.IconIsButton = false;
+            this.TxtMinLocalPort.IconMouseState = CCWin.SkinClass.ControlState.Normal;
+            this.TxtMinLocalPort.IsPasswordChat = '\0';
+            this.TxtMinLocalPort.IsSystemPasswordChar = false;
+            this.TxtMinLocalPort.Lines = new string[] {
+        "12345"};
+            this.TxtMinLocalPort.Location = new System.Drawing.Point(487, 4);
+            this.TxtMinLocalPort.Margin = new System.Windows.Forms.Padding(0);
+            this.TxtMinLocalPort.MaxLength = 5;
+            this.TxtMinLocalPort.MaxValue = 65535;
+            this.TxtMinLocalPort.MinimumSize = new System.Drawing.Size(28, 28);
+            this.TxtMinLocalPort.MinValue = 1024;
+            this.TxtMinLocalPort.MouseBack = null;
+            this.TxtMinLocalPort.MouseState = CCWin.SkinClass.ControlState.Normal;
+            this.TxtMinLocalPort.Multiline = false;
+            this.TxtMinLocalPort.Name = "TxtMinLocalPort";
+            this.TxtMinLocalPort.NormlBack = null;
+            this.TxtMinLocalPort.Padding = new System.Windows.Forms.Padding(5);
+            this.TxtMinLocalPort.ReadOnly = false;
+            this.TxtMinLocalPort.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TxtMinLocalPort.ShowErrorProvider = true;
+            this.TxtMinLocalPort.Size = new System.Drawing.Size(50, 28);
+            // 
+            // 
+            // 
+            this.TxtMinLocalPort.SkinTxt.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TxtMinLocalPort.SkinTxt.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TxtMinLocalPort.SkinTxt.Font = new System.Drawing.Font("微软雅黑", 9.75F);
+            this.TxtMinLocalPort.SkinTxt.Location = new System.Drawing.Point(5, 5);
+            this.TxtMinLocalPort.SkinTxt.MaxLength = 5;
+            this.TxtMinLocalPort.SkinTxt.Name = "BaseText";
+            this.TxtMinLocalPort.SkinTxt.Size = new System.Drawing.Size(40, 18);
+            this.TxtMinLocalPort.SkinTxt.TabIndex = 0;
+            this.TxtMinLocalPort.SkinTxt.Text = "12345";
+            this.TxtMinLocalPort.SkinTxt.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
+            this.TxtMinLocalPort.SkinTxt.WaterText = "端口号";
+            this.TxtMinLocalPort.TabIndex = 4;
+            this.TxtMinLocalPort.Text = "12345";
+            this.TxtMinLocalPort.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.TxtMinLocalPort.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
+            this.TxtMinLocalPort.WaterText = "端口号";
+            this.TxtMinLocalPort.WordWrap = true;
+            // 
+            // IpLocal
+            // 
+            this.IpLocal.BackColor = System.Drawing.Color.White;
+            this.IpLocal.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.IpLocal.Location = new System.Drawing.Point(310, 2);
+            this.IpLocal.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.IpLocal.Name = "IpLocal";
+            this.IpLocal.Size = new System.Drawing.Size(160, 32);
+            this.IpLocal.TabIndex = 3;
+            // 
+            // TxtRemotePort
+            // 
+            this.TxtRemotePort.BackColor = System.Drawing.Color.Transparent;
+            this.TxtRemotePort.DecimalPlaces = 0;
+            this.TxtRemotePort.DownBack = null;
+            this.TxtRemotePort.Icon = null;
+            this.TxtRemotePort.IconIsButton = false;
+            this.TxtRemotePort.IconMouseState = CCWin.SkinClass.ControlState.Normal;
+            this.TxtRemotePort.IsPasswordChat = '\0';
+            this.TxtRemotePort.IsSystemPasswordChar = false;
+            this.TxtRemotePort.Lines = new string[] {
+        "12345"};
+            this.TxtRemotePort.Location = new System.Drawing.Point(234, 4);
+            this.TxtRemotePort.Margin = new System.Windows.Forms.Padding(0);
+            this.TxtRemotePort.MaxLength = 5;
+            this.TxtRemotePort.MaxValue = 65535;
+            this.TxtRemotePort.MinimumSize = new System.Drawing.Size(28, 28);
+            this.TxtRemotePort.MinValue = 1024;
+            this.TxtRemotePort.MouseBack = null;
+            this.TxtRemotePort.MouseState = CCWin.SkinClass.ControlState.Normal;
+            this.TxtRemotePort.Multiline = false;
+            this.TxtRemotePort.Name = "TxtRemotePort";
+            this.TxtRemotePort.NormlBack = null;
+            this.TxtRemotePort.Padding = new System.Windows.Forms.Padding(5);
+            this.TxtRemotePort.ReadOnly = false;
+            this.TxtRemotePort.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.TxtRemotePort.ShowErrorProvider = true;
+            this.TxtRemotePort.Size = new System.Drawing.Size(50, 28);
+            // 
+            // 
+            // 
+            this.TxtRemotePort.SkinTxt.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.TxtRemotePort.SkinTxt.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.TxtRemotePort.SkinTxt.Font = new System.Drawing.Font("微软雅黑", 9.75F);
+            this.TxtRemotePort.SkinTxt.Location = new System.Drawing.Point(5, 5);
+            this.TxtRemotePort.SkinTxt.MaxLength = 5;
+            this.TxtRemotePort.SkinTxt.Name = "BaseText";
+            this.TxtRemotePort.SkinTxt.Size = new System.Drawing.Size(40, 18);
+            this.TxtRemotePort.SkinTxt.TabIndex = 0;
+            this.TxtRemotePort.SkinTxt.Text = "12345";
+            this.TxtRemotePort.SkinTxt.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
+            this.TxtRemotePort.SkinTxt.WaterText = "端口号";
+            this.TxtRemotePort.TabIndex = 2;
+            this.TxtRemotePort.Text = "12345";
+            this.TxtRemotePort.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.TxtRemotePort.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
+            this.TxtRemotePort.WaterText = "端口号";
+            this.TxtRemotePort.WordWrap = true;
+            // 
+            // IpRemote
+            // 
+            this.IpRemote.BackColor = System.Drawing.Color.White;
+            this.IpRemote.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.IpRemote.Location = new System.Drawing.Point(57, 2);
+            this.IpRemote.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.IpRemote.Name = "IpRemote";
+            this.IpRemote.Size = new System.Drawing.Size(160, 32);
+            this.IpRemote.TabIndex = 1;
             // 
             // ProxyServerInfo
             // 
@@ -233,7 +236,7 @@ namespace WLUtility.CustomControl
             this.Controls.Add(this.IpRemote);
             this.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Name = "ProxyServerInfo";
-            this.Size = new System.Drawing.Size(616, 36);
+            this.Size = new System.Drawing.Size(623, 36);
             this.ResumeLayout(false);
             this.PerformLayout();
 

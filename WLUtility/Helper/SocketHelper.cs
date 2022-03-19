@@ -9,17 +9,17 @@ namespace WLUtility.Helper
 {
     internal static class SocketHelper
     {
-        internal const int SINGLE_SEND_MAX_LENGTH = 1024;
+        public const int SINGLE_SEND_MAX_LENGTH = 1024;
 
-        internal static byte[] LastPacket;
-
-        internal class SocketPair
+        public class SocketPair
         {
             public readonly Socket LocalSocket;
             public readonly Socket RemoteSocket;
             public bool IsReceived;
             public readonly object ObjLocker;
             public readonly List<byte> ListBuffer;
+
+            public byte[] LastPacket;
 
             public SocketPair(Socket localSocket, Socket remoteSocket)
             {
@@ -54,8 +54,8 @@ namespace WLUtility.Helper
                     lock (socketPair.ListBuffer)
                     {
                         var currentLen = Math.Min(SINGLE_SEND_MAX_LENGTH, len);
-                        LastPacket = socketPair.ListBuffer.Take(currentLen).ToArray();
-                        socketPair.LocalSocket.Send(LastPacket);
+                        socketPair.LastPacket = socketPair.ListBuffer.Take(currentLen).ToArray();
+                        socketPair.LocalSocket.Send(socketPair.LastPacket);
                         socketPair.ListBuffer.RemoveRange(0, currentLen);
                         len -= currentLen;
                     }
@@ -72,8 +72,8 @@ namespace WLUtility.Helper
         public static bool PortInUse(int port)
         {
             var ipProperties = IPGlobalProperties.GetIPGlobalProperties();
-            
-            return ipProperties.GetActiveTcpListeners().Any(endPoint => endPoint.Port == port) || 
+
+            return ipProperties.GetActiveTcpListeners().Any(endPoint => endPoint.Port == port) ||
                    ipProperties.GetActiveUdpListeners().Any(endPoint => endPoint.Port == port);
         }
     }

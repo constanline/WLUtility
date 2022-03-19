@@ -71,9 +71,6 @@
     <Reference Include="CSkin">
       <HintPath>..\Lib\CSkin.dll</HintPath>
     </Reference>
-    <Reference Include="Magician.Common">
-      <HintPath>..\Lib\Magician.Common.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -164,6 +161,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Magician.Common\Magician.Common.csproj">
+      <Project>{6aa79a04-291c-4f94-87fa-a9181294f4a1}</Project>
+      <Name>Magician.Common</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

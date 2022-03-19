@@ -15,7 +15,11 @@ namespace WLUtility.CustomControl
 
             ChangeEnabled(pm.IsEnabled == 1);
             TxtRemotePort.Text = pm.RemotePort.ToString();
+            IpRemote.SetIp(pm.RemoteIp);
 
+            TxtMinLocalPort.Text = pm.LocalPort.ToString();
+            TxtMaxLocalPort.Text = pm.LocalPort.ToString();
+            IpLocal.SetIp(pm.LocalIp);
 
             _pm = pm;
             IpRemote.TextChanged += IpRemote_TextChanged;
@@ -26,6 +30,11 @@ namespace WLUtility.CustomControl
             TxtMaxLocalPort.TextChanged += TxtLocalPort_TextChanged;
         }
 
+        public ProxyMapping GetProxyMapping()
+        {
+            return _pm;
+        }
+
         private void TxtRemotePort_TextChanged(object sender, EventArgs e)
         {
             _pm.RemotePort = Convert.ToUInt16(TxtRemotePort.Value);
@@ -33,12 +42,12 @@ namespace WLUtility.CustomControl
 
         private void IpLocal_TextChanged(object sender, EventArgs e)
         {
-            _pm.LocalIp = StrToChar16(IpLocal.GetIpAddress());
+            _pm.LocalIp = StrToChar16(IpLocal.GetIp());
         }
 
         private void IpRemote_TextChanged(object sender, EventArgs e)
         {
-            _pm.RemoteIp = StrToChar16(IpRemote.GetIpAddress());
+            _pm.RemoteIp = StrToChar16(IpRemote.GetIp());
         }
 
         private void TxtLocalPort_TextChanged(object sender, EventArgs e)

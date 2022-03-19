@@ -21,7 +21,7 @@ namespace WLUtility.Engine
         private static readonly Thread[] ArrThreadForward = new Thread[MAX_SOCKET_SERVER_COUNT];
         private static readonly Dictionary<int, SocketPair> DicSocketPairs = new Dictionary<int, SocketPair>();
 
-        private readonly byte _xorByte = 0x05;
+        private static readonly byte _xorByte = 0x00;
 
         private int _numSocket;
 
@@ -37,7 +37,7 @@ namespace WLUtility.Engine
         private static void InitProxyMapping()
         {
             var flag =
-                ArrProxyMapping[0].SetValue("47.100.107.72", 6414, "127.0.0.1", 5001, 6000) &&
+                ArrProxyMapping[0].SetValue("47.100.107.72", 6414, "127.0.0.1", 5002, 6000) &&
                 ArrProxyMapping[1].SetValue("47.102.211.215", 6414, "127.0.0.1", 6001, 7000) &&
                 ArrProxyMapping[2].SetValue("47.100.116.187", 6414, "127.0.0.1", 7001, 8000);
             if (!flag)
@@ -46,7 +46,7 @@ namespace WLUtility.Engine
             }
         }
 
-        private byte[] XorByte(IEnumerable<byte> buffer, int len)
+        private static byte[] XorByte(IEnumerable<byte> buffer, int len)
         {
             var result = buffer.Take(len).ToArray();
             if (_xorByte == 0) return result;
@@ -80,7 +80,7 @@ namespace WLUtility.Engine
 
         private void SendHandler(object obj)
         {
-            var socketId = (int) obj;
+            var socketId = (int)obj;
             while (IsRunning && !DicSocketPairs.ContainsKey(socketId)) Thread.Sleep(50);
             if (!IsRunning) return;
             var socketPair = DicSocketPairs[socketId];
@@ -105,7 +105,7 @@ namespace WLUtility.Engine
 
         private void ReceiveHandler(object obj)
         {
-            var socketId = (int) obj;
+            var socketId = (int)obj;
             while (IsRunning && !DicSocketPairs.ContainsKey(socketId)) Thread.Sleep(50);
             if (!IsRunning) return;
             var socketPair = DicSocketPairs[socketId];
@@ -130,16 +130,16 @@ namespace WLUtility.Engine
 
         private void SocketForward(object obj)
         {
-            var idx = (int) obj;
-            var pm = ArrProxyMapping[idx];
-
-            ArrSocketServer[idx] = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-            ArrSocketServer[idx].SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
-
-            ArrSocketServer[idx].Bind(pm.GetLocalEndPoint());
-            ArrSocketServer[idx].Listen(int.MaxValue);
             try
             {
+                var idx = (int)obj;
+                var pm = ArrProxyMapping[idx];
+
+                ArrSocketServer[idx] = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                ArrSocketServer[idx].SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, true);
+
+                ArrSocketServer[idx].Bind(pm.GetLocalEndPoint());
+                ArrSocketServer[idx].Listen(int.MaxValue);
                 while (IsRunning)
                 {
                     var curNum = Interlocked.Increment(ref _numSocket);

@@ -12,15 +12,15 @@ namespace WLUtility
     public partial class FrmMain : MagicianForm
     {
         uint _processId;
-        readonly SocketEngine _socketHelper;
+        readonly SocketEngine _socketEngine;
 
 
         public FrmMain()
         {
             InitializeComponent();
 
-            _socketHelper = new SocketEngine();
-            _socketHelper.CbException += HandleException;
+            _socketEngine = new SocketEngine();
+            _socketEngine.CbException += HandleException;
 
             PacketAnalyzer.InitRules();
             LogHelper.CbRecordPacket += LogPacket;
@@ -46,12 +46,12 @@ namespace WLUtility
 
         private void FrmMain_FormClosed(object sender, FormClosedEventArgs e)
         {
-            _socketHelper.StopForward();
+            _socketEngine.StopForward();
         }
 
         private void btnInject_Click(object sender, EventArgs e)
         {
-            if (_socketHelper.IsRunning)
+            if (_socketEngine.IsRunning)
             {
                 LogHelper.Log(GetLanguageString("IsRunning"));
                 return;
@@ -73,7 +73,7 @@ namespace WLUtility
                 {
                     btnInject.Enabled = false;
                     btnUnInject.Enabled = true;
-                    _socketHelper.StartForward();
+                    _socketEngine.StartForward();
                     LogHelper.Log(GetLanguageString("InjectSuccess"));
                 }
             }
@@ -87,7 +87,7 @@ namespace WLUtility
             }
             btnInject.Enabled = true;
             btnUnInject.Enabled = false;
-            _socketHelper.StopForward();
+            _socketEngine.StopForward();
         }
 
         private void tsmiSimplifiedChinese_Click(object sender, EventArgs e)
