@@ -83,14 +83,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\BaseSocket.cs" />
+    <Compile Include="Core\ProxySocket.cs" />
+    <Compile Include="CustomControl\BagItemBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControl\BagItemBox.Designer.cs">
+      <DependentUpon>BagItemBox.cs</DependentUpon>
+    </Compile>
     <Compile Include="CustomControl\ProxyServerInfo.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="CustomControl\ProxyServerInfo.Designer.cs">
       <DependentUpon>ProxyServerInfo.cs</DependentUpon>
     </Compile>
-    <Compile Include="Data\PacketAnalyzer.cs" />
-    <Compile Include="Data\Rule.cs" />
+    <Compile Include="Core\Rule.cs" />
     <Compile Include="FrmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -103,6 +110,9 @@
     <Compile Include="FrmProxySetting.Designer.cs">
       <DependentUpon>FrmProxySetting.cs</DependentUpon>
     </Compile>
+    <Compile Include="Core\GameSocket.cs" />
+    <Compile Include="GlobalSetting.cs" />
+    <Compile Include="Helper\ByteUtil.cs" />
     <Compile Include="Helper\DllHelper.cs" />
     <Compile Include="Helper\InjectHelper.cs" />
     <Compile Include="FrmMain.cs">
@@ -112,11 +122,15 @@
       <DependentUpon>FrmMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Helper\LogHelper.cs" />
+    <Compile Include="Helper\PluginHelper.cs" />
     <Compile Include="Helper\SocketHelper.cs" />
     <Compile Include="Helper\StringHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Engine\SocketEngine.cs" />
+    <EmbeddedResource Include="CustomControl\BagItemBox.resx">
+      <DependentUpon>BagItemBox.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="CustomControl\ProxyServerInfo.resx">
       <DependentUpon>ProxyServerInfo.cs</DependentUpon>
     </EmbeddedResource>

@@ -3,7 +3,7 @@
     /// <summary>
     /// IPlugin 插件接口 
     /// </summary>
-    public interface IPlugin
+    public interface IPlugin<in inT>
     {
         /// <summary>
         /// OnLoading 生命周期回调，当插件加载完毕被调用。可以从PluginUtil获取主应用传递的参数来初始化插件
@@ -16,6 +16,20 @@
         void BeforeTerminating();
 
         /// <summary>
+        /// 入口
+        /// </summary>
+        /// <param name="inT">入参</param>
+        /// <returns></returns>
+        void Enrty(inT inT);
+
+        /// <summary>
+        /// 是否支持
+        /// </summary>
+        /// <param name="inT">入参</param>
+        /// <returns></returns>
+        bool IsSupport(inT inT);
+
+        /// <summary>
         /// Enabled 插件是否启用
         /// </summary>
         bool Enabled { get; set; }
@@ -23,7 +37,7 @@
         /// <summary>
         /// PluginKey 插件关键字，不同的插件其Key是不一样的
         /// </summary>
-        int PluginKey { get; }
+        string PluginKey { get; }
 
         /// <summary>
         /// ServiceName 插件提供的服务的名字	

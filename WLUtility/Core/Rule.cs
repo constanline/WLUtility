@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace WLUtility.Data
+namespace WLUtility.Core
 {
     internal class Rule
     {

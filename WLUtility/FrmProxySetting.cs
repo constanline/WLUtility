@@ -13,6 +13,10 @@ namespace WLUtility
 
             foreach (var pm in SocketEngine.ArrProxyMapping)
             {
+                if(pm == null)
+                {
+                    continue;
+                }
                 var info = new ProxyServerInfo(pm) {Dock = DockStyle.Top};
                 PnlInfo.Controls.Add(info);
             }

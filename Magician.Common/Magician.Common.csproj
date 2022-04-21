@@ -61,6 +61,7 @@
     <Compile Include="Collections\SafeDictionary.cs" />
     <Compile Include="Collections\SortedArray.cs" />
     <Compile Include="Core\ByteConverter.cs" />
+    <Compile Include="Util\TraceUtil.cs" />
     <Compile Include="CustomControl\IpBox.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -220,6 +221,7 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>copy $(TargetDir)$(TargetFileName) $(SolutionDir)Lib</PostBuildEvent>

@@ -7,12 +7,16 @@ namespace WLUtility.Helper
     {
         public static Action<string> CbLog;
         public static Action<string> CbRecordPacket;
-        
+
 
         public static void Log(string msg)
         {
             MessageBox.Show(msg);
             CbLog?.Invoke(msg);
+        }
+        public static void Log(Exception e)
+        {
+            Log(e.Message);
         }
 
         public static void LogPacket(byte[] buffer, bool isSend)

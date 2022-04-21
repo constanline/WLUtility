@@ -3,16 +3,16 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using Magician.Common.Core;
 using Magician.Common.CustomControl;
-using WLUtility.Data;
+using WLUtility.Core;
 using WLUtility.Engine;
 using WLUtility.Helper;
 
 namespace WLUtility
 {
-    public partial class FrmMain : MagicianForm
+    internal partial class FrmMain : MagicianForm
     {
-        uint _processId;
-        readonly SocketEngine _socketEngine;
+        private uint _processId;
+        private readonly SocketEngine _socketEngine;
 
 
         public FrmMain()
@@ -22,7 +22,7 @@ namespace WLUtility
             _socketEngine = new SocketEngine();
             _socketEngine.CbException += HandleException;
 
-            PacketAnalyzer.InitRules();
+            ProxySocket.InitRules();
             LogHelper.CbRecordPacket += LogPacket;
             //ThreadPool.SetMaxThreads(MAX_SOCKET_SERVER_COUNT, MAX_SOCKET_SERVER_COUNT * 3);
         }
@@ -39,9 +39,22 @@ namespace WLUtility
             }
         }
 
+        private void LogInfo(string msg)
+        {
+            if (IsDisposed) return;
+            if (InvokeRequired)
+            {
+                Invoke(new Action<string>(LogInfo), msg);
+            }
+            else
+            {
+                rtxtLog.AppendText(msg);
+            }
+        }
+
         private void HandleException(Exception ex)
         {
-            MessageBox.Show(ex.ToString());
+            LogInfo(ex.ToString());
         }
 
         private void FrmMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -58,7 +71,7 @@ namespace WLUtility
             }
 
 
-            Process[] processes = Process.GetProcessesByName("nwlvipcn");
+            Process[] processes = Process.GetProcessesByName("wlmfree");
             if (processes.Length == 0)
             {
                 processes = Process.GetProcessesByName("wlviptw");
@@ -122,7 +135,7 @@ namespace WLUtility
 
         private void chkRecordPacket_CheckedChanged(object sender, EventArgs e)
         {
-            SocketEngine.RecordPacket = chkRecordPacket.Checked;
+            GlobalSetting.RecordPacket = chkRecordPacket.Checked;
         }
     }
 }

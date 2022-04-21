@@ -7,30 +7,31 @@ namespace WLUtility.CustomControl
 {
     internal partial class ProxyServerInfo : UserControl
     {
-        private ProxyMapping _pm;
+        private ProxyMappingInfo _pm;
 
-        public ProxyServerInfo(ProxyMapping pm)
+        public ProxyServerInfo(ProxyMappingInfo pm)
         {
             InitializeComponent();
+            _pm = pm;
 
-            ChangeEnabled(pm.IsEnabled == 1);
             TxtRemotePort.Text = pm.RemotePort.ToString();
             IpRemote.SetIp(pm.RemoteIp);
 
-            TxtMinLocalPort.Text = pm.LocalPort.ToString();
-            TxtMaxLocalPort.Text = pm.LocalPort.ToString();
+            TxtMinLocalPort.Text = pm.LocalMinPort.ToString();
+            TxtMaxLocalPort.Text = pm.LocalMaxPort.ToString();
             IpLocal.SetIp(pm.LocalIp);
 
-            _pm = pm;
             IpRemote.TextChanged += IpRemote_TextChanged;
             IpLocal.TextChanged += IpLocal_TextChanged;
 
             TxtRemotePort.TextChanged += TxtRemotePort_TextChanged;
             TxtMinLocalPort.TextChanged += TxtLocalPort_TextChanged;
             TxtMaxLocalPort.TextChanged += TxtLocalPort_TextChanged;
+
+            ChkEnabled.Checked = pm.IsEnabled;
         }
 
-        public ProxyMapping GetProxyMapping()
+        public ProxyMappingInfo GetProxyMappingInfo()
         {
             return _pm;
         }
@@ -42,12 +43,12 @@ namespace WLUtility.CustomControl
 
         private void IpLocal_TextChanged(object sender, EventArgs e)
         {
-            _pm.LocalIp = StrToChar16(IpLocal.GetIp());
+            _pm.LocalIp = IpLocal.GetIp();
         }
 
         private void IpRemote_TextChanged(object sender, EventArgs e)
         {
-            _pm.RemoteIp = StrToChar16(IpRemote.GetIp());
+            _pm.RemoteIp = IpRemote.GetIp();
         }
 
         private void TxtLocalPort_TextChanged(object sender, EventArgs e)
@@ -58,7 +59,7 @@ namespace WLUtility.CustomControl
             {
                 if (SocketHelper.PortInUse(i)) continue;
 
-                _pm.IsEnabled = 1;
+                _pm.IsEnabled = true;
                 _pm.LocalPort = i;
                 break;
             }
@@ -76,7 +77,7 @@ namespace WLUtility.CustomControl
 
         private void ChangeEnabled(bool isEnabled)
         {
-            _pm.IsEnabled = isEnabled ? 1 : 0;
+            _pm.IsEnabled = isEnabled;
 
             IpRemote.Enabled = isEnabled;
             IpLocal.Enabled = isEnabled;

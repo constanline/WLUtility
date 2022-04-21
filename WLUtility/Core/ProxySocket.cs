@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
+using System.Threading;
+using WLUtility.Engine;
 using WLUtility.Helper;
 
-namespace WLUtility.Data
+namespace WLUtility.Core
 {
-    internal static class PacketAnalyzer
+    internal class ProxySocket : BaseSocket
     {
-        internal static readonly byte XOR_BYTE = 0xA8;
-        internal static readonly byte[] HEAD_BYTE = { 0x15, 0x6E };
+        public readonly Socket LocalSocket;
+
+        public readonly Socket RemoteSocket;
 
         private static Dictionary<byte, Dictionary<byte, Rule>> _dicRules;
+
+        private static readonly byte _xorByte = 0x00;
 
         private static void AddRule(byte typeA, byte typeB, Rule rule)
         {
@@ -30,28 +36,28 @@ namespace WLUtility.Data
             AddRule(1, 31, skipRule);
             AddRule(1, 32, skipRule);
 
-            //在线人员信息？记不清了
-            AddRule(4, 0, Rule.BuildRemoveRule(-1, 3));
+            ////在线人员信息？记不清了
+            //AddRule(4, 0, Rule.BuildRemoveRule(-1, 3));
 
-            //战斗
-            var children = new List<Rule>(2);
-            var rule = Rule.BuildRemoveRule(41);
-            children.Add(rule);
-            rule = Rule.BuildRemoveRule(6, 1);
-            children.Add(rule);
-            AddRule(11, 5, Rule.BuildParentRule(children));
+            ////战斗
+            //var children = new List<Rule>(2);
+            //var rule = Rule.BuildRemoveRule(41);
+            //children.Add(rule);
+            //rule = Rule.BuildRemoveRule(6, 1);
+            //children.Add(rule);
+            //AddRule(11, 5, Rule.BuildParentRule(children));
 
-            //战斗队友
-            children = new List<Rule>();
-            rule = Rule.BuildRemoveRule(30, 27, 30, new List<int> { 44 });
-            children.Add(rule);
-            rule = Rule.BuildLoopRule(children, 9, 8);
-            children = new List<Rule> { rule, Rule.BuildRemoveRule(8, 1) };
-            AddRule(11, 250, Rule.BuildParentRule(children));
+            ////战斗队友
+            //children = new List<Rule>();
+            //rule = Rule.BuildRemoveRule(30, 27, 30, new List<int> { 44 });
+            //children.Add(rule);
+            //rule = Rule.BuildLoopRule(children, 9, 8);
+            //children = new List<Rule> { rule, Rule.BuildRemoveRule(8, 1) };
+            //AddRule(11, 250, Rule.BuildParentRule(children));
 
-            //好友
-            children = new List<Rule> { Rule.BuildRemoveRule(25, 1, 25, new List<int> { 4, 19, 20, 25 }) };
-            AddRule(14, 5, Rule.BuildLoopRule(children, 6));
+            ////好友
+            //children = new List<Rule> { Rule.BuildRemoveRule(25, 1, 25, new List<int> { 4, 19, 20, 25 }) };
+            //AddRule(14, 5, Rule.BuildLoopRule(children, 6));
 
 
             // 4.09不再需要
@@ -194,72 +200,145 @@ namespace WLUtility.Data
             }
         }
 
-        internal static void AnalyzePacket(IEnumerable<byte> data, SocketHelper.SocketPair socketPair)
+        private static byte[] XorByte(IEnumerable<byte> buffer, int len = 0)
         {
-            while (true)
+            var bytes = buffer as byte[] ?? buffer.ToArray();
+            if (len == 0)
             {
-                var isFull = false;
-                lock (socketPair.ObjLocker)
+                len = bytes.Count();
+            }
+            var result = bytes.Take(len).ToArray();
+            if (_xorByte == 0) return result;
+            for (var i = 0; i < len; i++)
+                result[i] ^= _xorByte;
+            return result;
+        }
+
+        public ProxySocket(Socket localSocket, Socket remoteSocket)
+        {
+            LocalSocket = localSocket;
+            RemoteSocket = remoteSocket;
+
+            ThreadPool.QueueUserWorkItem(e =>
+            {
+                while (Connected)
                 {
-                    if (data != null) socketPair.ListBuffer.AddRange(data);
-
-                    var totalLen = socketPair.ListBuffer.LongCount();
-                    if (totalLen >= 5)
+                    // if (!_isReceive)
+                    // {
+                    //     Thread.Sleep(50);
+                    //     continue;
+                    // }
+                    try
                     {
-                        if (socketPair.ListBuffer[0] == HEAD_BYTE[0] && socketPair.ListBuffer[1] == HEAD_BYTE[1])
+                        var data = new byte[1024];
+                        var read = LocalSocket.Receive(data);
+                        if (read > 0)
+                            SendPacket(XorByte(data, read));
+                        else
+                            break;
+                    }
+                    catch (Exception)
+                    {
+                        break;
+                    }
+                }
+
+                SocketEngine.StopSocket(SocketId);
+            });
+            ThreadPool.QueueUserWorkItem(e =>
+            {
+                while (Connected)
+                {
+                    try
+                    {
+                        var data = new byte[1024];
+                        var read = RemoteSocket.Receive(data);
+                        if (read > 0)
                         {
-                            var len = (socketPair.ListBuffer[2] ^ XOR_BYTE) + (socketPair.ListBuffer[3] ^ XOR_BYTE) * 0x100 + 4;
-                            if (totalLen >= len)
+                            if (read < data.Length)
                             {
-                                var isSkip = false;
-                                isFull = true;
-                                if (len >= 5)
-                                {
-                                    var typeA = (byte)(socketPair.ListBuffer[4] ^ XOR_BYTE);
-                                    byte typeB;
-                                    if (len > 5)
-                                        typeB = (byte)(socketPair.ListBuffer[5] ^ XOR_BYTE);
-                                    else
-                                        typeB = 0;
-
-                                    var offset = 0;
-
-                                    if (_dicRules.ContainsKey(typeA))
-                                    {
-                                        if (_dicRules[typeA].ContainsKey(0))
-                                        {
-                                            HandleRule(_dicRules[typeA][0], socketPair.ListBuffer, ref len, ref isSkip, ref offset);
-                                        }
-                                        else if (_dicRules[typeA].ContainsKey(typeB))
-                                        {
-                                            HandleRule(_dicRules[typeA][typeB], socketPair.ListBuffer, ref len, ref isSkip, ref offset);
-                                        }
-                                    }
-
-
-                                    var byteLen = BitConverter.GetBytes((short)(len - 4));
-                                    socketPair.ListBuffer[2] = (byte)(byteLen[0] ^ XOR_BYTE);
-                                    socketPair.ListBuffer[3] = (byte)(byteLen[1] ^ XOR_BYTE);
-                                }
-
-                                // while (len > 0) len -= RecvPacket(socketPair, len, isSkip);
-                                SocketHelper.RecvPacket(socketPair, len, isSkip);
+                                var tmp = new byte[read];
+                                Array.Copy(data, tmp, tmp.Length);
+                                ReceivePacket(tmp);
+                            }
+                            else
+                            {
+                                ReceivePacket(data);
                             }
                         }
                         else
                         {
-                            Console.WriteLine(BitConverter.ToString(socketPair.LastPacket, 0).Replace("-", string.Empty).ToLower());
+                            break;
                         }
+                    }
+                    catch (Exception)
+                    {
+                        break;
                     }
                 }
 
-                if (isFull)
-                {
-                    data = null;
-                    continue;
-                }
+                SocketEngine.StopSocket(SocketId);
+            });
+        }
 
-                break;
+        public int SendPacket(byte[] buffer)
+        {
+            if (GlobalSetting.RecordPacket)
+            {
+                LogHelper.LogPacket(buffer, true);
+            }
+            return RemoteSocket.Send(buffer);
+        }
+
+        public override bool Connected => LocalSocket.Connected && RemoteSocket.Connected;
+
+        protected override void RevMessage(int len)
+        {
+            base.RevMessage(len);
+
+            var packet = LastPacket.ToList();
+
+            var isSkip = false;
+            var aType = (byte)(packet[4] ^ XOR_BYTE);
+
+            byte bType;
+            if (len > 5)
+                bType = (byte)(packet[5] ^ XOR_BYTE);
+            else
+                bType = 0;
+
+            var offset = 0;
+
+            if (_dicRules.ContainsKey(aType))
+            {
+                if (_dicRules[aType].ContainsKey(0))
+                {
+                    HandleRule(_dicRules[aType][0], packet, ref len, ref isSkip, ref offset);
+                }
+                else if (_dicRules[aType].ContainsKey(bType))
+                {
+                    HandleRule(_dicRules[aType][bType], packet, ref len, ref isSkip, ref offset);
+                }
+            }
+
+            if (!isSkip)
+            {
+                LocalSocket.Send(XorByte(packet));
+            }
+        }
+
+        public override void Close()
+        {
+            if (LocalSocket.Connected)
+            {
+                LocalSocket.Close();
+                LocalSocket.Dispose();
+            }
+
+            if (RemoteSocket.Connected)
+            {
+                RemoteSocket.Close();
+                RemoteSocket.Dispose();
             }
         }
     }

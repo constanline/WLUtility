@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Magician.Common.Core;
 using Magician.Common.Util;
 
 namespace Magician.Common.Plugin
@@ -10,16 +9,16 @@ namespace Magician.Common.Plugin
     /// <summary>
     ///     PluginManager 用于管理所有的插件。
     /// </summary>
-    public class PluginManager
+    public class PluginManager<inT>
     {
-        private readonly IDictionary<int, IPlugin> _dicPlugins = new Dictionary<int, IPlugin>();
+        private readonly IDictionary<string, IPlugin<inT>> _dicPlugins = new Dictionary<string, IPlugin<inT>>();
 
         public PluginManager()
         {
             PluginsChanged += delegate { };
         }
 
-        public IList<IPlugin> PluginList => _dicPlugins.Values.ToList();
+        public IList<IPlugin<inT>> PluginList => _dicPlugins.Values.ToList();
 
         public bool CopyToMemory { get; set; } = false;
 
@@ -27,11 +26,11 @@ namespace Magician.Common.Plugin
 
         public void LoadAllPlugins(string pluginFolderPath, bool searchChildFolder)
         {
-            var list = ReflectionUtil.LoadDerivedType(typeof(IPlugin), pluginFolderPath, searchChildFolder,
+            var list = ReflectionUtil.LoadDerivedType(typeof(IPlugin<inT>), pluginFolderPath, searchChildFolder,
                 CopyToMemory);
             foreach (var type in list)
             {
-                var plugin = (IPlugin) Activator.CreateInstance(type);
+                var plugin = (IPlugin<inT>) Activator.CreateInstance(type);
                 _dicPlugins.Add(plugin.PluginKey, plugin);
                 plugin.OnLoading();
             }
@@ -58,7 +57,7 @@ namespace Magician.Common.Plugin
                 asm = Assembly.LoadFrom(assemblyPath);
             }
 
-            var list = ReflectionUtil.LoadDerivedInstance<IPlugin>(asm);
+            var list = ReflectionUtil.LoadDerivedInstance<IPlugin<inT>>(asm);
             foreach (var plugin in list)
             {
                 _dicPlugins.Add(plugin.PluginKey, plugin);
@@ -84,7 +83,7 @@ namespace Magician.Common.Plugin
             PluginsChanged?.Invoke();
         }
 
-        public void DynRemovePlugin(int pluginKey)
+        public void DynRemovePlugin(string pluginKey)
         {
             var plugin = GetPlugin(pluginKey);
             if (plugin == null) return;
@@ -93,24 +92,24 @@ namespace Magician.Common.Plugin
             PluginsChanged?.Invoke();
         }
 
-        private bool ContainsPlugin(int pluginKey)
+        private bool ContainsPlugin(string pluginKey)
         {
             return _dicPlugins.ContainsKey(pluginKey);
         }
 
-        public IPlugin GetPlugin(int pluginKey)
+        public IPlugin<inT> GetPlugin(string pluginKey)
         {
             var result = ContainsPlugin(pluginKey) ? null : _dicPlugins[pluginKey];
             return result;
         }
 
-        public void EnablePlugin(int pluginKey)
+        public void EnablePlugin(string pluginKey)
         {
             var plugin = GetPlugin(pluginKey);
             if (plugin != null) plugin.Enabled = true;
         }
 
-        public void DisablePlugin(int pluginKey)
+        public void DisablePlugin(string pluginKey)
         {
             var plugin = GetPlugin(pluginKey);
             if (plugin != null) plugin.Enabled = false;

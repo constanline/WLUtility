@@ -31,34 +31,68 @@ namespace WLUtility.Helper
             public ushort LocalPort;
 
             public int IsEnabled;
+        }
 
-            public void Enable()
+        public class ProxyMappingInfo
+        {
+            ProxyMapping _proxyMapping;
+
+            public ushort LocalMinPort { get; set; }
+
+            public ushort LocalMaxPort { get; set; }
+
+            public ProxyMapping GetProxyMapping()
             {
-                IsEnabled = 1;
+                return _proxyMapping;
             }
 
-            public void Disable()
+            public string RemoteIp
             {
-                IsEnabled = 0;
+                get => new string(_proxyMapping.RemoteIp).Trim('\0');
+                set => _proxyMapping.RemoteIp = StrToChar16(value);
             }
 
-            public bool SetValue(string remoteIp, ushort remotePort, string localIp, ushort localMinPort, ushort localMaxPort)
+            public ushort RemotePort
             {
-                RemoteIp = StrToChar16(remoteIp);
-                RemotePort = remotePort;
+                get => _proxyMapping.RemotePort;
+                set => _proxyMapping.RemotePort = value;
+            }
 
-                LocalIp = StrToChar16(localIp);
+            public string LocalIp
+            {
+                get => new string(_proxyMapping.LocalIp).Trim('\0');
+                set => _proxyMapping.LocalIp = StrToChar16(value);
+            }
 
+            public ushort LocalPort
+            {
+                get => _proxyMapping.LocalPort;
+                set => _proxyMapping.LocalPort = value;
+            }
+
+            public bool IsEnabled
+            {
+                get => _proxyMapping.IsEnabled == 1;
+                set => _proxyMapping.IsEnabled = value ? 1 : 0;
+            }
+
+            public ProxyMappingInfo(string remoteIp, ushort remotePort, string localIp, ushort localMinPort, ushort localMaxPort)
+            {
+                _proxyMapping.RemoteIp = StrToChar16(remoteIp);
+                _proxyMapping.RemotePort = remotePort;
+
+                _proxyMapping.LocalIp = StrToChar16(localIp);
+
+                LocalMinPort = localMinPort;
+                LocalMaxPort = localMaxPort;
                 for (var i = localMinPort; i <= localMaxPort; i++)
                 {
                     if (SocketHelper.PortInUse(i)) continue;
 
-                    IsEnabled = 1;
-                    LocalPort = i;
+                    _proxyMapping.IsEnabled = 1;
+                    _proxyMapping.LocalPort = i;
                     break;
                 }
-
-                return LocalPort != 0;
             }
 
             public IPEndPoint GetLocalEndPoint()
@@ -70,7 +104,7 @@ namespace WLUtility.Helper
 
             public IPEndPoint GetRemoteEndPoint()
             {
-                return new IPEndPoint(IPAddress.Parse(new string(RemoteIp).TrimEnd('\0')), RemotePort);
+                return new IPEndPoint(IPAddress.Parse(RemoteIp), RemotePort);
             }
         }
 

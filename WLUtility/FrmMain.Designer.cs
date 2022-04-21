@@ -50,11 +50,17 @@ namespace WLUtility
             this.rtxtPacket = new CCWin.SkinControl.RtfRichTextBox();
             this.skinPanel1 = new CCWin.SkinControl.SkinPanel();
             this.chkRecordPacket = new CCWin.SkinControl.SkinCheckBox();
+            this.skinTabPage3 = new CCWin.SkinControl.SkinTabPage();
+            this.rtxtLog = new CCWin.SkinControl.RtfRichTextBox();
+            this.skinTabPage4 = new CCWin.SkinControl.SkinTabPage();
+            this.bagThings1 = new WLUtility.CustomControl.BagItemBox();
             this.skinMenuStrip1.SuspendLayout();
             this.skinTabControl1.SuspendLayout();
             this.skinTabPage1.SuspendLayout();
             this.skinTabPage2.SuspendLayout();
             this.skinPanel1.SuspendLayout();
+            this.skinTabPage3.SuspendLayout();
+            this.skinTabPage4.SuspendLayout();
             this.SuspendLayout();
             // 
             // btnInject
@@ -148,7 +154,7 @@ namespace WLUtility
             this.tsmiSetting.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiProxySetting});
             this.tsmiSetting.Name = "tsmiSetting";
-            this.tsmiSetting.Size = new System.Drawing.Size(180, 22);
+            this.tsmiSetting.Size = new System.Drawing.Size(115, 22);
             this.tsmiSetting.Text = "设置(&S)";
             // 
             // tsmiProxySetting
@@ -165,7 +171,7 @@ namespace WLUtility
             this.tsmiTraditionalChinese,
             this.tsmiEnglish});
             this.tsmiLanguage.Name = "tsmiLanguage";
-            this.tsmiLanguage.Size = new System.Drawing.Size(180, 22);
+            this.tsmiLanguage.Size = new System.Drawing.Size(115, 22);
             this.tsmiLanguage.Text = "语言(&L)";
             // 
             // tsmiSimplifiedChinese
@@ -218,6 +224,8 @@ namespace WLUtility
             this.skinTabControl1.CloseRect = new System.Drawing.Rectangle(2, 2, 12, 12);
             this.skinTabControl1.Controls.Add(this.skinTabPage1);
             this.skinTabControl1.Controls.Add(this.skinTabPage2);
+            this.skinTabControl1.Controls.Add(this.skinTabPage3);
+            this.skinTabControl1.Controls.Add(this.skinTabPage4);
             this.skinTabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.skinTabControl1.HeadBack = null;
             this.skinTabControl1.ImgTxtOffset = new System.Drawing.Point(0, 0);
@@ -232,7 +240,7 @@ namespace WLUtility
             this.skinTabControl1.PageHover = ((System.Drawing.Image)(resources.GetObject("skinTabControl1.PageHover")));
             this.skinTabControl1.PageImagePosition = CCWin.SkinControl.SkinTabControl.ePageImagePosition.Left;
             this.skinTabControl1.PageNorml = null;
-            this.skinTabControl1.SelectedIndex = 1;
+            this.skinTabControl1.SelectedIndex = 3;
             this.skinTabControl1.Size = new System.Drawing.Size(588, 389);
             this.skinTabControl1.SizeMode = System.Windows.Forms.TabSizeMode.Fixed;
             this.skinTabControl1.TabIndex = 3;
@@ -308,6 +316,53 @@ namespace WLUtility
             this.chkRecordPacket.UseVisualStyleBackColor = false;
             this.chkRecordPacket.CheckedChanged += new System.EventHandler(this.chkRecordPacket_CheckedChanged);
             // 
+            // skinTabPage3
+            // 
+            this.skinTabPage3.BackColor = System.Drawing.Color.White;
+            this.skinTabPage3.Controls.Add(this.rtxtLog);
+            this.skinTabPage3.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.skinTabPage3.Location = new System.Drawing.Point(0, 36);
+            this.skinTabPage3.Name = "skinTabPage3";
+            this.skinTabPage3.Padding = new System.Windows.Forms.Padding(5);
+            this.skinTabPage3.Size = new System.Drawing.Size(588, 353);
+            this.skinTabPage3.TabIndex = 2;
+            this.skinTabPage3.TabItemImage = null;
+            this.skinTabPage3.Text = "日志";
+            // 
+            // rtxtLog
+            // 
+            this.rtxtLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtxtLog.HiglightColor = CCWin.SkinControl.RtfRichTextBox.RtfColor.White;
+            this.rtxtLog.Location = new System.Drawing.Point(5, 5);
+            this.rtxtLog.Name = "rtxtLog";
+            this.rtxtLog.ReadOnly = true;
+            this.rtxtLog.Size = new System.Drawing.Size(578, 343);
+            this.rtxtLog.TabIndex = 1;
+            this.rtxtLog.Text = "";
+            this.rtxtLog.TextColor = CCWin.SkinControl.RtfRichTextBox.RtfColor.Black;
+            // 
+            // skinTabPage4
+            // 
+            this.skinTabPage4.BackColor = System.Drawing.Color.White;
+            this.skinTabPage4.Controls.Add(this.bagThings1);
+            this.skinTabPage4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.skinTabPage4.Location = new System.Drawing.Point(0, 36);
+            this.skinTabPage4.Name = "skinTabPage4";
+            this.skinTabPage4.Size = new System.Drawing.Size(588, 353);
+            this.skinTabPage4.TabIndex = 3;
+            this.skinTabPage4.TabItemImage = null;
+            this.skinTabPage4.Text = "背包";
+            // 
+            // bagThings1
+            // 
+            this.bagThings1.Dock = System.Windows.Forms.DockStyle.Left;
+            this.bagThings1.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.bagThings1.Location = new System.Drawing.Point(0, 0);
+            this.bagThings1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.bagThings1.Name = "bagThings1";
+            this.bagThings1.Size = new System.Drawing.Size(269, 353);
+            this.bagThings1.TabIndex = 0;
+            // 
             // FrmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -326,6 +381,8 @@ namespace WLUtility
             this.skinTabPage2.ResumeLayout(false);
             this.skinPanel1.ResumeLayout(false);
             this.skinPanel1.PerformLayout();
+            this.skinTabPage3.ResumeLayout(false);
+            this.skinTabPage4.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -351,6 +408,10 @@ namespace WLUtility
         private CCWin.SkinControl.RtfRichTextBox rtxtPacket;
         private CCWin.SkinControl.SkinPanel skinPanel1;
         private CCWin.SkinControl.SkinCheckBox chkRecordPacket;
+        private CCWin.SkinControl.SkinTabPage skinTabPage3;
+        private CCWin.SkinControl.RtfRichTextBox rtxtLog;
+        private CCWin.SkinControl.SkinTabPage skinTabPage4;
+        private CustomControl.BagItemBox bagThings1;
     }
 }
 
