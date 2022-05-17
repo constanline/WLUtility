@@ -29,12 +29,12 @@ namespace WLUtility.Core
         public static void InitRules()
         {
             if (_dicRules != null) return;
-
             _dicRules = new Dictionary<byte, Dictionary<byte, Rule>>();
-            var skipRule = Rule.BuildSkipRule();
-            AddRule(1, 30, skipRule);
-            AddRule(1, 31, skipRule);
-            AddRule(1, 32, skipRule);
+
+            //var skipRule = Rule.BuildSkipRule();
+            //AddRule(1, 30, skipRule);
+            //AddRule(1, 31, skipRule);
+            //AddRule(1, 32, skipRule);
 
             ////在线人员信息？记不清了
             //AddRule(4, 0, Rule.BuildRemoveRule(-1, 3));
@@ -66,6 +66,8 @@ namespace WLUtility.Core
             //宠物
             // children = new List<Rule> { Rule.BuildRemoveRule(181, 2, 181,new List<int> { 29 }) };
             // AddRule(15, 8, Rule.BuildLoopRule(children, 6));
+
+
         }
 
         private static void HandleRule(Rule rule, List<byte> listBuffer, ref int len, ref bool isSkip, ref int offset)
@@ -292,6 +294,9 @@ namespace WLUtility.Core
 
         public override bool Connected => LocalSocket.Connected && RemoteSocket.Connected;
 
+        List<int> listHp = new List<int>() { 34281, 34330, 34339 };
+        List<int> listSp = new List<int>() { 34282, 34331, 34340 };
+
         protected override void RevMessage(int len)
         {
             base.RevMessage(len);
@@ -307,17 +312,42 @@ namespace WLUtility.Core
             else
                 bType = 0;
 
-            var offset = 0;
-
-            if (_dicRules.ContainsKey(aType))
+            //var offset = 0;
+            //if (_dicRules.ContainsKey(aType))
+            //{
+            //    if (_dicRules[aType].ContainsKey(0))
+            //    {
+            //        HandleRule(_dicRules[aType][0], packet, ref len, ref isSkip, ref offset);
+            //    }
+            //    else if (_dicRules[aType].ContainsKey(bType))
+            //    {
+            //        HandleRule(_dicRules[aType][bType], packet, ref len, ref isSkip, ref offset);
+            //    }
+            //}
+            if (aType == 23)
             {
-                if (_dicRules[aType].ContainsKey(0))
+                if(bType == 5)
                 {
-                    HandleRule(_dicRules[aType][0], packet, ref len, ref isSkip, ref offset);
-                }
-                else if (_dicRules[aType].ContainsKey(bType))
-                {
-                    HandleRule(_dicRules[aType][bType], packet, ref len, ref isSkip, ref offset);
+                    var offset = 7;
+                    var num = 0;
+                    while(num * 32 + offset < len)
+                    {
+                        var tmp = num * 32 + offset;
+                        var id = (packet[tmp] + (packet[tmp + 1] << 8)) ^ 0xA8A8;
+                        if (listHp.Contains(id))
+                        {
+                            //34285
+                            packet[tmp] = 0x45;
+                            packet[tmp + 1] = 0x2D;
+                        }
+                        else if (listSp.Contains(id))
+                        {
+                            //34286
+                            packet[tmp] = 0x46;
+                            packet[tmp + 1] = 0x2D;
+                        }
+                        num++;
+                    }
                 }
             }
 
