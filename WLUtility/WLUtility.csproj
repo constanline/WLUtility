@@ -98,10 +98,20 @@
       <DependentUpon>ProxyServerInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\Rule.cs" />
+    <Compile Include="CustomControl\RoleControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="CustomControl\RoleControl.Designer.cs">
+      <DependentUpon>RoleControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Data\PlayerInfo.cs" />
+    <Compile Include="Data\WoodManInfo.cs" />
     <Compile Include="Engine\IProcesser.cs" />
     <Compile Include="Engine\ItemProcesser.cs" />
     <Compile Include="Engine\LotteryProcesser.cs" />
+    <Compile Include="Engine\PlayerProcesser.cs" />
     <Compile Include="Engine\SignProcesser.cs" />
+    <Compile Include="Engine\WoodManProcesser.cs" />
     <Compile Include="FrmAbout.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -138,6 +148,15 @@
     <EmbeddedResource Include="CustomControl\ProxyServerInfo.resx">
       <DependentUpon>ProxyServerInfo.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\RoleControl.en-US.resx">
+      <DependentUpon>RoleControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\RoleControl.resx">
+      <DependentUpon>RoleControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CustomControl\RoleControl.zh-CN.resx">
+      <DependentUpon>RoleControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FrmAbout.en-US.resx">
       <DependentUpon>FrmAbout.cs</DependentUpon>
     </EmbeddedResource>
@@ -159,6 +178,9 @@
     <EmbeddedResource Include="FrmProxySetting.resx">
       <DependentUpon>FrmProxySetting.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.en-us.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -169,6 +191,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Properties\Resources.zh-cn.resx">
+      <DependentUpon>Resources.resx</DependentUpon>
+    </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -185,5 +210,6 @@
       <Name>Magician.Common</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

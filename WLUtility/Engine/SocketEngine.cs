@@ -21,6 +21,8 @@ namespace WLUtility.Engine
 
         public event Action<Exception> CbException;
 
+        public event Action<ProxySocket> ConnectionBuilt;
+
         internal SocketEngine()
         {
             InitProxyMapping();
@@ -75,6 +77,7 @@ namespace WLUtility.Engine
 
                     var socket = new ProxySocket(localSocket, remoteSocket) { SocketId = curNum };
                     DicSocket.Add(curNum, socket);
+                    ConnectionBuilt?.Invoke(socket);
                 }
             }
             catch (Exception ex)

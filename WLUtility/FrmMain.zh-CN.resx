@@ -162,4 +162,7 @@
   <data name="UnInjectSuccess" xml:space="preserve">
     <value>解除注入成功</value>
   </data>
+  <data name="ProcessNotFound" xml:space="preserve">
+	  <value>未找到要注入的进程</value>
+  </data>
 </root>

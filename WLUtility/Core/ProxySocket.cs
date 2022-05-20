@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
+using WLUtility.CustomControl;
+using WLUtility.Data;
 using WLUtility.Engine;
 using WLUtility.Helper;
 
@@ -15,25 +17,42 @@ namespace WLUtility.Core
 
         public readonly Socket RemoteSocket;
 
+        public event Action<ProxySocket> RoleLoginFinish;
+
+        public PlayerInfo PlayerInfo { get; }
+
+        public WoodManInfo WoodManInfo { get; }
+
         private static Dictionary<byte, Dictionary<byte, Rule>> _dicRules;
 
-        private List<IProcesser> _processes;
-
-        private static readonly byte _xorByte = 0x00;
+        private readonly List<IProcesser> _processes;
 
         private ILogger _logger;
+
+        private RoleControl _roleControl;
 
         public void Log(string msg)
         {
             _logger?.LogWithTime(msg);
         }
 
-        private static void AddRule(byte typeA, byte typeB, Rule rule)
+        public void SetRoleControl(RoleControl roleControl)
         {
-            if (!_dicRules.ContainsKey(typeA))
-                _dicRules.Add(typeA, new Dictionary<byte, Rule>());
+            _roleControl = roleControl;
+            _logger = _roleControl.Logger;
+        }
 
-            _dicRules[typeA][typeB] = rule;
+        //private static void AddRule(byte typeA, byte typeB, Rule rule)
+        //{
+        //    if (!_dicRules.ContainsKey(typeA))
+        //        _dicRules.Add(typeA, new Dictionary<byte, Rule>());
+
+        //    _dicRules[typeA][typeB] = rule;
+        //}
+
+        public void RevLoginRole()
+        {
+            RoleLoginFinish?.Invoke(this);
         }
 
         public static void InitRules()
@@ -80,157 +99,160 @@ namespace WLUtility.Core
 
         }
 
-        private static void HandleRule(Rule rule, List<byte> listBuffer, ref int len, ref bool isSkip, ref int offset)
-        {
-            switch (rule.RuleType)
-            {
-                case Rule.ERuleType.Skip:
-                    isSkip = true;
-                    break;
-                case Rule.ERuleType.Add:
-                    var insStartIndex = rule.Offset > 0 ? offset : 0;
+        // private static void HandleRule(Rule rule, List<byte> listBuffer, ref int len, ref bool isSkip, ref int offset)
+        // {
+        //     switch (rule.RuleType)
+        //     {
+        //         case Rule.ERuleType.Skip:
+        //             isSkip = true;
+        //             break;
+        //         case Rule.ERuleType.Add:
+        //             var insStartIndex = rule.Offset > 0 ? offset : 0;
+        //
+        //             if (rule.Index <= 0)
+        //             {
+        //                 insStartIndex += len - rule.Len;
+        //             }
+        //             else if (rule.Len <= 0)
+        //             {
+        //                 insStartIndex += rule.Index;
+        //             }
+        //             else
+        //             {
+        //                 insStartIndex += rule.Index;
+        //             }
+        //
+        //             if (rule.StrIndex != null)
+        //             {
+        //                 foreach (var strIdx in rule.StrIndex)
+        //                 {
+        //                     var strLen = listBuffer[offset + strIdx] ^ XOR_BYTE;
+        //                     if (strIdx < insStartIndex)
+        //                     {
+        //                         insStartIndex += strLen;
+        //                     }
+        //                 }
+        //             }
+        //             listBuffer.InsertRange(insStartIndex, rule.AddBuffer);
+        //             break;
+        //         case Rule.ERuleType.Remove:
+        //             {
+        //                 if (rule.Index > 0 || rule.Len > 0)
+        //                 {
+        //                     int removeLen;
+        //
+        //                     var startIndex = rule.Offset > 0 ? offset : 0;
+        //
+        //                     if (rule.Index <= 0)
+        //                     {
+        //                         startIndex += len - rule.Len;
+        //                         removeLen = rule.Len;
+        //                     }
+        //                     else if (rule.Len <= 0)
+        //                     {
+        //                         startIndex += rule.Index;
+        //                         removeLen = len - rule.Index;
+        //                     }
+        //                     else
+        //                     {
+        //                         startIndex += rule.Index;
+        //                         removeLen = rule.Len;
+        //                     }
+        //
+        //                     if (rule.StrIndex != null)
+        //                     {
+        //                         foreach (var strIdx in rule.StrIndex)
+        //                         {
+        //                             var strLen = listBuffer[offset + strIdx] ^ XOR_BYTE;
+        //                             if (strIdx < startIndex)
+        //                             {
+        //                                 startIndex += strLen;
+        //                                 offset += strLen;
+        //                             }
+        //                             else if (strIdx > startIndex + removeLen)
+        //                                 offset += strLen;
+        //                             else
+        //                                 removeLen += strLen;
+        //                         }
+        //                     }
+        //
+        //                     len -= removeLen;
+        //                     listBuffer.RemoveRange(startIndex, removeLen);
+        //                 }
+        //
+        //                 if (rule.Offset > 0)
+        //                 {
+        //                     offset += rule.Offset;
+        //                 }
+        //
+        //                 break;
+        //             }
+        //         case Rule.ERuleType.Parent:
+        //             {
+        //                 foreach (var childRule in rule.Children)
+        //                 {
+        //                     offset = 0;
+        //                     HandleRule(childRule, listBuffer, ref len, ref isSkip, ref offset);
+        //                 }
+        //
+        //                 break;
+        //             }
+        //         case Rule.ERuleType.Loop:
+        //             {
+        //                 var totalCount = int.MaxValue;
+        //                 if (rule.Index > 0)
+        //                 {
+        //                     totalCount = listBuffer[rule.Index] ^ XOR_BYTE;
+        //                 }
+        //                 if (rule.Offset > 0)
+        //                 {
+        //                     offset += rule.Offset;
+        //                 }
+        //
+        //                 var runCount = 0;
+        //                 while (offset < len && runCount < totalCount)
+        //                 {
+        //                     runCount++;
+        //                     foreach (var childRule in rule.Children)
+        //                     {
+        //                         HandleRule(childRule, listBuffer, ref len, ref isSkip, ref offset);
+        //                     }
+        //                 }
+        //
+        //                 break;
+        //             }
+        //         default:
+        //             throw new ArgumentOutOfRangeException();
+        //     }
+        //
+        //     if (rule.NextRule != null)
+        //     {
+        //         HandleRule(rule.NextRule, listBuffer, ref len, ref isSkip, ref offset);
+        //     }
+        // }
 
-                    if (rule.Index <= 0)
-                    {
-                        insStartIndex += len - rule.Len;
-                    }
-                    else if (rule.Len <= 0)
-                    {
-                        insStartIndex += rule.Index;
-                    }
-                    else
-                    {
-                        insStartIndex += rule.Index;
-                    }
-
-                    if (rule.StrIndex != null)
-                    {
-                        foreach (var strIdx in rule.StrIndex)
-                        {
-                            var strLen = listBuffer[offset + strIdx] ^ XOR_BYTE;
-                            if (strIdx < insStartIndex)
-                            {
-                                insStartIndex += strLen;
-                            }
-                        }
-                    }
-                    listBuffer.InsertRange(insStartIndex, rule.AddBuffer);
-                    break;
-                case Rule.ERuleType.Remove:
-                    {
-                        if (rule.Index > 0 || rule.Len > 0)
-                        {
-                            int removeLen;
-
-                            var startIndex = rule.Offset > 0 ? offset : 0;
-
-                            if (rule.Index <= 0)
-                            {
-                                startIndex += len - rule.Len;
-                                removeLen = rule.Len;
-                            }
-                            else if (rule.Len <= 0)
-                            {
-                                startIndex += rule.Index;
-                                removeLen = len - rule.Index;
-                            }
-                            else
-                            {
-                                startIndex += rule.Index;
-                                removeLen = rule.Len;
-                            }
-
-                            if (rule.StrIndex != null)
-                            {
-                                foreach (var strIdx in rule.StrIndex)
-                                {
-                                    var strLen = listBuffer[offset + strIdx] ^ XOR_BYTE;
-                                    if (strIdx < startIndex)
-                                    {
-                                        startIndex += strLen;
-                                        offset += strLen;
-                                    }
-                                    else if (strIdx > startIndex + removeLen)
-                                        offset += strLen;
-                                    else
-                                        removeLen += strLen;
-                                }
-                            }
-
-                            len -= removeLen;
-                            listBuffer.RemoveRange(startIndex, removeLen);
-                        }
-
-                        if (rule.Offset > 0)
-                        {
-                            offset += rule.Offset;
-                        }
-
-                        break;
-                    }
-                case Rule.ERuleType.Parent:
-                    {
-                        foreach (var childRule in rule.Children)
-                        {
-                            offset = 0;
-                            HandleRule(childRule, listBuffer, ref len, ref isSkip, ref offset);
-                        }
-
-                        break;
-                    }
-                case Rule.ERuleType.Loop:
-                    {
-                        var totalCount = int.MaxValue;
-                        if (rule.Index > 0)
-                        {
-                            totalCount = listBuffer[rule.Index] ^ XOR_BYTE;
-                        }
-                        if (rule.Offset > 0)
-                        {
-                            offset += rule.Offset;
-                        }
-
-                        var runCount = 0;
-                        while (offset < len && runCount < totalCount)
-                        {
-                            runCount++;
-                            foreach (var childRule in rule.Children)
-                            {
-                                HandleRule(childRule, listBuffer, ref len, ref isSkip, ref offset);
-                            }
-                        }
-
-                        break;
-                    }
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-
-            if (rule.NextRule != null)
-            {
-                HandleRule(rule.NextRule, listBuffer, ref len, ref isSkip, ref offset);
-            }
-        }
-
-        private static byte[] XorByte(IEnumerable<byte> buffer, int len = 0)
+        private static byte[] ToBuffer(IEnumerable<byte> buffer, int len = 0)
         {
             var bytes = buffer as byte[] ?? buffer.ToArray();
             if (len == 0)
             {
                 len = bytes.Count();
             }
-            var result = bytes.Take(len).ToArray();
-            if (_xorByte == 0) return result;
-            for (var i = 0; i < len; i++)
-                result[i] ^= _xorByte;
-            return result;
+            return bytes.Take(len).ToArray();
         }
 
         public ProxySocket(Socket localSocket, Socket remoteSocket)
         {
-            _processes = new List<IProcesser>();
-            _processes.Add(new ItemProcesser());
-            _processes.Add(new SignProcesser());
+            _processes = new List<IProcesser>
+            {
+                new ItemProcesser(),
+                new SignProcesser(this),
+                new LotteryProcesser(this),
+                new PlayerProcesser(this),
+                new WoodManProcesser(this)
+            };
+            PlayerInfo = new PlayerInfo();
+            WoodManInfo = new WoodManInfo(this);
 
             LocalSocket = localSocket;
             RemoteSocket = remoteSocket;
@@ -249,7 +271,7 @@ namespace WLUtility.Core
                         var data = new byte[1024];
                         var read = LocalSocket.Receive(data);
                         if (read > 0)
-                            DirectSendPacket(XorByte(data, read));
+                            DirectSendPacket(ToBuffer(data, read));
                         else
                             break;
                     }
@@ -312,7 +334,7 @@ namespace WLUtility.Core
             var packet = new byte[cLen + 4];
             packet[0] = HEAD_BYTE[0];
             packet[1] = HEAD_BYTE[1];
-            packet[2] = (byte)(cLen ^ 0xFF);
+            packet[2] = (byte)(cLen & 0xFF);
             packet[3] = (byte)(cLen >> 8);
             Array.Copy(buffer, 0, packet, 4, buffer.Length);
             for(var i = 2; i < packet.Length; i++)
@@ -354,14 +376,14 @@ namespace WLUtility.Core
             //}
             foreach (var process in _processes)
             {
-                process.Handle(this, aType, bType, packet, ref isSkip);
+                process.Handle(aType, bType, packet, ref isSkip);
                 if (isSkip)
                     break;
             }
 
             if (!isSkip)
             {
-                LocalSocket.Send(XorByte(packet));
+                LocalSocket.Send(ToBuffer(packet));
             }
         }
 

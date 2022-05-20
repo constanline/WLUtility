@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Magician.Common.Core;
 using Magician.Common.CustomControl;
 using WLUtility.Core;
+using WLUtility.CustomControl;
 using WLUtility.Engine;
 using WLUtility.Helper;
 
@@ -12,7 +14,12 @@ namespace WLUtility
     internal partial class FrmMain : MagicianForm
     {
         private uint _processId;
+
         private readonly SocketEngine _socketEngine;
+
+        private bool _isInjected;
+
+        private readonly Dictionary<string, ProxySocket> _dicProxySocket = new Dictionary<string, ProxySocket>();
 
 
         public FrmMain()
@@ -21,10 +28,50 @@ namespace WLUtility
 
             _socketEngine = new SocketEngine();
             _socketEngine.CbException += HandleException;
+            _socketEngine.ConnectionBuilt += _socketEngine_ConnectionBuilt;
 
             ProxySocket.InitRules();
             LogHelper.CbRecordPacket += LogPacket;
             //ThreadPool.SetMaxThreads(MAX_SOCKET_SERVER_COUNT, MAX_SOCKET_SERVER_COUNT * 3);
+        }
+
+        private void _socketEngine_ConnectionBuilt(ProxySocket proxySocket)
+        {
+            proxySocket.RoleLoginFinish += ProxySocket_RoleLoginFinish;
+        }
+
+        private void ProxySocket_RoleLoginFinish(ProxySocket proxySocket)
+        {
+            AddRolePage(proxySocket);
+        }
+
+        private void AddRolePage(ProxySocket proxySocket)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<ProxySocket>(AddRolePage), proxySocket);
+            }
+            else
+            {
+                if (_dicProxySocket.ContainsKey(proxySocket.PlayerInfo.Username))
+                {
+                    var rc = (RoleControl)tcAccount.TabPages[proxySocket.PlayerInfo.Username].Controls[0];
+                    proxySocket.SetRoleControl(rc);
+                    rc.SetProxySocket(proxySocket);
+                    _dicProxySocket[proxySocket.PlayerInfo.Username] = proxySocket;
+                    return;
+                }
+                var role = new RoleControl();
+                proxySocket.SetRoleControl(role);
+                role.SetProxySocket(proxySocket);
+                _dicProxySocket.Add(proxySocket.PlayerInfo.Username, proxySocket);
+
+                var tp = new TabPage(proxySocket.PlayerInfo.Username);
+                tp.Name = proxySocket.PlayerInfo.Username;
+                tp.Controls.Add(role);
+                role.Dock = DockStyle.Fill;
+                tcAccount.TabPages.Add(tp);
+            }
         }
 
         private void LogPacket(string msg)
@@ -62,45 +109,44 @@ namespace WLUtility
             _socketEngine.StopForward();
         }
 
-        private void btnInject_Click(object sender, EventArgs e)
+        private void Inject()
         {
-            if (_socketEngine.IsRunning)
+            if (!_isInjected)
             {
-                LogHelper.Log(GetLanguageString("IsRunning"));
-                return;
-            }
+                if (_socketEngine.IsRunning)
+                {
+                    LogHelper.Log(GetLanguageString("IsRunning"));
+                    return;
+                }
 
 
-            Process[] processes = Process.GetProcessesByName("wlmfree");
-            if (processes.Length == 0)
-            {
-                processes = Process.GetProcessesByName("wlviptw");
-            }
-            if (processes.Length > 0)
-            {
+                var processes = Process.GetProcessesByName("wlmfree");
+                if (processes.Length == 0)
+                    processes = Process.GetProcessesByName("wlviptw");
+
+                if (processes.Length == 0)
+                {
+                    MessageBox.Show(GetLanguageString("ProcessNotFound"));
+                    return;
+                }
+
                 _processId = (uint)processes[0].Id;
 
                 DllHelper.SetTargetPid(_processId);
                 var result = InjectHelper.GetInstance.Inject(_processId, "WLHook.dll");
-                if (result == DllInjectionResult.Success)
-                {
-                    btnInject.Enabled = false;
-                    btnUnInject.Enabled = true;
-                    _socketEngine.StartForward();
-                    LogHelper.Log(GetLanguageString("InjectSuccess"));
-                }
+                if (result != DllInjectionResult.Success) return;
+                _isInjected = true;
+                _socketEngine.StartForward();
+                LogHelper.Log(GetLanguageString("InjectSuccess"));
             }
-        }
-
-        private void btnUnInject_Click(object sender, EventArgs e)
-        {
-            if (InjectHelper.GetInstance.UnInject(_processId, "WLHook.dll") == DllInjectionResult.Success)
+            else
             {
+                if (InjectHelper.GetInstance.UnInject(_processId, "WLHook.dll") != DllInjectionResult.Success) return;
+
                 LogHelper.Log(GetLanguageString("UnInjectSuccess"));
+                _isInjected = false;
+                _socketEngine.StopForward();
             }
-            btnInject.Enabled = true;
-            btnUnInject.Enabled = false;
-            _socketEngine.StopForward();
         }
 
         private void tsmiSimplifiedChinese_Click(object sender, EventArgs e)
@@ -136,6 +182,11 @@ namespace WLUtility
         private void chkRecordPacket_CheckedChanged(object sender, EventArgs e)
         {
             GlobalSetting.RecordPacket = chkRecordPacket.Checked;
+        }
+
+        private void tsmiInject_Click(object sender, EventArgs e)
+        {
+            Inject();
         }
     }
 }

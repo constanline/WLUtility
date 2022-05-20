@@ -117,43 +117,4 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="$this.Text" xml:space="preserve">
-    <value>WLUtility</value>
-  </data>
-  <data name="btnInject.Text" xml:space="preserve">
-    <value>Inject</value>
-  </data>
-  <data name="btnUnInject.Text" xml:space="preserve">
-    <value>UnInject</value>
-  </data>
-  <data name="InjectSuccess" xml:space="preserve">
-    <value>Inject success</value>
-  </data>
-  <data name="IsRunning" xml:space="preserve">
-    <value>Utility is running</value>
-  </data>
-  <data name="tsmiAbout.Text" xml:space="preserve">
-    <value>About(&amp;A)</value>
-  </data>
-  <data name="tsmiExit.Text" xml:space="preserve">
-    <value>Exit(&amp;X)</value>
-  </data>
-  <data name="tsmiFile.Text" xml:space="preserve">
-    <value>File(&amp;F)</value>
-  </data>
-  <data name="tsmiLanguage.Text" xml:space="preserve">
-    <value>Language(&amp;L)</value>
-  </data>
-  <data name="tsmiOption.Text" xml:space="preserve">
-    <value>Option(&amp;O)</value>
-  </data>
-  <data name="tsmiSetting.Text" xml:space="preserve">
-    <value>Setting(&amp;S)</value>
-  </data>
-  <data name="UnInjectSuccess" xml:space="preserve">
-    <value>Cancel inject success</value>
-  </data>
-  <data name="ProcessNotFound" xml:space="preserve">
-	  <value>Process not found</value>
-  </data>
 </root>

@@ -15,15 +15,25 @@ namespace WLUtility.Helper
             var tmp = 0;
             for (var i = idx + len - 1; i >= idx; i--)
             {
-                tmp = (tmp << 8) + (buffer[idx] ^ BaseSocket.XOR_BYTE);
+                tmp = (tmp << 8) + (buffer[i] ^ BaseSocket.XOR_BYTE);
             }
             idx += len;
             return tmp;
         }
+        private static string XorConvertString(List<byte> buffer, ref int idx, int len)
+        {
+            var tmp = new byte[len];
+            for (var i = 0; i < len; i++)
+            {
+                tmp[i] = (byte)(buffer[i + idx] ^ BaseSocket.XOR_BYTE);
+            }
+            idx += len;
+            return EncodingBig5.GetString(tmp);
+        }
 
         public static T ReadPacket<T>(List<byte> buffer, ref int idx, int len = 0)
         {
-            var result = default(T);
+            T result;
             try
             {
                 var resultType = typeof(T);
@@ -57,11 +67,11 @@ namespace WLUtility.Helper
                 //    result = (T)(object)BitConverter.ToDouble(buffer, idx);
                 //    idx += 8;
                 //}
-                //else if (resultType == typeof(string))
-                //{
-                //    result = (T)(object)EncodingBig5.GetString(buffer, idx, len);
-                //    idx += len;
-                //}
+                else if (resultType == typeof(string))
+                {
+                    result = (T)(object)XorConvertString(buffer, ref idx, len);
+                    idx += len;
+                }
                 //else if (resultType == typeof(byte[]))
                 //{
                 //    var tmp = new byte[len];
