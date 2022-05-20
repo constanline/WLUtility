@@ -98,6 +98,10 @@
       <DependentUpon>ProxyServerInfo.cs</DependentUpon>
     </Compile>
     <Compile Include="Core\Rule.cs" />
+    <Compile Include="Engine\IProcesser.cs" />
+    <Compile Include="Engine\ItemProcesser.cs" />
+    <Compile Include="Engine\LotteryProcesser.cs" />
+    <Compile Include="Engine\SignProcesser.cs" />
     <Compile Include="FrmAbout.cs">
       <SubType>Form</SubType>
     </Compile>

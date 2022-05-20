@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Magician.Common.Logger;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -16,7 +17,16 @@ namespace WLUtility.Core
 
         private static Dictionary<byte, Dictionary<byte, Rule>> _dicRules;
 
+        private List<IProcesser> _processes;
+
         private static readonly byte _xorByte = 0x00;
+
+        private ILogger _logger;
+
+        public void Log(string msg)
+        {
+            _logger?.LogWithTime(msg);
+        }
 
         private static void AddRule(byte typeA, byte typeB, Rule rule)
         {
@@ -218,6 +228,10 @@ namespace WLUtility.Core
 
         public ProxySocket(Socket localSocket, Socket remoteSocket)
         {
+            _processes = new List<IProcesser>();
+            _processes.Add(new ItemProcesser());
+            _processes.Add(new SignProcesser());
+
             LocalSocket = localSocket;
             RemoteSocket = remoteSocket;
 
@@ -235,7 +249,7 @@ namespace WLUtility.Core
                         var data = new byte[1024];
                         var read = LocalSocket.Receive(data);
                         if (read > 0)
-                            SendPacket(XorByte(data, read));
+                            DirectSendPacket(XorByte(data, read));
                         else
                             break;
                     }
@@ -283,19 +297,33 @@ namespace WLUtility.Core
             });
         }
 
-        public int SendPacket(byte[] buffer)
+        public int DirectSendPacket(byte[] packet)
         {
             if (GlobalSetting.RecordPacket)
             {
-                LogHelper.LogPacket(buffer, true);
+                LogHelper.LogPacket(packet, true);
             }
-            return RemoteSocket.Send(buffer);
+            return RemoteSocket.Send(packet);
         }
 
-        public override bool Connected => LocalSocket.Connected && RemoteSocket.Connected;
+        public int SendPacket(byte[] buffer)
+        {
+            var cLen = buffer.Length;
+            var packet = new byte[cLen + 4];
+            packet[0] = HEAD_BYTE[0];
+            packet[1] = HEAD_BYTE[1];
+            packet[2] = (byte)(cLen ^ 0xFF);
+            packet[3] = (byte)(cLen >> 8);
+            Array.Copy(buffer, 0, packet, 4, buffer.Length);
+            for(var i = 2; i < packet.Length; i++)
+            {
+                packet[i] ^= XOR_BYTE;
+            }
+            return DirectSendPacket(packet);
+        }
 
-        List<int> listHp = new List<int>() { 34281, 34330, 34339 };
-        List<int> listSp = new List<int>() { 34282, 34331, 34340 };
+
+        public override bool Connected => LocalSocket.Connected && RemoteSocket.Connected;
 
         protected override void RevMessage(int len)
         {
@@ -303,7 +331,6 @@ namespace WLUtility.Core
 
             var packet = LastPacket.ToList();
 
-            var isSkip = false;
             var aType = (byte)(packet[4] ^ XOR_BYTE);
 
             byte bType;
@@ -312,6 +339,7 @@ namespace WLUtility.Core
             else
                 bType = 0;
 
+            var isSkip = false;
             //var offset = 0;
             //if (_dicRules.ContainsKey(aType))
             //{
@@ -324,31 +352,11 @@ namespace WLUtility.Core
             //        HandleRule(_dicRules[aType][bType], packet, ref len, ref isSkip, ref offset);
             //    }
             //}
-            if (aType == 23)
+            foreach (var process in _processes)
             {
-                if(bType == 5)
-                {
-                    var offset = 7;
-                    var num = 0;
-                    while(num * 32 + offset < len)
-                    {
-                        var tmp = num * 32 + offset;
-                        var id = (packet[tmp] + (packet[tmp + 1] << 8)) ^ 0xA8A8;
-                        if (listHp.Contains(id))
-                        {
-                            //34285
-                            packet[tmp] = 0x45;
-                            packet[tmp + 1] = 0x2D;
-                        }
-                        else if (listSp.Contains(id))
-                        {
-                            //34286
-                            packet[tmp] = 0x46;
-                            packet[tmp + 1] = 0x2D;
-                        }
-                        num++;
-                    }
-                }
+                process.Handle(this, aType, bType, packet, ref isSkip);
+                if (isSkip)
+                    break;
             }
 
             if (!isSkip)
