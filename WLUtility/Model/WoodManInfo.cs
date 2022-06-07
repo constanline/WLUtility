@@ -1,6 +1,6 @@
 ﻿using WLUtility.Core;
 
-namespace WLUtility.Data
+namespace WLUtility.Model
 {
     internal class WoodManInfo
     {

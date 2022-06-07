@@ -29,6 +29,8 @@ namespace WLUtility
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FrmMain));
             this.skinMenuStrip1 = new CCWin.SkinControl.SkinMenuStrip();
             this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiExit = new System.Windows.Forms.ToolStripMenuItem();
@@ -50,12 +52,17 @@ namespace WLUtility
             this.chkRecordPacket = new CCWin.SkinControl.SkinCheckBox();
             this.skinTabPage3 = new CCWin.SkinControl.SkinTabPage();
             this.rtxtLog = new CCWin.SkinControl.RtfRichTextBox();
+            this.notifyIcon1 = new System.Windows.Forms.NotifyIcon(this.components);
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.cmsDisplay = new System.Windows.Forms.ToolStripMenuItem();
+            this.cmsExit = new System.Windows.Forms.ToolStripMenuItem();
             this.skinMenuStrip1.SuspendLayout();
             this.skinTabControl1.SuspendLayout();
             this.skinTabPage1.SuspendLayout();
             this.skinTabPage2.SuspendLayout();
             this.skinPanel1.SuspendLayout();
             this.skinTabPage3.SuspendLayout();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // skinMenuStrip1
@@ -233,9 +240,9 @@ namespace WLUtility
             this.skinTabPage2.Controls.Add(this.rtxtPacket);
             this.skinTabPage2.Controls.Add(this.skinPanel1);
             this.skinTabPage2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.skinTabPage2.Location = new System.Drawing.Point(4, 40);
+            this.skinTabPage2.Location = new System.Drawing.Point(4, 31);
             this.skinTabPage2.Name = "skinTabPage2";
-            this.skinTabPage2.Size = new System.Drawing.Size(959, 572);
+            this.skinTabPage2.Size = new System.Drawing.Size(959, 581);
             this.skinTabPage2.TabIndex = 1;
             this.skinTabPage2.Text = "封包";
             // 
@@ -245,7 +252,7 @@ namespace WLUtility
             this.rtxtPacket.HiglightColor = CCWin.SkinControl.RtfRichTextBox.RtfColor.White;
             this.rtxtPacket.Location = new System.Drawing.Point(0, 30);
             this.rtxtPacket.Name = "rtxtPacket";
-            this.rtxtPacket.Size = new System.Drawing.Size(959, 542);
+            this.rtxtPacket.Size = new System.Drawing.Size(959, 551);
             this.rtxtPacket.TabIndex = 0;
             this.rtxtPacket.Text = "";
             this.rtxtPacket.TextColor = CCWin.SkinControl.RtfRichTextBox.RtfColor.Black;
@@ -289,10 +296,10 @@ namespace WLUtility
             this.skinTabPage3.BackColor = System.Drawing.Color.White;
             this.skinTabPage3.Controls.Add(this.rtxtLog);
             this.skinTabPage3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.skinTabPage3.Location = new System.Drawing.Point(4, 40);
+            this.skinTabPage3.Location = new System.Drawing.Point(4, 31);
             this.skinTabPage3.Name = "skinTabPage3";
             this.skinTabPage3.Padding = new System.Windows.Forms.Padding(5);
-            this.skinTabPage3.Size = new System.Drawing.Size(959, 572);
+            this.skinTabPage3.Size = new System.Drawing.Size(959, 581);
             this.skinTabPage3.TabIndex = 2;
             this.skinTabPage3.TabItemImage = null;
             this.skinTabPage3.Text = "日志";
@@ -304,10 +311,39 @@ namespace WLUtility
             this.rtxtLog.Location = new System.Drawing.Point(5, 5);
             this.rtxtLog.Name = "rtxtLog";
             this.rtxtLog.ReadOnly = true;
-            this.rtxtLog.Size = new System.Drawing.Size(949, 562);
+            this.rtxtLog.Size = new System.Drawing.Size(949, 571);
             this.rtxtLog.TabIndex = 1;
             this.rtxtLog.Text = "";
             this.rtxtLog.TextColor = CCWin.SkinControl.RtfRichTextBox.RtfColor.Black;
+            // 
+            // notifyIcon1
+            // 
+            this.notifyIcon1.ContextMenuStrip = this.contextMenuStrip1;
+            this.notifyIcon1.Icon = ((System.Drawing.Icon)(resources.GetObject("notifyIcon1.Icon")));
+            this.notifyIcon1.Text = "飘流实用工具";
+            this.notifyIcon1.Visible = true;
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.cmsDisplay,
+            this.cmsExit});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(117, 48);
+            // 
+            // cmsDisplay
+            // 
+            this.cmsDisplay.Name = "cmsDisplay";
+            this.cmsDisplay.Size = new System.Drawing.Size(116, 22);
+            this.cmsDisplay.Text = "显示(&S)";
+            this.cmsDisplay.Click += new System.EventHandler(this.cmsDisplay_Click);
+            // 
+            // cmsExit
+            // 
+            this.cmsExit.Name = "cmsExit";
+            this.cmsExit.Size = new System.Drawing.Size(116, 22);
+            this.cmsExit.Text = "退出(&X)";
+            this.cmsExit.Click += new System.EventHandler(this.tsmiExit_Click);
             // 
             // FrmMain
             // 
@@ -319,6 +355,7 @@ namespace WLUtility
             this.MainMenuStrip = this.skinMenuStrip1;
             this.Name = "FrmMain";
             this.Text = "飘流实用工具";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FrmMain_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FrmMain_FormClosed);
             this.skinMenuStrip1.ResumeLayout(false);
             this.skinMenuStrip1.PerformLayout();
@@ -328,6 +365,7 @@ namespace WLUtility
             this.skinPanel1.ResumeLayout(false);
             this.skinPanel1.PerformLayout();
             this.skinTabPage3.ResumeLayout(false);
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -355,6 +393,10 @@ namespace WLUtility
         private CCWin.SkinControl.RtfRichTextBox rtxtLog;
         private System.Windows.Forms.ToolStripMenuItem tsmiInject;
         private System.Windows.Forms.TabControl tcAccount;
+        private System.Windows.Forms.NotifyIcon notifyIcon1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem cmsDisplay;
+        private System.Windows.Forms.ToolStripMenuItem cmsExit;
     }
 }
 

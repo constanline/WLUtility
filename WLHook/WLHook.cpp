@@ -104,8 +104,10 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 		}
 		break;
 	case DLL_PROCESS_DETACH:
-		if (g_pHookConnect)
-			UnInstallHookApi(g_pHookConnect);
+		if (g_pHookConnect){
+			auto result = UnInstallHookApi(g_pHookConnect);
+			SimpleLog("UnInstallHookApi Result:" + result);
+		}
 		break;
 	default:
 		break;

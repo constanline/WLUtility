@@ -5,9 +5,9 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Threading;
 using WLUtility.CustomControl;
-using WLUtility.Data;
 using WLUtility.Engine;
 using WLUtility.Helper;
+using WLUtility.Model;
 
 namespace WLUtility.Core
 {
@@ -18,6 +18,8 @@ namespace WLUtility.Core
         public readonly Socket RemoteSocket;
 
         public event Action<ProxySocket> RoleLoginFinish;
+
+        public event Action<BagItem[]> BagUpdated;
 
         public PlayerInfo PlayerInfo { get; }
 
@@ -53,6 +55,11 @@ namespace WLUtility.Core
         public void RevLoginRole()
         {
             RoleLoginFinish?.Invoke(this);
+        }
+
+        public void UpdateBag(BagItem[] bagItems)
+        {
+            BagUpdated?.Invoke(bagItems);
         }
 
         public static void InitRules()
@@ -245,7 +252,7 @@ namespace WLUtility.Core
         {
             _processes = new List<IProcesser>
             {
-                new ItemProcesser(),
+                new ItemProcesser(this),
                 new SignProcesser(this),
                 new LotteryProcesser(this),
                 new PlayerProcesser(this),

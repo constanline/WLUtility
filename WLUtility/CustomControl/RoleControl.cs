@@ -24,6 +24,12 @@ namespace WLUtility.CustomControl
         public void SetProxySocket(ProxySocket proxySocket)
         {
             _socket = proxySocket;
+            _socket.BagUpdated += Socket_BagUpdated;
+        }
+
+        private void Socket_BagUpdated(Model.BagItem[] obj)
+        {
+            bagItemBox1.Refresh(obj);
         }
 
         private void btnExec_Click(object sender, System.EventArgs e)

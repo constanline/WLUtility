@@ -1,4 +1,5 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Windows.Forms;
 
 namespace WLUtility.CustomControl
 {
@@ -16,6 +17,19 @@ namespace WLUtility.CustomControl
             if (dgvItem.Columns[e.ColumnIndex] == dgvItem_Pos)
             {
                 e.Value = e.RowIndex;
+            }
+        }
+
+        public void Refresh(object obj)
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action<object>(Refresh), obj);
+            }
+            else
+            {
+                dgvItem.DataSource = obj;
+                dgvItem.Refresh();
             }
         }
     }

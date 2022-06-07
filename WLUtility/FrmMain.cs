@@ -6,6 +6,7 @@ using Magician.Common.Core;
 using Magician.Common.CustomControl;
 using WLUtility.Core;
 using WLUtility.CustomControl;
+using WLUtility.DataManager;
 using WLUtility.Engine;
 using WLUtility.Helper;
 
@@ -32,6 +33,7 @@ namespace WLUtility
 
             ProxySocket.InitRules();
             LogHelper.CbRecordPacket += LogPacket;
+            DataManagers.Init();
             //ThreadPool.SetMaxThreads(MAX_SOCKET_SERVER_COUNT, MAX_SOCKET_SERVER_COUNT * 3);
         }
 
@@ -187,6 +189,20 @@ namespace WLUtility
         private void tsmiInject_Click(object sender, EventArgs e)
         {
             Inject();
+        }
+
+        private void FrmMain_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if(e.CloseReason == CloseReason.UserClosing)
+            {
+                Hide();
+                e.Cancel = true;
+            }
+        }
+
+        private void cmsDisplay_Click(object sender, EventArgs e)
+        {
+            this.Show();
         }
     }
 }

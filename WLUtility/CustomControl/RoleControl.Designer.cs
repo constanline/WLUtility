@@ -34,10 +34,16 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.rbWoodMan = new System.Windows.Forms.RadioButton();
             this.btnExec = new System.Windows.Forms.Button();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.num1 = new Magician.Common.CustomControl.NumberText();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.tpBag = new System.Windows.Forms.TabPage();
+            this.tcInfo = new System.Windows.Forms.TabControl();
+            this.bagItemBox1 = new WLUtility.CustomControl.BagItemBox();
+            this.groupBox2.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.tpBag.SuspendLayout();
+            this.tcInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // rtxtLog
@@ -66,6 +72,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.tcInfo);
             this.groupBox2.Dock = System.Windows.Forms.DockStyle.Left;
             this.groupBox2.Location = new System.Drawing.Point(0, 155);
             this.groupBox2.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -112,19 +119,6 @@
             this.btnExec.Text = "执行";
             this.btnExec.UseVisualStyleBackColor = true;
             this.btnExec.Click += new System.EventHandler(this.btnExec_Click);
-            // 
-            // groupBox4
-            // 
-            this.groupBox4.Controls.Add(this.rtxtLog);
-            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.groupBox4.Location = new System.Drawing.Point(259, 155);
-            this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.groupBox4.Size = new System.Drawing.Size(573, 312);
-            this.groupBox4.TabIndex = 7;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "日志区";
             // 
             // num1
             // 
@@ -174,6 +168,50 @@
             this.num1.WaterText = "";
             this.num1.WordWrap = true;
             // 
+            // groupBox4
+            // 
+            this.groupBox4.Controls.Add(this.rtxtLog);
+            this.groupBox4.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.groupBox4.Location = new System.Drawing.Point(259, 155);
+            this.groupBox4.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox4.Name = "groupBox4";
+            this.groupBox4.Padding = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.groupBox4.Size = new System.Drawing.Size(573, 312);
+            this.groupBox4.TabIndex = 7;
+            this.groupBox4.TabStop = false;
+            this.groupBox4.Text = "日志区";
+            // 
+            // tpBag
+            // 
+            this.tpBag.Controls.Add(this.bagItemBox1);
+            this.tpBag.Location = new System.Drawing.Point(4, 29);
+            this.tpBag.Name = "tpBag";
+            this.tpBag.Padding = new System.Windows.Forms.Padding(3);
+            this.tpBag.Size = new System.Drawing.Size(243, 435);
+            this.tpBag.TabIndex = 0;
+            this.tpBag.Text = "背包";
+            this.tpBag.UseVisualStyleBackColor = true;
+            // 
+            // tcInfo
+            // 
+            this.tcInfo.Controls.Add(this.tpBag);
+            this.tcInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tcInfo.Location = new System.Drawing.Point(4, 24);
+            this.tcInfo.Name = "tcInfo";
+            this.tcInfo.SelectedIndex = 0;
+            this.tcInfo.Size = new System.Drawing.Size(251, 468);
+            this.tcInfo.TabIndex = 0;
+            // 
+            // bagItemBox1
+            // 
+            this.bagItemBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bagItemBox1.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.bagItemBox1.Location = new System.Drawing.Point(3, 3);
+            this.bagItemBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.bagItemBox1.Name = "bagItemBox1";
+            this.bagItemBox1.Size = new System.Drawing.Size(237, 429);
+            this.bagItemBox1.TabIndex = 0;
+            // 
             // RoleControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -187,9 +225,12 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "RoleControl";
             this.Size = new System.Drawing.Size(832, 652);
+            this.groupBox2.ResumeLayout(false);
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox4.ResumeLayout(false);
+            this.tpBag.ResumeLayout(false);
+            this.tcInfo.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -203,5 +244,8 @@
         private System.Windows.Forms.Button btnExec;
         private Magician.Common.CustomControl.NumberText num1;
         private System.Windows.Forms.RadioButton rbWoodMan;
+        private System.Windows.Forms.TabControl tcInfo;
+        private System.Windows.Forms.TabPage tpBag;
+        private BagItemBox bagItemBox1;
     }
 }
