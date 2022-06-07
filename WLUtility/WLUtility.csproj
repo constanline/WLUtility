@@ -80,7 +80,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.4.4\lib\net40\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
+    <Reference Include="System">
+      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\System.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.SQLite, Version=1.0.116.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
@@ -104,6 +106,7 @@
   <ItemGroup>
     <Compile Include="Core\BaseSocket.cs" />
     <Compile Include="Core\MyDbContext.cs" />
+    <Compile Include="Core\PacketBuilder.cs" />
     <Compile Include="Core\ProxySocket.cs" />
     <Compile Include="CustomControl\BagItemBox.cs">
       <SubType>UserControl</SubType>
@@ -127,7 +130,9 @@
     <Compile Include="DataManager\DataManagers.cs" />
     <Compile Include="DataManager\ItemManager.cs" />
     <Compile Include="Data\Item.cs" />
+    <Compile Include="Engine\PetProcesser.cs" />
     <Compile Include="Model\BagItem.cs" />
+    <Compile Include="Model\Pet.cs" />
     <Compile Include="Model\PlayerInfo.cs" />
     <Compile Include="Model\WoodManInfo.cs" />
     <Compile Include="Engine\IProcesser.cs" />

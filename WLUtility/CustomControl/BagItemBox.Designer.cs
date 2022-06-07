@@ -29,24 +29,33 @@ namespace WLUtility.CustomControl
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.dgvItem = new System.Windows.Forms.DataGridView();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiSellItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvItem_Pos = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvItem_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvItem_Qty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dgvItem_Durable = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItem)).BeginInit();
+            this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // dgvItem
             // 
             this.dgvItem.AllowUserToAddRows = false;
             this.dgvItem.AllowUserToDeleteRows = false;
+            this.dgvItem.AllowUserToResizeRows = false;
             this.dgvItem.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvItem.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dgvItem_Pos,
             this.dgvItem_Name,
-            this.dgvItem_Qty});
+            this.dgvItem_Qty,
+            this.dgvItem_Durable});
+            this.dgvItem.ContextMenuStrip = this.contextMenuStrip1;
             this.dgvItem.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvItem.Location = new System.Drawing.Point(0, 0);
+            this.dgvItem.MultiSelect = false;
             this.dgvItem.Name = "dgvItem";
             this.dgvItem.ReadOnly = true;
             this.dgvItem.RowHeadersWidth = 4;
@@ -55,6 +64,21 @@ namespace WLUtility.CustomControl
             this.dgvItem.Size = new System.Drawing.Size(269, 558);
             this.dgvItem.TabIndex = 0;
             this.dgvItem.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvItem_CellFormatting);
+            this.dgvItem.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvItem_CellMouseDown);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSellItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(116, 26);
+            // 
+            // tsmiSellItem
+            // 
+            this.tsmiSellItem.Name = "tsmiSellItem";
+            this.tsmiSellItem.Size = new System.Drawing.Size(115, 22);
+            this.tsmiSellItem.Text = "出售(&S)";
+            this.tsmiSellItem.Click += new System.EventHandler(this.tsmiSellItem_Click);
             // 
             // dgvItem_Pos
             // 
@@ -69,15 +93,22 @@ namespace WLUtility.CustomControl
             this.dgvItem_Name.HeaderText = "名称";
             this.dgvItem_Name.Name = "dgvItem_Name";
             this.dgvItem_Name.ReadOnly = true;
-            this.dgvItem_Name.Width = 130;
+            this.dgvItem_Name.Width = 110;
             // 
             // dgvItem_Qty
             // 
-            this.dgvItem_Qty.DataPropertyName = "Quantity";
+            this.dgvItem_Qty.DataPropertyName = "Qty";
             this.dgvItem_Qty.HeaderText = "数量";
             this.dgvItem_Qty.Name = "dgvItem_Qty";
             this.dgvItem_Qty.ReadOnly = true;
-            this.dgvItem_Qty.Width = 80;
+            this.dgvItem_Qty.Width = 60;
+            // 
+            // dgvItem_Durable
+            // 
+            this.dgvItem_Durable.DataPropertyName = "DurableStr";
+            this.dgvItem_Durable.HeaderText = "耐久";
+            this.dgvItem_Durable.Name = "dgvItem_Durable";
+            this.dgvItem_Durable.ReadOnly = true;
             // 
             // BagItemBox
             // 
@@ -89,6 +120,7 @@ namespace WLUtility.CustomControl
             this.Name = "BagItemBox";
             this.Size = new System.Drawing.Size(269, 558);
             ((System.ComponentModel.ISupportInitialize)(this.dgvItem)).EndInit();
+            this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -96,8 +128,11 @@ namespace WLUtility.CustomControl
         #endregion
 
         private System.Windows.Forms.DataGridView dgvItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem tsmiSellItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvItem_Pos;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvItem_Name;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvItem_Qty;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dgvItem_Durable;
     }
 }

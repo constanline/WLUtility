@@ -70,7 +70,6 @@ namespace WLUtility.Helper
                 else if (resultType == typeof(string))
                 {
                     result = (T)(object)XorConvertString(buffer, ref idx, len);
-                    idx += len;
                 }
                 //else if (resultType == typeof(byte[]))
                 //{
@@ -157,6 +156,26 @@ namespace WLUtility.Helper
                 throw new Exception("[ByteUtil.ReadPacket]" + ex.Message + " [TRACE] " + ex.StackTrace);
             }
             return result;
+        }
+
+        public static byte[] ToBuffer(ushort val)
+        {
+            return BitConverter.GetBytes(val);
+        }
+
+        public static byte[] ToBuffer(int val)
+        {
+            return BitConverter.GetBytes(val);
+        }
+
+        public static byte[] ToBuffer(uint val)
+        {
+            return BitConverter.GetBytes(val);
+        }
+
+        public static byte[] ToBuffer(string val)
+        {
+            return EncodingBig5.GetBytes(val);
         }
     }
 }

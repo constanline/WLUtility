@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using WLUtility.Core;
 using WLUtility.Data;
+using WLUtility.Helper;
 
 namespace WLUtility.DataManager
 {
     internal class ItemManager
     {
-        public Dictionary<int, Item> _dicData = new Dictionary<int, Item>();
+        private readonly Dictionary<int, Item> _dicData = new Dictionary<int, Item>();
 
         public ItemManager()
         {
@@ -26,6 +26,11 @@ namespace WLUtility.DataManager
             }
         }
 
+        public Item GetOne(ushort id)
+        {
+            return _dicData.ContainsKey(id) ? _dicData[id] : null;
+        }
+
         public string GetName(ushort id)
         {
             return _dicData.ContainsKey(id) ? _dicData[id].Name : null;
@@ -35,9 +40,9 @@ namespace WLUtility.DataManager
         {
             if (!_dicData.ContainsKey(id))
             {
-                throw new Exception("未知的物品ID！！");
+                LogHelper.SilentLog($"未知的物品ID[{id}]，请维护到Data中！！");
             }
-            return _dicData.ContainsKey(id) ? _dicData[id].Overlap : false;
+            return _dicData.ContainsKey(id) && _dicData[id].Overlap;
         }
     }
 }

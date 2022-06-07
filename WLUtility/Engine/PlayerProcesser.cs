@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using WLUtility.Core;
+using WLUtility.DataManager;
 using WLUtility.Helper;
 
 namespace WLUtility.Engine
@@ -34,6 +35,15 @@ namespace WLUtility.Engine
                 if (mainId == _socket.PlayerInfo.Id)
                 {
                     _socket.PlayerInfo.Id = playerId;
+                    idx += 7;
+
+                    var b = ByteUtil.ReadPacket<byte>(packet, ref idx);
+                    for (var j = 1; j <= b; j++)
+                    {
+                        var equipId = ByteUtil.ReadPacket<ushort>(packet, ref idx);
+                        var equipPos = DataManagers.ItemManager.GetOne(equipId).FitType;
+                        _socket.PlayerInfo.Equips[equipPos].Id = equipId;
+                    }
                 }
             }
         }

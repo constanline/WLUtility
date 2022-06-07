@@ -33,8 +33,14 @@ namespace WLUtility
 
             ProxySocket.InitRules();
             LogHelper.CbRecordPacket += LogPacket;
+            LogHelper.CbLog += LogHelper_CbLog;
             DataManagers.Init();
             //ThreadPool.SetMaxThreads(MAX_SOCKET_SERVER_COUNT, MAX_SOCKET_SERVER_COUNT * 3);
+        }
+
+        private void LogHelper_CbLog(string msg)
+        {
+            LogInfo(msg);
         }
 
         private void _socketEngine_ConnectionBuilt(ProxySocket proxySocket)

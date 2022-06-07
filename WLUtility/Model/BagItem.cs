@@ -29,10 +29,16 @@ namespace WLUtility.Model
         {
             get
             {
-                if (Damage > 0)
-                    return Damage.ToString();
-                if (Durable > 0)
-                    return Durable.ToString();
+                var item = DataManagers.ItemManager.GetOne(Id);
+                if (item != null)
+                {
+                    if (item.FitType > 0 && item.FitType < 7) return (250 - Damage) + "/250";
+                    if (item.SpecialAbility == 151)
+                    {
+                        var max = item.Value1 - 100;
+                        return max - Durable + "/" + max;
+                    }
+                }
 
                 return string.Empty;
             }
@@ -97,6 +103,23 @@ namespace WLUtility.Model
             Qty = 0;
             _itemName = null;
             Desc = null;
+        }
+
+        public BagItem Clone()
+        {
+            return new BagItem
+            {
+                Id = Id,
+                Qty = Qty,
+                Durable = Durable
+            };
+        }
+
+        public void CopyTo(BagItem bagItem)
+        {
+            bagItem.Id = Id;
+            bagItem.Qty = Qty;
+            bagItem.Durable = Durable;
         }
     }
 }

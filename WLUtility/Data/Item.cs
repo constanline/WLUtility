@@ -17,9 +17,9 @@ namespace WLUtility.Data
 
         public ushort Attribute2 { get; set; }
 
-        public byte Value1 { get; set; }
+        public int Value1 { get; set; }
 
-        public byte Value2 { get; set; }
+        public int Value2 { get; set; }
 
         public byte Level { get; set; }
 
@@ -30,7 +30,7 @@ namespace WLUtility.Data
         public byte SpecialAbility { get; set; }
 
         [Column("need_lv")]
-        public byte NeedLV { get; set; }
+        public byte NeedLv { get; set; }
 
         public string Desc { get; set; }
 

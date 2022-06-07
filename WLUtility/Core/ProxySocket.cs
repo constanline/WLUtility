@@ -256,7 +256,8 @@ namespace WLUtility.Core
                 new SignProcesser(this),
                 new LotteryProcesser(this),
                 new PlayerProcesser(this),
-                new WoodManProcesser(this)
+                new WoodManProcesser(this),
+                new PetProcesser(this)
             };
             PlayerInfo = new PlayerInfo();
             WoodManInfo = new WoodManInfo(this);
@@ -349,6 +350,22 @@ namespace WLUtility.Core
                 packet[i] ^= XOR_BYTE;
             }
             return DirectSendPacket(packet);
+        }
+
+        public int RevPacket(byte[] buffer)
+        {
+            var cLen = buffer.Length;
+            var packet = new byte[cLen + 4];
+            packet[0] = HEAD_BYTE[0];
+            packet[1] = HEAD_BYTE[1];
+            packet[2] = (byte)(cLen & 0xFF);
+            packet[3] = (byte)(cLen >> 8);
+            Array.Copy(buffer, 0, packet, 4, buffer.Length);
+            for (var i = 2; i < packet.Length; i++)
+            {
+                packet[i] ^= XOR_BYTE;
+            }
+            return LocalSocket.Send(packet);
         }
 
 

@@ -57,9 +57,9 @@ namespace WLUtility.Engine
 
         private void SocketForward(object obj)
         {
+            var idx = (int)obj;
             try
             {
-                var idx = (int)obj;
                 var pm = ArrProxyMapping[idx];
 
                 ArrSocketServer[idx] = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -82,6 +82,7 @@ namespace WLUtility.Engine
             }
             catch (Exception ex)
             {
+                if (ArrSocketServer[idx] == null || !ArrSocketServer[idx].Connected) return;
                 if (!(ex is ThreadAbortException)) CbException?.Invoke(ex);
             }
         }

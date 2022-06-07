@@ -6,8 +6,8 @@ namespace WLUtility.Helper
 {
     internal class LogHelper
     {
-        public static Action<string> CbLog;
-        public static Action<string> CbRecordPacket;
+        public static event Action<string> CbLog;
+        public static event Action<string> CbRecordPacket;
 
 
         public static void Log(string msg)
@@ -15,6 +15,12 @@ namespace WLUtility.Helper
             MessageBox.Show(msg);
             CbLog?.Invoke(msg);
         }
+
+        public static void SilentLog(string msg)
+        {
+            CbLog?.Invoke(msg);
+        }
+
         public static void Log(Exception e)
         {
             Log(e.Message);
