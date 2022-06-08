@@ -97,6 +97,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 	{
 	case DLL_PROCESS_ATTACH:
 
+		SimpleLog("InstallHookApi");
 		DisableThreadLibraryCalls(hModule);
 		if (GetCurrentProcessId() == g_dwTarget) //必须在loadlibary之前设置g_dwTarget
 		{
@@ -104,6 +105,7 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 		}
 		break;
 	case DLL_PROCESS_DETACH:
+		SimpleLog("UnInstallHookApi");
 		if (g_pHookConnect){
 			auto result = UnInstallHookApi(g_pHookConnect);
 			SimpleLog("UnInstallHookApi Result:" + result);

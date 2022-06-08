@@ -59,5 +59,11 @@ namespace WLUtility.CustomControl
             if (_rowIdx <= 0) return;
             _socket.SendPacket(new PacketBuilder(0x1B, 0x03).Add((byte)_rowIdx).Build());
         }
+
+        private void tsmiAutoSell_Click(object sender, EventArgs e)
+        {
+            if (_rowIdx <= 0 || _rowIdx > 50) return;
+            _socket.PlayerInfo.AddAutoSellItemIdx(_rowIdx);
+        }
     }
 }

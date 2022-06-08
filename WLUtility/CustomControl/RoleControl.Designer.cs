@@ -31,19 +31,27 @@
             this.rtxtLog = new System.Windows.Forms.RichTextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.rbWoodMan = new System.Windows.Forms.RadioButton();
-            this.btnExec = new System.Windows.Forms.Button();
-            this.num1 = new Magician.Common.CustomControl.NumberText();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.tpBag = new System.Windows.Forms.TabPage();
             this.tcInfo = new System.Windows.Forms.TabControl();
+            this.tpBag = new System.Windows.Forms.TabPage();
             this.bagItemBox1 = new WLUtility.CustomControl.BagItemBox();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tpWoodMan = new System.Windows.Forms.TabPage();
+            this.label1 = new System.Windows.Forms.Label();
+            this.numWoodManPos = new Magician.Common.CustomControl.NumberText();
+            this.btnExecWoodMan = new System.Windows.Forms.Button();
+            this.tpSellItem = new System.Windows.Forms.TabPage();
+            this.btnDelSellItem = new System.Windows.Forms.Button();
+            this.lbAutoSellItem = new System.Windows.Forms.ListBox();
+            this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
-            this.tpBag.SuspendLayout();
             this.tcInfo.SuspendLayout();
+            this.tpBag.SuspendLayout();
+            this.groupBox3.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tpWoodMan.SuspendLayout();
+            this.tpSellItem.SuspendLayout();
+            this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
             // rtxtLog
@@ -83,11 +91,40 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "信息区";
             // 
+            // tcInfo
+            // 
+            this.tcInfo.Controls.Add(this.tpBag);
+            this.tcInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tcInfo.Location = new System.Drawing.Point(4, 24);
+            this.tcInfo.Name = "tcInfo";
+            this.tcInfo.SelectedIndex = 0;
+            this.tcInfo.Size = new System.Drawing.Size(251, 468);
+            this.tcInfo.TabIndex = 0;
+            // 
+            // tpBag
+            // 
+            this.tpBag.Controls.Add(this.bagItemBox1);
+            this.tpBag.Location = new System.Drawing.Point(4, 29);
+            this.tpBag.Name = "tpBag";
+            this.tpBag.Padding = new System.Windows.Forms.Padding(3);
+            this.tpBag.Size = new System.Drawing.Size(243, 435);
+            this.tpBag.TabIndex = 0;
+            this.tpBag.Text = "背包";
+            this.tpBag.UseVisualStyleBackColor = true;
+            // 
+            // bagItemBox1
+            // 
+            this.bagItemBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bagItemBox1.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.bagItemBox1.Location = new System.Drawing.Point(3, 3);
+            this.bagItemBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.bagItemBox1.Name = "bagItemBox1";
+            this.bagItemBox1.Size = new System.Drawing.Size(237, 429);
+            this.bagItemBox1.TabIndex = 0;
+            // 
             // groupBox3
             // 
-            this.groupBox3.Controls.Add(this.rbWoodMan);
-            this.groupBox3.Controls.Add(this.btnExec);
-            this.groupBox3.Controls.Add(this.num1);
+            this.groupBox3.Controls.Add(this.tabControl1);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox3.Location = new System.Drawing.Point(259, 467);
             this.groupBox3.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -98,75 +135,129 @@
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "功能区";
             // 
-            // rbWoodMan
+            // tabControl1
             // 
-            this.rbWoodMan.AutoSize = true;
-            this.rbWoodMan.Location = new System.Drawing.Point(140, 31);
-            this.rbWoodMan.Name = "rbWoodMan";
-            this.rbWoodMan.Size = new System.Drawing.Size(69, 24);
-            this.rbWoodMan.TabIndex = 2;
-            this.rbWoodMan.TabStop = true;
-            this.rbWoodMan.Text = "木人桩";
-            this.rbWoodMan.UseVisualStyleBackColor = true;
+            this.tabControl1.Controls.Add(this.tpWoodMan);
+            this.tabControl1.Controls.Add(this.tpSellItem);
+            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tabControl1.Location = new System.Drawing.Point(4, 24);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(565, 156);
+            this.tabControl1.TabIndex = 3;
             // 
-            // btnExec
+            // tpWoodMan
             // 
-            this.btnExec.Location = new System.Drawing.Point(64, 29);
-            this.btnExec.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.btnExec.Name = "btnExec";
-            this.btnExec.Size = new System.Drawing.Size(59, 27);
-            this.btnExec.TabIndex = 1;
-            this.btnExec.Text = "执行";
-            this.btnExec.UseVisualStyleBackColor = true;
-            this.btnExec.Click += new System.EventHandler(this.btnExec_Click);
+            this.tpWoodMan.Controls.Add(this.label1);
+            this.tpWoodMan.Controls.Add(this.numWoodManPos);
+            this.tpWoodMan.Controls.Add(this.btnExecWoodMan);
+            this.tpWoodMan.Location = new System.Drawing.Point(4, 29);
+            this.tpWoodMan.Name = "tpWoodMan";
+            this.tpWoodMan.Padding = new System.Windows.Forms.Padding(3);
+            this.tpWoodMan.Size = new System.Drawing.Size(557, 123);
+            this.tpWoodMan.TabIndex = 0;
+            this.tpWoodMan.Text = "木人桩";
+            this.tpWoodMan.UseVisualStyleBackColor = true;
             // 
-            // num1
+            // label1
             // 
-            this.num1.BackColor = System.Drawing.Color.Transparent;
-            this.num1.DecimalPlaces = 0;
-            this.num1.DownBack = null;
-            this.num1.Icon = null;
-            this.num1.IconIsButton = false;
-            this.num1.IconMouseState = CCWin.SkinClass.ControlState.Normal;
-            this.num1.IsPasswordChat = '\0';
-            this.num1.IsSystemPasswordChar = false;
-            this.num1.Lines = new string[0];
-            this.num1.Location = new System.Drawing.Point(16, 28);
-            this.num1.Margin = new System.Windows.Forms.Padding(0);
-            this.num1.MaxLength = 0;
-            this.num1.MaxValue = 100;
-            this.num1.MinimumSize = new System.Drawing.Size(37, 27);
-            this.num1.MinValue = 1;
-            this.num1.MouseBack = null;
-            this.num1.MouseState = CCWin.SkinClass.ControlState.Normal;
-            this.num1.Multiline = true;
-            this.num1.Name = "num1";
-            this.num1.NormlBack = null;
-            this.num1.Padding = new System.Windows.Forms.Padding(7, 4, 7, 4);
-            this.num1.ReadOnly = false;
-            this.num1.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.num1.ShowErrorProvider = false;
-            this.num1.Size = new System.Drawing.Size(44, 30);
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(66, 20);
+            this.label1.TabIndex = 2;
+            this.label1.Text = "EventNo";
+            // 
+            // numWoodManPos
+            // 
+            this.numWoodManPos.BackColor = System.Drawing.Color.Transparent;
+            this.numWoodManPos.DecimalPlaces = 0;
+            this.numWoodManPos.DownBack = null;
+            this.numWoodManPos.Icon = null;
+            this.numWoodManPos.IconIsButton = false;
+            this.numWoodManPos.IconMouseState = CCWin.SkinClass.ControlState.Normal;
+            this.numWoodManPos.IsPasswordChat = '\0';
+            this.numWoodManPos.IsSystemPasswordChar = false;
+            this.numWoodManPos.Lines = new string[0];
+            this.numWoodManPos.Location = new System.Drawing.Point(75, 10);
+            this.numWoodManPos.Margin = new System.Windows.Forms.Padding(0);
+            this.numWoodManPos.MaxLength = 0;
+            this.numWoodManPos.MaxValue = 100;
+            this.numWoodManPos.MinimumSize = new System.Drawing.Size(37, 27);
+            this.numWoodManPos.MinValue = 1;
+            this.numWoodManPos.MouseBack = null;
+            this.numWoodManPos.MouseState = CCWin.SkinClass.ControlState.Normal;
+            this.numWoodManPos.Multiline = true;
+            this.numWoodManPos.Name = "numWoodManPos";
+            this.numWoodManPos.NormlBack = null;
+            this.numWoodManPos.Padding = new System.Windows.Forms.Padding(7, 4, 7, 4);
+            this.numWoodManPos.ReadOnly = false;
+            this.numWoodManPos.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.numWoodManPos.ShowErrorProvider = false;
+            this.numWoodManPos.Size = new System.Drawing.Size(44, 30);
             // 
             // 
             // 
-            this.num1.SkinTxt.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.num1.SkinTxt.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.num1.SkinTxt.Font = new System.Drawing.Font("微软雅黑", 9.75F);
-            this.num1.SkinTxt.Location = new System.Drawing.Point(7, 4);
-            this.num1.SkinTxt.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.num1.SkinTxt.MaxLength = 255;
-            this.num1.SkinTxt.Multiline = true;
-            this.num1.SkinTxt.Name = "BaseText";
-            this.num1.SkinTxt.Size = new System.Drawing.Size(30, 22);
-            this.num1.SkinTxt.TabIndex = 0;
-            this.num1.SkinTxt.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
-            this.num1.SkinTxt.WaterText = "";
-            this.num1.TabIndex = 0;
-            this.num1.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
-            this.num1.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
-            this.num1.WaterText = "";
-            this.num1.WordWrap = true;
+            this.numWoodManPos.SkinTxt.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.numWoodManPos.SkinTxt.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.numWoodManPos.SkinTxt.Font = new System.Drawing.Font("微软雅黑", 9.75F);
+            this.numWoodManPos.SkinTxt.Location = new System.Drawing.Point(7, 4);
+            this.numWoodManPos.SkinTxt.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.numWoodManPos.SkinTxt.MaxLength = 255;
+            this.numWoodManPos.SkinTxt.Multiline = true;
+            this.numWoodManPos.SkinTxt.Name = "BaseText";
+            this.numWoodManPos.SkinTxt.Size = new System.Drawing.Size(30, 22);
+            this.numWoodManPos.SkinTxt.TabIndex = 0;
+            this.numWoodManPos.SkinTxt.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
+            this.numWoodManPos.SkinTxt.WaterText = "";
+            this.numWoodManPos.TabIndex = 0;
+            this.numWoodManPos.TextAlign = System.Windows.Forms.HorizontalAlignment.Left;
+            this.numWoodManPos.WaterColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(127)))), ((int)(((byte)(127)))));
+            this.numWoodManPos.WaterText = "";
+            this.numWoodManPos.WordWrap = true;
+            // 
+            // btnExecWoodMan
+            // 
+            this.btnExecWoodMan.Location = new System.Drawing.Point(123, 11);
+            this.btnExecWoodMan.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.btnExecWoodMan.Name = "btnExecWoodMan";
+            this.btnExecWoodMan.Size = new System.Drawing.Size(59, 27);
+            this.btnExecWoodMan.TabIndex = 1;
+            this.btnExecWoodMan.Text = "执行";
+            this.btnExecWoodMan.UseVisualStyleBackColor = true;
+            this.btnExecWoodMan.Click += new System.EventHandler(this.btnExecWoodMan_Click);
+            // 
+            // tpSellItem
+            // 
+            this.tpSellItem.Controls.Add(this.btnDelSellItem);
+            this.tpSellItem.Controls.Add(this.lbAutoSellItem);
+            this.tpSellItem.Location = new System.Drawing.Point(4, 29);
+            this.tpSellItem.Name = "tpSellItem";
+            this.tpSellItem.Padding = new System.Windows.Forms.Padding(3);
+            this.tpSellItem.Size = new System.Drawing.Size(557, 123);
+            this.tpSellItem.TabIndex = 1;
+            this.tpSellItem.Text = "贩卖";
+            this.tpSellItem.UseVisualStyleBackColor = true;
+            // 
+            // btnDelSellItem
+            // 
+            this.btnDelSellItem.Location = new System.Drawing.Point(145, 6);
+            this.btnDelSellItem.Name = "btnDelSellItem";
+            this.btnDelSellItem.Size = new System.Drawing.Size(75, 30);
+            this.btnDelSellItem.TabIndex = 1;
+            this.btnDelSellItem.Text = "删除";
+            this.btnDelSellItem.UseVisualStyleBackColor = true;
+            this.btnDelSellItem.Click += new System.EventHandler(this.btnDelSellItem_Click);
+            // 
+            // lbAutoSellItem
+            // 
+            this.lbAutoSellItem.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lbAutoSellItem.FormattingEnabled = true;
+            this.lbAutoSellItem.ItemHeight = 20;
+            this.lbAutoSellItem.Location = new System.Drawing.Point(3, 3);
+            this.lbAutoSellItem.Name = "lbAutoSellItem";
+            this.lbAutoSellItem.Size = new System.Drawing.Size(136, 117);
+            this.lbAutoSellItem.TabIndex = 0;
             // 
             // groupBox4
             // 
@@ -180,37 +271,6 @@
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "日志区";
-            // 
-            // tpBag
-            // 
-            this.tpBag.Controls.Add(this.bagItemBox1);
-            this.tpBag.Location = new System.Drawing.Point(4, 29);
-            this.tpBag.Name = "tpBag";
-            this.tpBag.Padding = new System.Windows.Forms.Padding(3);
-            this.tpBag.Size = new System.Drawing.Size(243, 435);
-            this.tpBag.TabIndex = 0;
-            this.tpBag.Text = "背包";
-            this.tpBag.UseVisualStyleBackColor = true;
-            // 
-            // tcInfo
-            // 
-            this.tcInfo.Controls.Add(this.tpBag);
-            this.tcInfo.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tcInfo.Location = new System.Drawing.Point(4, 24);
-            this.tcInfo.Name = "tcInfo";
-            this.tcInfo.SelectedIndex = 0;
-            this.tcInfo.Size = new System.Drawing.Size(251, 468);
-            this.tcInfo.TabIndex = 0;
-            // 
-            // bagItemBox1
-            // 
-            this.bagItemBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bagItemBox1.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.bagItemBox1.Location = new System.Drawing.Point(3, 3);
-            this.bagItemBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.bagItemBox1.Name = "bagItemBox1";
-            this.bagItemBox1.Size = new System.Drawing.Size(237, 429);
-            this.bagItemBox1.TabIndex = 0;
             // 
             // RoleControl
             // 
@@ -226,11 +286,14 @@
             this.Name = "RoleControl";
             this.Size = new System.Drawing.Size(832, 652);
             this.groupBox2.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.tpBag.ResumeLayout(false);
             this.tcInfo.ResumeLayout(false);
+            this.tpBag.ResumeLayout(false);
+            this.groupBox3.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
+            this.tpWoodMan.ResumeLayout(false);
+            this.tpWoodMan.PerformLayout();
+            this.tpSellItem.ResumeLayout(false);
+            this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -241,11 +304,16 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.Button btnExec;
-        private Magician.Common.CustomControl.NumberText num1;
-        private System.Windows.Forms.RadioButton rbWoodMan;
+        private System.Windows.Forms.Button btnExecWoodMan;
+        private Magician.Common.CustomControl.NumberText numWoodManPos;
         private System.Windows.Forms.TabControl tcInfo;
         private System.Windows.Forms.TabPage tpBag;
         private BagItemBox bagItemBox1;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tpWoodMan;
+        private System.Windows.Forms.TabPage tpSellItem;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ListBox lbAutoSellItem;
+        private System.Windows.Forms.Button btnDelSellItem;
     }
 }

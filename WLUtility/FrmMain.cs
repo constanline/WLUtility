@@ -103,7 +103,7 @@ namespace WLUtility
             }
             else
             {
-                rtxtLog.AppendText(msg);
+                rtxtLog.AppendText($"{DateTime.Now:yyyy-MM-dd HH:mm:ss}:{msg}\r\n");
             }
         }
 
@@ -119,6 +119,7 @@ namespace WLUtility
 
         private void Inject()
         {
+            var path = Application.StartupPath + "\\WLHook.dll";
             if (!_isInjected)
             {
                 if (_socketEngine.IsRunning)
@@ -141,7 +142,7 @@ namespace WLUtility
                 _processId = (uint)processes[0].Id;
 
                 DllHelper.SetTargetPid(_processId);
-                var result = InjectHelper.GetInstance.Inject(_processId, "WLHook.dll");
+                var result = InjectHelper.GetInstance.Inject(_processId, path);
                 if (result != DllInjectionResult.Success) return;
                 _isInjected = true;
                 _socketEngine.StartForward();
@@ -149,7 +150,8 @@ namespace WLUtility
             }
             else
             {
-                if (InjectHelper.GetInstance.UnInject(_processId, "WLHook.dll") != DllInjectionResult.Success) return;
+                _socketEngine.StopForward();
+                if (InjectHelper.GetInstance.UnInject(_processId, path) != DllInjectionResult.Success) return;
 
                 LogHelper.Log(GetLanguageString("UnInjectSuccess"));
                 _isInjected = false;

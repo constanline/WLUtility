@@ -1,4 +1,8 @@
-﻿using WLUtility.DataManager;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using WLUtility.Core;
+using WLUtility.DataManager;
 
 namespace WLUtility.Model
 {
@@ -16,8 +20,19 @@ namespace WLUtility.Model
 
         public int Gold { get; set; }
 
-        public PlayerInfo()
+        public List<ushort> AutoSellItemList { get; } = new List<ushort>();
+
+        public bool IsAutoSell { get; set; } = false;
+
+        public event Action AutoSellItemUpdated;
+
+        private readonly ProxySocket _socket;
+
+        private bool _isAutoSelling = false;
+
+        public PlayerInfo(ProxySocket socket)
         {
+            _socket = socket;
             for (var i = 1; i <= 50; i++)
             {
                 BagItems[i] = new BagItem();
@@ -30,6 +45,59 @@ namespace WLUtility.Model
             {
                 Pets[i] = new Pet();
             }
+            AutoSellItemUpdated += PlayerInfo_AutoSellItemUpdated;
+        }
+
+        public void SellItem()
+        {
+            _isAutoSelling = true;
+            var bagItems = BagItems;
+            for (byte i = 1; i <= 50; i++)
+            {
+                if (bagItems[i].Id > 0)
+                {
+                    if (AutoSellItemList.Contains(bagItems[i].Id))
+                    {
+                        _socket.SendPacket(new PacketBuilder(0x1B, 0x03).Add(i).Build());
+                        return;
+                    }
+                }
+            }
+            _isAutoSelling = false;
+        }
+
+        private void PlayerInfo_AutoSellItemUpdated()
+        {
+            using (var db = new MyDbContext())
+            {
+                var ex = from r in db.AccountList where r.RoleId == Id select r;
+                var account = ex.First();
+                if (account != null)
+                {
+                    account.AutoSellItem = string.Join("|", AutoSellItemList.ToArray());
+                    db.SaveChanges();
+                }
+            }
+            if (!_isAutoSelling)
+            {
+                SellItem();
+            }
+        }
+
+        public void AddAutoSellItemIdx(int idx)
+        {
+            if (idx <= 0 || idx >= BagItems.Length || BagItems[idx].Id == 0) return;
+            AutoSellItemList.Add(BagItems[idx].Id);
+
+            AutoSellItemUpdated?.Invoke();
+        }
+
+        public void DelAutoSellItemIdx(int idx)
+        {
+            if (AutoSellItemList.Count <= idx) return;
+            AutoSellItemList.RemoveAt(idx);
+
+            AutoSellItemUpdated?.Invoke();
         }
 
         public void AddBagItem(ushort id, byte qty, byte damage, int durable, byte defPos = 0)

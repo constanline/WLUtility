@@ -104,6 +104,8 @@ namespace WLUtility.Engine
                 _socket.PlayerInfo.AddBagItem(id, qty, damage, durable, pos);
             }
             _socket.UpdateBag(bagItems);
+
+            _socket.PlayerInfo.SellItem();
         }
 
         private void SetGold(List<byte> packet)
@@ -123,6 +125,8 @@ namespace WLUtility.Engine
             _socket.PlayerInfo.AddBagItem(id, qty, damage, durable);
 
             _socket.UpdateBag(_socket.PlayerInfo.BagItems);
+
+            _socket.PlayerInfo.SellItem();
         }
 
         private void DelItem(List<byte> packet)
@@ -173,18 +177,18 @@ namespace WLUtility.Engine
         private void SoldItem(List<byte> packet)
         {
             var offset = 6;
-            offset += 4;
-            // var gold = ByteUtil.ReadPacket<int>(packet, ref offset);
+            var gold = ByteUtil.ReadPacket<int>(packet, ref offset);
             var pos = ByteUtil.ReadPacket<byte>(packet, ref offset);
             var qty = ByteUtil.ReadPacket<byte>(packet, ref offset);
             _socket.PlayerInfo.DelBagItemWithPos(pos, qty);
 
             //增加金币
-            // _socket.LocalSocket.Send(new PacketBuilder(0x1A, 0x04).Add(_socket.PlayerInfo.Gold + gold).Build());
+            _socket.RevPacket(new PacketBuilder(0x1A, 0x01).Add(gold).Build());
             //移除物品
             _socket.RevPacket(new PacketBuilder(0x17, 0x09).Add(pos).Add(qty).Build());
 
             _socket.UpdateBag(_socket.PlayerInfo.BagItems);
+            _socket.PlayerInfo.SellItem();
         }
 
         private void InitEquip(List<byte> buffer)

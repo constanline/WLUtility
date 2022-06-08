@@ -22,6 +22,8 @@ namespace WLUtility.Core
 
         public DbSet<Item> ItemList { get; set; }
 
+        public DbSet<Account> AccountList { get; set; }
+
         public MyDbContext() : base("ConnStr")
         {
         }

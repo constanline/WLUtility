@@ -31,12 +31,13 @@ namespace WLUtility.CustomControl
         {
             this.components = new System.ComponentModel.Container();
             this.dgvItem = new System.Windows.Forms.DataGridView();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsmiSellItem = new System.Windows.Forms.ToolStripMenuItem();
             this.dgvItem_Pos = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvItem_Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvItem_Qty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dgvItem_Durable = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiSellItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiAutoSell = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItem)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -65,20 +66,6 @@ namespace WLUtility.CustomControl
             this.dgvItem.TabIndex = 0;
             this.dgvItem.CellFormatting += new System.Windows.Forms.DataGridViewCellFormattingEventHandler(this.dgvItem_CellFormatting);
             this.dgvItem.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dgvItem_CellMouseDown);
-            // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiSellItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(116, 26);
-            // 
-            // tsmiSellItem
-            // 
-            this.tsmiSellItem.Name = "tsmiSellItem";
-            this.tsmiSellItem.Size = new System.Drawing.Size(115, 22);
-            this.tsmiSellItem.Text = "出售(&S)";
-            this.tsmiSellItem.Click += new System.EventHandler(this.tsmiSellItem_Click);
             // 
             // dgvItem_Pos
             // 
@@ -110,6 +97,28 @@ namespace WLUtility.CustomControl
             this.dgvItem_Durable.Name = "dgvItem_Durable";
             this.dgvItem_Durable.ReadOnly = true;
             // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiSellItem,
+            this.tsmiAutoSell});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 70);
+            // 
+            // tsmiSellItem
+            // 
+            this.tsmiSellItem.Name = "tsmiSellItem";
+            this.tsmiSellItem.Size = new System.Drawing.Size(180, 22);
+            this.tsmiSellItem.Text = "出售(&S)";
+            this.tsmiSellItem.Click += new System.EventHandler(this.tsmiSellItem_Click);
+            // 
+            // tsmiAutoSell
+            // 
+            this.tsmiAutoSell.Name = "tsmiAutoSell";
+            this.tsmiAutoSell.Size = new System.Drawing.Size(180, 22);
+            this.tsmiAutoSell.Text = "添加到自动出售";
+            this.tsmiAutoSell.Click += new System.EventHandler(this.tsmiAutoSell_Click);
+            // 
             // BagItemBox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -134,5 +143,6 @@ namespace WLUtility.CustomControl
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvItem_Name;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvItem_Qty;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvItem_Durable;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAutoSell;
     }
 }

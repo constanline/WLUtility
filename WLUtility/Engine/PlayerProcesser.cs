@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using WLUtility.Core;
 using WLUtility.DataManager;
 using WLUtility.Helper;
@@ -43,6 +44,37 @@ namespace WLUtility.Engine
                         var equipId = ByteUtil.ReadPacket<ushort>(packet, ref idx);
                         var equipPos = DataManagers.ItemManager.GetOne(equipId).FitType;
                         _socket.PlayerInfo.Equips[equipPos].Id = equipId;
+                    }
+
+                    using (var db = new MyDbContext())
+                    {
+                        var ex = from r in db.AccountList where r.RoleId == playerId select r;
+                        var account = ex.FirstOrDefault();
+                        if (account != null)
+                        {
+                            var spSellItem = account.AutoSellItem.Split('|');
+                            foreach (var item in spSellItem)
+                            {
+                                if (ushort.TryParse(item, out var id))
+                                {
+                                    _socket.PlayerInfo.AutoSellItemList.Add(id);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            account = new Data.Account
+                            {
+                                RoleId = playerId,
+                                Username = _socket.PlayerInfo.Username,
+                                IsAutoSell = false,
+                                AutoSellItem = "",
+                                Role = _socket.PlayerInfo.Id > 4500000 ? 2 : 1
+                            };
+                            db.AccountList.Add(account);
+                            var list = (from r in db.AccountList where r.RoleId == playerId select r).ToList();
+                            db.SaveChanges();
+                        }
                     }
                 }
             }

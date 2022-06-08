@@ -21,6 +21,8 @@ namespace WLUtility.Core
 
         public event Action<BagItem[]> BagUpdated;
 
+        public event Action AutoSellItemUpdated;
+
         public PlayerInfo PlayerInfo { get; }
 
         public WoodManInfo WoodManInfo { get; }
@@ -259,7 +261,7 @@ namespace WLUtility.Core
                 new WoodManProcesser(this),
                 new PetProcesser(this)
             };
-            PlayerInfo = new PlayerInfo();
+            PlayerInfo = new PlayerInfo(this);
             WoodManInfo = new WoodManInfo(this);
 
             LocalSocket = localSocket;
@@ -317,8 +319,9 @@ namespace WLUtility.Core
                             break;
                         }
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        LogHelper.SilentLog(ex);
                         break;
                     }
                 }
