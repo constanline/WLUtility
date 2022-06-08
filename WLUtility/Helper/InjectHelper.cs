@@ -99,7 +99,7 @@ namespace WLUtility.Helper
             if (hProcess == IntPtr.Zero)
                 return false;
 
-            var bytes = Encoding.ASCII.GetBytes(sDllPath);
+            var bytes = Encoding.Default.GetBytes(sDllPath);
 
             var lpAddress = VirtualAllocEx(hProcess, IntPtr.Zero, (uint) bytes.Length, 0x1000, 0X04);
             if (lpAddress == IntPtr.Zero)

@@ -120,6 +120,7 @@ namespace WLUtility
         private void Inject()
         {
             var path = Application.StartupPath + "\\WLHook.dll";
+            //var path = "WLHook.dll";
             if (!_isInjected)
             {
                 if (_socketEngine.IsRunning)

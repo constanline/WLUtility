@@ -28,7 +28,7 @@ namespace WLUtility.Model
 
         private readonly ProxySocket _socket;
 
-        private bool _isAutoSelling = false;
+        private bool _isAutoSelling;
 
         public PlayerInfo(ProxySocket socket)
         {
@@ -45,6 +45,41 @@ namespace WLUtility.Model
             {
                 Pets[i] = new Pet();
             }
+        }
+
+        public void InitPlayerAccount()
+        {
+            using (var db = new MyDbContext())
+            {
+                var ex = from r in db.AccountList where r.RoleId == Id select r;
+                var account = ex.FirstOrDefault();
+                if (account != null)
+                {
+                    var spSellItem = account.AutoSellItem.Split('|');
+                    foreach (var item in spSellItem)
+                    {
+                        if (ushort.TryParse(item, out var id))
+                        {
+                            AutoSellItemList.Add(id);
+                        }
+                    }
+                }
+                else
+                {
+                    account = new Data.Account
+                    {
+                        RoleId = Id,
+                        Username = Username,
+                        IsAutoSell = false,
+                        AutoSellItem = "",
+                        Role = Id > 4500000 ? 2 : 1
+                    };
+                    db.AccountList.Add(account);
+                    db.SaveChanges();
+                }
+            }
+            AutoSellItemUpdated?.Invoke();
+
             AutoSellItemUpdated += PlayerInfo_AutoSellItemUpdated;
         }
 
@@ -87,6 +122,7 @@ namespace WLUtility.Model
         public void AddAutoSellItemIdx(int idx)
         {
             if (idx <= 0 || idx >= BagItems.Length || BagItems[idx].Id == 0) return;
+            if (AutoSellItemList.Contains(BagItems[idx].Id)) return;
             AutoSellItemList.Add(BagItems[idx].Id);
 
             AutoSellItemUpdated?.Invoke();

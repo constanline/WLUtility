@@ -21,8 +21,6 @@ namespace WLUtility.Core
 
         public event Action<BagItem[]> BagUpdated;
 
-        public event Action AutoSellItemUpdated;
-
         public PlayerInfo PlayerInfo { get; }
 
         public WoodManInfo WoodManInfo { get; }
@@ -332,6 +330,7 @@ namespace WLUtility.Core
 
         public int DirectSendPacket(byte[] packet)
         {
+            if (!RemoteSocket.Connected) return 0;
             if (GlobalSetting.RecordPacket)
             {
                 LogHelper.LogPacket(packet, true);
@@ -357,6 +356,7 @@ namespace WLUtility.Core
 
         public int RevPacket(byte[] buffer)
         {
+            if(!LocalSocket.Connected) return 0;
             var cLen = buffer.Length;
             var packet = new byte[cLen + 4];
             packet[0] = HEAD_BYTE[0];

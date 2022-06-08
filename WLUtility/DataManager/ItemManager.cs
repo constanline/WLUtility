@@ -48,7 +48,7 @@ namespace WLUtility.DataManager
         {
             if (USE_CACHE)
             {
-                return _dicData.ContainsKey(id) ? _dicData[id].Name : null;
+                return _dicData.ContainsKey(id) ? _dicData[id].Name : "未知物品";
             }
             else
             {

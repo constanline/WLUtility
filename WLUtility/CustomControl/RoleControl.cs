@@ -1,7 +1,9 @@
 ﻿using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 using Magician.Common.Logger;
 using WLUtility.Core;
+using WLUtility.DataManager;
 using WLUtility.Helper;
 
 namespace WLUtility.CustomControl
@@ -32,7 +34,7 @@ namespace WLUtility.CustomControl
 
         private void PlayerInfo_AutoSellItemUpdated()
         {
-            lbAutoSellItem.DataSource = _socket.PlayerInfo.AutoSellItemList;
+            lbAutoSellItem.DataSource = _socket.PlayerInfo.AutoSellItemList.Select(e => DataManagers.ItemManager.GetName(e)).ToList();
             lbAutoSellItem.Refresh();
         }
 

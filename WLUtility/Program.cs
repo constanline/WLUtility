@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace WLUtility
@@ -11,9 +12,18 @@ namespace WLUtility
         [STAThread]
         private static void Main()
         {
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new FrmMain());
+            var mutex = new Mutex(true, Application.ProductName, out var ret);
+            if (ret)
+            {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+                Application.Run(new FrmMain());
+                mutex.ReleaseMutex();
+            }
+            else
+            {
+                Application.Exit();  
+            }
         }
     }
 }
