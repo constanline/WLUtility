@@ -264,6 +264,20 @@ namespace WLUtility.Engine
 
             _socket.PlayerInfo.Equips[equipPos].Damage = damage;
             _socket.Log(_socket.PlayerInfo.Equips[equipPos].Name + "损坏度" + damage + "/250");
+            if (damage > 240)
+            {
+                _socket.Log("尝试自动卸下装备" + _socket.PlayerInfo.Equips[equipPos].Name);
+                var emptyPos = _socket.PlayerInfo.FindEmptyPos();
+                if (emptyPos == 0)
+                {
+                    _socket.Log("空间不足" + _socket.PlayerInfo.Equips[equipPos].Name);
+                }
+                else
+                {
+                    _socket.SendPacket(new PacketBuilder(0x17, 0x0C).Add(equipPos).Add(emptyPos)
+                        .Build());
+                }
+            }
             if (damage >= 250)_socket.Log(_socket.PlayerInfo.Equips[equipPos].Name + "毁坏！");
         }
 
@@ -280,6 +294,22 @@ namespace WLUtility.Engine
 
             npc.Equips[equipPos].Damage = damage;
             _socket.Log(npc.Equips[equipPos].Name + "损坏度" + damage + "/250");
+            if (damage > 240)
+            {
+                _socket.Log("尝试自动卸下装备" + _socket.PlayerInfo.Equips[equipPos].Name);
+                var emptyPos = _socket.PlayerInfo.FindEmptyPos();
+                if (emptyPos == 0)
+                {
+                    _socket.Log("空间不足" + _socket.PlayerInfo.Equips[equipPos].Name);
+                }
+                else
+                {
+                    _socket.SendPacket(new PacketBuilder(0x17, 0x12).Add(npcPos).Add(equipPos)
+                        .Add(_socket.PlayerInfo.FindEmptyPos())
+                        .Build());
+                }
+            }
+
             if (damage >= 250) _socket.Log(npc.Equips[equipPos].Name + "毁坏！");
         }
 

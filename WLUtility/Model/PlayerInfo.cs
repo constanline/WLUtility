@@ -203,7 +203,7 @@ namespace WLUtility.Model
             return pos;
         }
 
-        private byte FindEmptyPos()
+        public byte FindEmptyPos()
         {
             byte pos = 0;
             for (byte i = 1; i <= 50; i++)
