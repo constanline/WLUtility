@@ -249,6 +249,7 @@ namespace WLUtility.Engine
             _socket.RevPacket(new PacketBuilder(0x17, 0x09).Add(pos).Add(qty).Build());
 
             _socket.UpdateBag(_socket.PlayerInfo.BagItems);
+            _socket.PlayerInfo.IsAutoSelling = false;
             _socket.PlayerInfo.SellItem();
         }
 

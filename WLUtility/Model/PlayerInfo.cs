@@ -36,7 +36,7 @@ namespace WLUtility.Model
 
         private readonly ProxySocket _socket;
 
-        private bool _isAutoSelling;
+        public bool IsAutoSelling;
 
         public PlayerInfo(ProxySocket socket)
         {
@@ -84,9 +84,9 @@ namespace WLUtility.Model
         public void SellItem()
         {
             if(!IsAutoSell)return;
-            if (_isAutoSelling) return;
+            if (IsAutoSelling) return;
 
-            _isAutoSelling = true;
+            IsAutoSelling = true;
             var bagItems = BagItems;
             for (byte i = 1; i <= 50; i++)
             {
@@ -108,7 +108,7 @@ namespace WLUtility.Model
                     }
                 }
             }
-            _isAutoSelling = false;
+            IsAutoSelling = false;
         }
 
         private void PlayerInfo_AutoSellItemUpdated()
