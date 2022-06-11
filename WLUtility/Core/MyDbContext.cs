@@ -8,21 +8,9 @@ namespace WLUtility.Core
     {
         private static MyDbContext _instance;
 
-        public static MyDbContext Instance
-        {
-            get
-            {
-                if (_instance == null)
-                {
-                    _instance = new MyDbContext();
-                }
-                return _instance;
-            }
-        }
+        public static MyDbContext Instance => _instance ?? (_instance = new MyDbContext());
 
         public DbSet<Item> ItemList { get; set; }
-
-        public DbSet<Account> AccountList { get; set; }
 
         public MyDbContext() : base("ConnStr")
         {

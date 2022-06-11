@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using WLUtility.Core;
 using WLUtility.DataManager;
 using WLUtility.Helper;
@@ -28,7 +27,7 @@ namespace WLUtility.Engine
                     _socket.RevLoginRole();
                 }
             }
-            if (aType == 0x03)
+            else if (aType == 0x03)
             {
                 var idx = 5;
                 var playerId = ByteUtil.ReadPacket<int>(packet, ref idx);
@@ -36,7 +35,7 @@ namespace WLUtility.Engine
                 if (mainId == _socket.PlayerInfo.Id)
                 {
                     _socket.PlayerInfo.Id = playerId;
-                    idx += 7;
+                    idx += 18;
 
                     var b = ByteUtil.ReadPacket<byte>(packet, ref idx);
                     for (var j = 1; j <= b; j++)
@@ -45,6 +44,11 @@ namespace WLUtility.Engine
                         var equipPos = DataManagers.ItemManager.GetOne(equipId).FitType;
                         _socket.PlayerInfo.Equips[equipPos].Id = equipId;
                     }
+
+                    idx += 4;
+                    var len = ByteUtil.ReadPacket<byte>(packet, ref idx);
+                    _socket.PlayerInfo.Name = ByteUtil.ReadPacket<string>(packet, ref idx, len);
+
                     _socket.PlayerInfo.InitPlayerAccount();
                 }
             }

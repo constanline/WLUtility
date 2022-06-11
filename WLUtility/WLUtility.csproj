@@ -139,6 +139,7 @@
     <Compile Include="Data\Account.cs" />
     <Compile Include="Data\Item.cs" />
     <Compile Include="Engine\PetProcesser.cs" />
+    <Compile Include="Helper\IniHelper.cs" />
     <Compile Include="Model\BagItem.cs" />
     <Compile Include="Model\Pet.cs" />
     <Compile Include="Model\PlayerInfo.cs" />

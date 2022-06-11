@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using WLUtility.Core;
 using WLUtility.DataManager;
+using WLUtility.Helper;
 
 namespace WLUtility.Model
 {
@@ -20,11 +20,19 @@ namespace WLUtility.Model
 
         public int Gold { get; set; }
 
+        public string Name { get; set; }
+
+        public byte Level { get; set; }
+
         public List<ushort> AutoSellItemList { get; } = new List<ushort>();
 
         public bool IsAutoSell { get; set; } = false;
 
+        public byte DropWhenDamage { get; set; } = 240;
+
         public event Action AutoSellItemUpdated;
+
+        public event Action InfoUpdate;
 
         private readonly ProxySocket _socket;
 
@@ -49,35 +57,17 @@ namespace WLUtility.Model
 
         public void InitPlayerAccount()
         {
-            using (var db = new MyDbContext())
+            var autoSellItem = IniHelper.Account.GetString(Id.ToString(), "AutoSellItem");
+            var spSellItem = autoSellItem.Split('|');
+            foreach (var item in spSellItem)
             {
-                var ex = from r in db.AccountList where r.RoleId == Id select r;
-                var account = ex.FirstOrDefault();
-                if (account != null)
+                if (ushort.TryParse(item, out var id))
                 {
-                    var spSellItem = account.AutoSellItem.Split('|');
-                    foreach (var item in spSellItem)
-                    {
-                        if (ushort.TryParse(item, out var id))
-                        {
-                            AutoSellItemList.Add(id);
-                        }
-                    }
-                }
-                else
-                {
-                    account = new Data.Account
-                    {
-                        RoleId = Id,
-                        Username = Username,
-                        IsAutoSell = false,
-                        AutoSellItem = "",
-                        Role = Id > 4500000 ? 2 : 1
-                    };
-                    db.AccountList.Add(account);
-                    db.SaveChanges();
+                    AutoSellItemList.Add(id);
                 }
             }
+            InfoUpdate?.Invoke();
+
             AutoSellItemUpdated?.Invoke();
 
             AutoSellItemUpdated += PlayerInfo_AutoSellItemUpdated;
@@ -91,7 +81,7 @@ namespace WLUtility.Model
             {
                 if (bagItems[i].Id > 0)
                 {
-                    if (AutoSellItemList.Contains(bagItems[i].Id))
+                    if (AutoSellItemList.Contains(bagItems[i].Id) && (bagItems[i].Qty == 50 || !DataManagers.ItemManager.IsOverlap(bagItems[i].Id)))
                     {
                         _socket.SendPacket(new PacketBuilder(0x1B, 0x03).Add(i).Build());
                         return;
@@ -103,16 +93,9 @@ namespace WLUtility.Model
 
         private void PlayerInfo_AutoSellItemUpdated()
         {
-            using (var db = new MyDbContext())
-            {
-                var ex = from r in db.AccountList where r.RoleId == Id select r;
-                var account = ex.First();
-                if (account != null)
-                {
-                    account.AutoSellItem = string.Join("|", AutoSellItemList.ToArray());
-                    db.SaveChanges();
-                }
-            }
+            var autoSellItem = string.Join("|", AutoSellItemList.ToArray());
+            IniHelper.Account.WriteString(Id.ToString(), "AutoSellItem", autoSellItem);
+
             if (!_isAutoSelling)
             {
                 SellItem();
@@ -203,10 +186,10 @@ namespace WLUtility.Model
             return pos;
         }
 
-        public byte FindEmptyPos()
+        public byte FindEmptyPos(byte startIdx = 1)
         {
             byte pos = 0;
-            for (byte i = 1; i <= 50; i++)
+            for (byte i = startIdx; i <= 50; i++)
             {
                 if (BagItems[i].Id == 0)
                 {

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
 using Magician.Common.Logger;
@@ -30,6 +31,25 @@ namespace WLUtility.CustomControl
             bagItemBox1.SetProxy(_socket);
 
             _socket.PlayerInfo.AutoSellItemUpdated += PlayerInfo_AutoSellItemUpdated;
+            _socket.PlayerInfo.InfoUpdate += PlayerInfo_InfoUpdate;
+        }
+
+        private void PlayerInfo_InfoUpdate()
+        {
+            UpdateBaseInfo();
+        }
+
+        private void UpdateBaseInfo()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(UpdateBaseInfo));
+            }
+            else
+            {
+                lblId.Text = $@"[{_socket.PlayerInfo.Id}]";
+                lblName.Text = _socket.PlayerInfo.Name;
+            }
         }
 
         private void PlayerInfo_AutoSellItemUpdated()
@@ -54,6 +74,11 @@ namespace WLUtility.CustomControl
             if (lbAutoSellItem.SelectedIndex < 0) return;
 
             _socket.PlayerInfo.DelAutoSellItemIdx(lbAutoSellItem.SelectedIndex);
+        }
+
+        private void btnUpdateDropDamage_Click(object sender, System.EventArgs e)
+        {
+            _socket.PlayerInfo.DropWhenDamage = numDropDamage.ByteValue ?? 240;
         }
     }
 }

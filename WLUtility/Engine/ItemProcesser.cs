@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using WLUtility.Core;
 using WLUtility.DataManager;
 using WLUtility.Helper;
@@ -10,6 +11,9 @@ namespace WLUtility.Engine
         private readonly Dictionary<ushort, ushort> _dicReplaceItem = new Dictionary<ushort, ushort>();
 
         private readonly ProxySocket _socket;
+
+        private readonly HashSet<byte> _waitingDropEquip = new HashSet<byte>();
+        private readonly HashSet<byte> _waitingPetDropEquip = new HashSet<byte>();
 
         public ItemProcesser(ProxySocket socket)
         {
@@ -25,63 +29,120 @@ namespace WLUtility.Engine
 
         public void Handle(byte aType, byte bType, List<byte> packet, ref bool isSkip)
         {
-            if (aType == 0x17)
+            switch (aType)
             {
-                switch (bType)
+                case 0x0B:
                 {
-                    //初始化物品
-                    case 0x05:
-                        InitItem(packet);
-                        ReplaceItem(packet);
-                        break;
-                    case 0x06:
-                        AddItem(packet);
-                        break;
-                    case 0x07:
-                        DelItem(packet);
-                        break;
-                    case 0x08:
-                        AddItemWithPos(packet);
-                        break;
-                    case 0x09:
-                        DelItemWithPos(packet);
-                        break;
-                    case 0x0A:
-                        MoveItem(packet);
-                        break;
-                    case 0x0B:
-                        InitEquip(packet);
-                        break;
-                    case 0x10:
-                        TakeOffEquip(packet);
-                        break;
-                    case 0x11:
-                        PutOnEquip(packet);
-                        break;
-                    case 0x17:
-                        PetPutOnEquip(packet);
-                        break;
-                    case 0x1B:
-                        RevDamageInfo(packet);
-                        break;
-                    case 0x1C:
-                        RevFNpcFightDamage(packet);
-                        break;
+                    if (bType == 0x00)
+                    {
+                        FightOver();
+                    }
+                    break;
+                }
+                case 0x17:
+                    switch (bType)
+                    {
+                        //初始化物品
+                        case 0x05:
+                            InitItem(packet);
+                            ReplaceItem(packet);
+                            break;
+                        case 0x06:
+                            AddItem(packet);
+                            break;
+                        case 0x07:
+                            DelItem(packet);
+                            break;
+                        case 0x08:
+                            AddItemWithPos(packet);
+                            break;
+                        case 0x09:
+                            DelItemWithPos(packet);
+                            break;
+                        case 0x0A:
+                            MoveItem(packet);
+                            break;
+                        case 0x0B:
+                            InitEquip(packet);
+                            break;
+                        case 0x10:
+                            TakeOffEquip(packet);
+                            break;
+                        case 0x11:
+                            PutOnEquip(packet);
+                            break;
+                        case 0x17:
+                            PetPutOnEquip(packet);
+                            break;
+                        case 0x1B:
+                            RevDamageInfo(packet);
+                            break;
+                        case 0x1C:
+                            RevFNpcFightDamage(packet);
+                            break;
+                    }
+
+                    break;
+                case 0x1A:
+                {
+                    if (bType == 0x04)
+                    {
+                        SetGold(packet);
+                    }
+
+                    break;
+                }
+                case 0x1B:
+                {
+                    //物品出售
+                    if (bType == 0x06)
+                    {
+                        SoldItem(packet);
+                    }
+
+                    break;
                 }
             }
-            else if (aType == 0x1A)
+        }
+
+        private void FightOver()
+        {
+            byte emptyIdx = 0;
+            while (_waitingDropEquip.Count > 0)
             {
-                if (bType == 0x04)
+                var equipPos = _waitingDropEquip.First();
+                _socket.Log("尝试自动卸下装备" + _socket.PlayerInfo.Equips[equipPos].Name);
+                var emptyPos = _socket.PlayerInfo.FindEmptyPos(emptyIdx);
+                if (emptyPos == 0)
                 {
-                    SetGold(packet);
+                    _socket.Log("空间不足" + _socket.PlayerInfo.Equips[equipPos].Name);
                 }
-            }
-            else if (aType == 0x1B)
-            {
-                //物品出售
-                if (bType == 0x06)
+                else
                 {
-                    SoldItem(packet);
+                    emptyIdx = (byte)(emptyPos + 1);
+                    _socket.SendPacket(new PacketBuilder(0x17, 0x0C).Add(equipPos).Add(emptyPos)
+                        .Build());
+                }
+
+                _waitingDropEquip.Remove(equipPos);
+            }
+            while (_waitingPetDropEquip.Count > 0)
+            {
+                var equipPos = _waitingPetDropEquip.First();
+                var npcPos = (byte)(equipPos / 10);
+                equipPos = (byte)(equipPos % 10);
+                _socket.Log("尝试自动卸下装备" + _socket.PlayerInfo.Equips[equipPos].Name);
+                var emptyPos = _socket.PlayerInfo.FindEmptyPos(emptyIdx);
+                if (emptyPos == 0)
+                {
+                    _socket.Log("空间不足" + _socket.PlayerInfo.Equips[equipPos].Name);
+                }
+                else
+                {
+                    emptyIdx = (byte)(emptyPos + 1);
+                    _socket.SendPacket(new PacketBuilder(0x17, 0x12).Add(npcPos).Add(equipPos)
+                        .Add(_socket.PlayerInfo.FindEmptyPos())
+                        .Build());
                 }
             }
         }
@@ -264,19 +325,22 @@ namespace WLUtility.Engine
 
             _socket.PlayerInfo.Equips[equipPos].Damage = damage;
             _socket.Log(_socket.PlayerInfo.Equips[equipPos].Name + "损坏度" + damage + "/250");
-            if (damage > 240)
+            if (damage > _socket.PlayerInfo.DropWhenDamage)
             {
-                _socket.Log("尝试自动卸下装备" + _socket.PlayerInfo.Equips[equipPos].Name);
-                var emptyPos = _socket.PlayerInfo.FindEmptyPos();
-                if (emptyPos == 0)
-                {
-                    _socket.Log("空间不足" + _socket.PlayerInfo.Equips[equipPos].Name);
-                }
-                else
-                {
-                    _socket.SendPacket(new PacketBuilder(0x17, 0x0C).Add(equipPos).Add(emptyPos)
-                        .Build());
-                }
+                _waitingDropEquip.Add(equipPos);
+                _socket.Log("等待战斗结束卸下装备");
+                // _socket.Log("尝试自动卸下装备" + _socket.PlayerInfo.Equips[equipPos].Name);
+                // var emptyPos = _socket.PlayerInfo.FindEmptyPos();
+                // if (emptyPos == 0)
+                // {
+                //     _socket.Log("空间不足" + _socket.PlayerInfo.Equips[equipPos].Name);
+                // }
+                // else
+                // {
+                //     _socket.Log($"[Cmd]170C[equipPos]{equipPos}[emptyPos]{emptyPos}");
+                //     _socket.SendPacket(new PacketBuilder(0x17, 0x0C).Add(equipPos).Add(emptyPos)
+                //         .Build());
+                // }
             }
             if (damage >= 250)_socket.Log(_socket.PlayerInfo.Equips[equipPos].Name + "毁坏！");
         }
@@ -296,18 +360,20 @@ namespace WLUtility.Engine
             _socket.Log(npc.Equips[equipPos].Name + "损坏度" + damage + "/250");
             if (damage > 240)
             {
-                _socket.Log("尝试自动卸下装备" + _socket.PlayerInfo.Equips[equipPos].Name);
-                var emptyPos = _socket.PlayerInfo.FindEmptyPos();
-                if (emptyPos == 0)
-                {
-                    _socket.Log("空间不足" + _socket.PlayerInfo.Equips[equipPos].Name);
-                }
-                else
-                {
-                    _socket.SendPacket(new PacketBuilder(0x17, 0x12).Add(npcPos).Add(equipPos)
-                        .Add(_socket.PlayerInfo.FindEmptyPos())
-                        .Build());
-                }
+                _waitingPetDropEquip.Add((byte)(npcPos * 10 + equipPos));
+                _socket.Log("等待战斗结束卸下装备");
+                // _socket.Log("尝试自动卸下装备" + _socket.PlayerInfo.Equips[equipPos].Name);
+                // var emptyPos = _socket.PlayerInfo.FindEmptyPos();
+                // if (emptyPos == 0)
+                // {
+                //     _socket.Log("空间不足" + _socket.PlayerInfo.Equips[equipPos].Name);
+                // }
+                // else
+                // {
+                //     _socket.SendPacket(new PacketBuilder(0x17, 0x12).Add(npcPos).Add(equipPos)
+                //         .Add(_socket.PlayerInfo.FindEmptyPos())
+                //         .Build());
+                // }
             }
 
             if (damage >= 250) _socket.Log(npc.Equips[equipPos].Name + "毁坏！");
