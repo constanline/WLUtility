@@ -11,11 +11,8 @@ namespace WLUtility.CustomControl
 {
     internal partial class RoleControl : UserControl
     {
-        public ComponentResourceManager Resources;
-
         private ProxySocket _socket;
-
-        public ILogger Logger { get; }
+        public ComponentResourceManager Resources;
 
         public RoleControl()
         {
@@ -23,6 +20,8 @@ namespace WLUtility.CustomControl
             Logger = new RichTextBoxLogger(rtxtLog);
             Resources = new ComponentResourceManager(GetType());
         }
+
+        public ILogger Logger { get; }
 
         public void SetProxySocket(ProxySocket proxySocket)
         {
@@ -54,31 +53,56 @@ namespace WLUtility.CustomControl
 
         private void PlayerInfo_AutoSellItemUpdated()
         {
-            lbAutoSellItem.DataSource = _socket.PlayerInfo.AutoSellItemList.Select(e => DataManagers.ItemManager.GetName(e)).ToList();
-            lbAutoSellItem.Refresh();
+            RefreshAutoSellInfo();
         }
 
-        private void btnExecWoodMan_Click(object sender, System.EventArgs e)
+        private void RefreshAutoSellInfo()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(RefreshAutoSellInfo));
+            }
+            else
+            {
+                chkAutoSell.Checked = _socket.PlayerInfo.IsAutoSell;
+                chkSellWhenFull.Checked = _socket.PlayerInfo.IsSellWhenFull;
+                lbAutoSellItem.DataSource = _socket.PlayerInfo.AutoSellItemList
+                    .Select(e => DataManagers.ItemManager.GetName(e)).ToList();
+                lbAutoSellItem.Refresh();
+            }
+        }
+
+        private void btnExecWoodMan_Click(object sender, EventArgs e)
         {
             if (numWoodManPos.ByteValue == null)
             {
-                MessageBox.Show(Resources.GetString("InputMapEventId"));
+                MessageBox.Show(@"请输入木人事件序号");
                 return;
             }
 
             _socket.WoodManInfo.StartWoodMan(numWoodManPos.ByteValue.Value);
         }
 
-        private void btnDelSellItem_Click(object sender, System.EventArgs e)
+        private void btnDelSellItem_Click(object sender, EventArgs e)
         {
             if (lbAutoSellItem.SelectedIndex < 0) return;
 
             _socket.PlayerInfo.DelAutoSellItemIdx(lbAutoSellItem.SelectedIndex);
         }
 
-        private void btnUpdateDropDamage_Click(object sender, System.EventArgs e)
+        private void btnUpdateDropDamage_Click(object sender, EventArgs e)
         {
             _socket.PlayerInfo.DropWhenDamage = numDropDamage.ByteValue ?? 240;
+        }
+
+        private void chkAutoSell_CheckedChanged(object sender, EventArgs e)
+        {
+            _socket.PlayerInfo.SwitchAutoSell(chkAutoSell.Checked);
+        }
+
+        private void chkSellWhenFull_CheckedChanged(object sender, EventArgs e)
+        {
+            _socket.PlayerInfo.SwitchSellWhenFull(chkSellWhenFull.Checked);
         }
     }
 }

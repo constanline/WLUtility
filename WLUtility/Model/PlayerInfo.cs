@@ -22,11 +22,11 @@ namespace WLUtility.Model
 
         public string Name { get; set; }
 
-        public byte Level { get; set; }
-
         public List<ushort> AutoSellItemList { get; } = new List<ushort>();
 
-        public bool IsAutoSell { get; set; } = false;
+        public bool IsAutoSell { get; set; }
+
+        public bool IsSellWhenFull { get; set; }
 
         public byte DropWhenDamage { get; set; } = 240;
 
@@ -66,6 +66,14 @@ namespace WLUtility.Model
                     AutoSellItemList.Add(id);
                 }
             }
+            var isAutoSell = IniHelper.Account.GetString(Id.ToString(), "IsAutoSell");
+            if (bool.TryParse(isAutoSell, out var result))
+                IsAutoSell = result;
+
+            var isSellWhenFull = IniHelper.Account.GetString(Id.ToString(), "IsSellWhenFull");
+            if (bool.TryParse(isSellWhenFull, out result))
+                IsSellWhenFull = result;
+
             InfoUpdate?.Invoke();
 
             AutoSellItemUpdated?.Invoke();
@@ -75,16 +83,28 @@ namespace WLUtility.Model
 
         public void SellItem()
         {
+            if(!IsAutoSell)return;
+            if (_isAutoSelling) return;
+
             _isAutoSelling = true;
             var bagItems = BagItems;
             for (byte i = 1; i <= 50; i++)
             {
                 if (bagItems[i].Id > 0)
                 {
-                    if (AutoSellItemList.Contains(bagItems[i].Id) && (bagItems[i].Qty == 50 || !DataManagers.ItemManager.IsOverlap(bagItems[i].Id)))
+                    if (AutoSellItemList.Contains(bagItems[i].Id))
                     {
-                        _socket.SendPacket(new PacketBuilder(0x1B, 0x03).Add(i).Build());
-                        return;
+                        var flag = true;
+                        if (IsSellWhenFull)
+                        {
+                            flag = (bagItems[i].Qty == 50 || !DataManagers.ItemManager.IsOverlap(bagItems[i].Id));
+                        }
+
+                        if (flag)
+                        {
+                            _socket.SendPacket(new PacketBuilder(0x1B, 0x03).Add(i).Build());
+                            return;
+                        }
                     }
                 }
             }
@@ -95,11 +115,8 @@ namespace WLUtility.Model
         {
             var autoSellItem = string.Join("|", AutoSellItemList.ToArray());
             IniHelper.Account.WriteString(Id.ToString(), "AutoSellItem", autoSellItem);
-
-            if (!_isAutoSelling)
-            {
-                SellItem();
-            }
+            
+            SellItem();
         }
 
         public void AddAutoSellItemIdx(int idx)
@@ -117,6 +134,24 @@ namespace WLUtility.Model
             AutoSellItemList.RemoveAt(idx);
 
             AutoSellItemUpdated?.Invoke();
+        }
+
+        public void SwitchAutoSell(bool isAutoSell)
+        {
+            _socket.PlayerInfo.IsAutoSell = isAutoSell;
+            IniHelper.Account.WriteString(Id.ToString(), "IsAutoSell", isAutoSell.ToString());
+
+            if(isAutoSell)
+                SellItem();
+        }
+
+        public void SwitchSellWhenFull(bool isSellWhenFull)
+        {
+            _socket.PlayerInfo.IsSellWhenFull = isSellWhenFull;
+            IniHelper.Account.WriteString(Id.ToString(), "IsSellWhenFull", isSellWhenFull.ToString());
+
+            if (!isSellWhenFull)
+                SellItem();
         }
 
         public void AddBagItem(ushort id, byte qty, byte damage, int durable, byte defPos = 0)

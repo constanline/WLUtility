@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 
 namespace WLUtility.Helper
 {
@@ -11,7 +12,7 @@ namespace WLUtility.Helper
 
         public IniHelper(string filename)
         {
-            _filename = filename;
+            _filename = Application.StartupPath + "\\" + filename;
         }
 
         /// <summary>

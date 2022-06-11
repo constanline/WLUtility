@@ -319,7 +319,14 @@ namespace WLUtility.Core
                     }
                     catch (Exception ex)
                     {
-                        LogHelper.SilentLog(ex);
+                        if (ex is SocketException)
+                        {
+
+                        }
+                        else
+                        {
+                            LogHelper.SilentLog(ex);
+                        }
                         break;
                     }
                 }

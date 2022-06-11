@@ -35,7 +35,6 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tcInfo = new System.Windows.Forms.TabControl();
             this.tpBag = new System.Windows.Forms.TabPage();
-            this.bagItemBox1 = new WLUtility.CustomControl.BagItemBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpCommon = new System.Windows.Forms.TabPage();
@@ -49,6 +48,9 @@
             this.btnDelSellItem = new System.Windows.Forms.Button();
             this.lbAutoSellItem = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.bagItemBox1 = new WLUtility.CustomControl.BagItemBox();
+            this.chkAutoSell = new System.Windows.Forms.CheckBox();
+            this.chkSellWhenFull = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tcInfo.SuspendLayout();
@@ -137,16 +139,6 @@
             this.tpBag.TabIndex = 0;
             this.tpBag.Text = "背包";
             this.tpBag.UseVisualStyleBackColor = true;
-            // 
-            // bagItemBox1
-            // 
-            this.bagItemBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bagItemBox1.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.bagItemBox1.Location = new System.Drawing.Point(3, 3);
-            this.bagItemBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.bagItemBox1.Name = "bagItemBox1";
-            this.bagItemBox1.Size = new System.Drawing.Size(237, 429);
-            this.bagItemBox1.TabIndex = 0;
             // 
             // groupBox3
             // 
@@ -329,12 +321,14 @@
             // 
             // tpSellItem
             // 
+            this.tpSellItem.Controls.Add(this.chkSellWhenFull);
+            this.tpSellItem.Controls.Add(this.chkAutoSell);
             this.tpSellItem.Controls.Add(this.btnDelSellItem);
             this.tpSellItem.Controls.Add(this.lbAutoSellItem);
             this.tpSellItem.Location = new System.Drawing.Point(4, 29);
             this.tpSellItem.Name = "tpSellItem";
             this.tpSellItem.Padding = new System.Windows.Forms.Padding(3);
-            this.tpSellItem.Size = new System.Drawing.Size(557, 128);
+            this.tpSellItem.Size = new System.Drawing.Size(557, 123);
             this.tpSellItem.TabIndex = 1;
             this.tpSellItem.Text = "贩卖";
             this.tpSellItem.UseVisualStyleBackColor = true;
@@ -356,7 +350,7 @@
             this.lbAutoSellItem.ItemHeight = 20;
             this.lbAutoSellItem.Location = new System.Drawing.Point(3, 3);
             this.lbAutoSellItem.Name = "lbAutoSellItem";
-            this.lbAutoSellItem.Size = new System.Drawing.Size(136, 122);
+            this.lbAutoSellItem.Size = new System.Drawing.Size(136, 117);
             this.lbAutoSellItem.TabIndex = 0;
             // 
             // groupBox4
@@ -371,6 +365,38 @@
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "日志区";
+            // 
+            // bagItemBox1
+            // 
+            this.bagItemBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bagItemBox1.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.bagItemBox1.Location = new System.Drawing.Point(3, 3);
+            this.bagItemBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.bagItemBox1.Name = "bagItemBox1";
+            this.bagItemBox1.Size = new System.Drawing.Size(237, 429);
+            this.bagItemBox1.TabIndex = 0;
+            // 
+            // chkAutoSell
+            // 
+            this.chkAutoSell.AutoSize = true;
+            this.chkAutoSell.Location = new System.Drawing.Point(145, 42);
+            this.chkAutoSell.Name = "chkAutoSell";
+            this.chkAutoSell.Size = new System.Drawing.Size(84, 24);
+            this.chkAutoSell.TabIndex = 2;
+            this.chkAutoSell.Text = "自动出售";
+            this.chkAutoSell.UseVisualStyleBackColor = true;
+            this.chkAutoSell.CheckedChanged += new System.EventHandler(this.chkAutoSell_CheckedChanged);
+            // 
+            // chkSellWhenFull
+            // 
+            this.chkSellWhenFull.AutoSize = true;
+            this.chkSellWhenFull.Location = new System.Drawing.Point(145, 72);
+            this.chkSellWhenFull.Name = "chkSellWhenFull";
+            this.chkSellWhenFull.Size = new System.Drawing.Size(84, 24);
+            this.chkSellWhenFull.TabIndex = 3;
+            this.chkSellWhenFull.Text = "整组出售";
+            this.chkSellWhenFull.UseVisualStyleBackColor = true;
+            this.chkSellWhenFull.CheckedChanged += new System.EventHandler(this.chkSellWhenFull_CheckedChanged);
             // 
             // RoleControl
             // 
@@ -395,6 +421,7 @@
             this.tpCommon.ResumeLayout(false);
             this.tpCommon.PerformLayout();
             this.tpSellItem.ResumeLayout(false);
+            this.tpSellItem.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -422,5 +449,7 @@
         private System.Windows.Forms.Button btnUpdateDropDamage;
         private System.Windows.Forms.Label lblId;
         private System.Windows.Forms.Label lblName;
+        private System.Windows.Forms.CheckBox chkSellWhenFull;
+        private System.Windows.Forms.CheckBox chkAutoSell;
     }
 }
