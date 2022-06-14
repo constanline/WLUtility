@@ -36,6 +36,8 @@ namespace WLUtility.CustomControl
         private void PlayerInfo_InfoUpdate()
         {
             UpdateBaseInfo();
+
+            numWoodManPos.Text = _socket.WoodManInfo.EventNo.ToString();
         }
 
         private void UpdateBaseInfo()
@@ -103,6 +105,11 @@ namespace WLUtility.CustomControl
         private void chkSellWhenFull_CheckedChanged(object sender, EventArgs e)
         {
             _socket.PlayerInfo.SwitchSellWhenFull(chkSellWhenFull.Checked);
+        }
+
+        private void tsmiClearLog_Click(object sender, EventArgs e)
+        {
+            rtxtLog.Clear();
         }
     }
 }

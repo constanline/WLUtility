@@ -28,7 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.rtxtLog = new System.Windows.Forms.RichTextBox();
+            this.cmsLog = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tsmiClearLog = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.lblName = new System.Windows.Forms.Label();
             this.lblId = new System.Windows.Forms.Label();
@@ -45,12 +48,13 @@
             this.numWoodManPos = new Magician.Common.CustomControl.NumberText();
             this.btnExecWoodMan = new System.Windows.Forms.Button();
             this.tpSellItem = new System.Windows.Forms.TabPage();
+            this.chkSellWhenFull = new System.Windows.Forms.CheckBox();
+            this.chkAutoSell = new System.Windows.Forms.CheckBox();
             this.btnDelSellItem = new System.Windows.Forms.Button();
             this.lbAutoSellItem = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.bagItemBox1 = new WLUtility.CustomControl.BagItemBox();
-            this.chkAutoSell = new System.Windows.Forms.CheckBox();
-            this.chkSellWhenFull = new System.Windows.Forms.CheckBox();
+            this.cmsLog.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.tcInfo.SuspendLayout();
@@ -65,6 +69,7 @@
             // rtxtLog
             // 
             this.rtxtLog.BackColor = System.Drawing.SystemColors.Window;
+            this.rtxtLog.ContextMenuStrip = this.cmsLog;
             this.rtxtLog.Dock = System.Windows.Forms.DockStyle.Fill;
             this.rtxtLog.Location = new System.Drawing.Point(4, 24);
             this.rtxtLog.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
@@ -73,6 +78,20 @@
             this.rtxtLog.Size = new System.Drawing.Size(565, 283);
             this.rtxtLog.TabIndex = 3;
             this.rtxtLog.Text = "";
+            // 
+            // cmsLog
+            // 
+            this.cmsLog.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiClearLog});
+            this.cmsLog.Name = "cmsLog";
+            this.cmsLog.Size = new System.Drawing.Size(141, 26);
+            // 
+            // tsmiClearLog
+            // 
+            this.tsmiClearLog.Name = "tsmiClearLog";
+            this.tsmiClearLog.Size = new System.Drawing.Size(140, 22);
+            this.tsmiClearLog.Text = "清空日志(&C)";
+            this.tsmiClearLog.Click += new System.EventHandler(this.tsmiClearLog_Click);
             // 
             // groupBox1
             // 
@@ -333,6 +352,28 @@
             this.tpSellItem.Text = "贩卖";
             this.tpSellItem.UseVisualStyleBackColor = true;
             // 
+            // chkSellWhenFull
+            // 
+            this.chkSellWhenFull.AutoSize = true;
+            this.chkSellWhenFull.Location = new System.Drawing.Point(145, 72);
+            this.chkSellWhenFull.Name = "chkSellWhenFull";
+            this.chkSellWhenFull.Size = new System.Drawing.Size(84, 24);
+            this.chkSellWhenFull.TabIndex = 3;
+            this.chkSellWhenFull.Text = "整组出售";
+            this.chkSellWhenFull.UseVisualStyleBackColor = true;
+            this.chkSellWhenFull.CheckedChanged += new System.EventHandler(this.chkSellWhenFull_CheckedChanged);
+            // 
+            // chkAutoSell
+            // 
+            this.chkAutoSell.AutoSize = true;
+            this.chkAutoSell.Location = new System.Drawing.Point(145, 42);
+            this.chkAutoSell.Name = "chkAutoSell";
+            this.chkAutoSell.Size = new System.Drawing.Size(84, 24);
+            this.chkAutoSell.TabIndex = 2;
+            this.chkAutoSell.Text = "自动出售";
+            this.chkAutoSell.UseVisualStyleBackColor = true;
+            this.chkAutoSell.CheckedChanged += new System.EventHandler(this.chkAutoSell_CheckedChanged);
+            // 
             // btnDelSellItem
             // 
             this.btnDelSellItem.Location = new System.Drawing.Point(145, 6);
@@ -376,28 +417,6 @@
             this.bagItemBox1.Size = new System.Drawing.Size(237, 429);
             this.bagItemBox1.TabIndex = 0;
             // 
-            // chkAutoSell
-            // 
-            this.chkAutoSell.AutoSize = true;
-            this.chkAutoSell.Location = new System.Drawing.Point(145, 42);
-            this.chkAutoSell.Name = "chkAutoSell";
-            this.chkAutoSell.Size = new System.Drawing.Size(84, 24);
-            this.chkAutoSell.TabIndex = 2;
-            this.chkAutoSell.Text = "自动出售";
-            this.chkAutoSell.UseVisualStyleBackColor = true;
-            this.chkAutoSell.CheckedChanged += new System.EventHandler(this.chkAutoSell_CheckedChanged);
-            // 
-            // chkSellWhenFull
-            // 
-            this.chkSellWhenFull.AutoSize = true;
-            this.chkSellWhenFull.Location = new System.Drawing.Point(145, 72);
-            this.chkSellWhenFull.Name = "chkSellWhenFull";
-            this.chkSellWhenFull.Size = new System.Drawing.Size(84, 24);
-            this.chkSellWhenFull.TabIndex = 3;
-            this.chkSellWhenFull.Text = "整组出售";
-            this.chkSellWhenFull.UseVisualStyleBackColor = true;
-            this.chkSellWhenFull.CheckedChanged += new System.EventHandler(this.chkSellWhenFull_CheckedChanged);
-            // 
             // RoleControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 20F);
@@ -411,6 +430,7 @@
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "RoleControl";
             this.Size = new System.Drawing.Size(832, 652);
+            this.cmsLog.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
@@ -451,5 +471,7 @@
         private System.Windows.Forms.Label lblName;
         private System.Windows.Forms.CheckBox chkSellWhenFull;
         private System.Windows.Forms.CheckBox chkAutoSell;
+        private System.Windows.Forms.ContextMenuStrip cmsLog;
+        private System.Windows.Forms.ToolStripMenuItem tsmiClearLog;
     }
 }

@@ -211,7 +211,12 @@ namespace WLUtility
 
         private void cmsDisplay_Click(object sender, EventArgs e)
         {
-            this.Show();
+            Show();
+        }
+
+        private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            Show();
         }
     }
 }

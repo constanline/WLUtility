@@ -31,7 +31,7 @@ namespace WLUtility.Engine
                     {
                         if (_socket.WoodManInfo.IsSetEventId())
                         {
-                            _socket.Log("检测到木人挂机，8小时后自动重置");
+                            _socket.Log("检测到木人挂机，8小时后自动重置[木人序号:" + _socket.WoodManInfo.EventNo + "]");
                             _timer.Change(DELAY_TIME, Timeout.Infinite);
                         }
                         else

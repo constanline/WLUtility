@@ -4,7 +4,7 @@ namespace WLUtility.Model
 {
     internal class WoodManInfo
     {
-        public byte EventId { get; set; }
+        public byte EventNo { get; set; }
 
         private readonly ProxySocket _socket;
 
@@ -15,22 +15,22 @@ namespace WLUtility.Model
 
         public bool IsSetEventId()
         {
-            return EventId != 0;
+            return EventNo != 0;
         }
 
-        public void StartWoodMan(byte eventId = 0)
+        public void StartWoodMan(byte eventNo = 0)
         {
-            if (eventId > 0)
-                EventId = eventId;
+            if (eventNo > 0)
+                EventNo = eventNo;
 
-            if (EventId == 0)
+            if (EventNo == 0)
             {
                 _socket.Log("木人桩EventID未设置");
                 return;
             }
             _socket.SendPacket(new byte[] { 0x69, 0x03 });
             _socket.SendPacket(new byte[] { 0x14, 0x06 });
-            _socket.SendPacket(new byte[] { 0x14, 0x01, EventId, 0x00 });
+            _socket.SendPacket(new byte[] { 0x14, 0x01, EventNo, 0x00 });
             _socket.SendPacket(new byte[] { 0x69, 0x02 });
             _socket.SendPacket(new byte[] { 0x14, 0x06 });
         }

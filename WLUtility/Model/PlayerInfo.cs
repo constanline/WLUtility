@@ -74,6 +74,12 @@ namespace WLUtility.Model
             if (bool.TryParse(isSellWhenFull, out result))
                 IsSellWhenFull = result;
 
+            var eventNoStr = IniHelper.Account.GetString(Id.ToString(), "WoodManEventNo");
+            if (byte.TryParse(eventNoStr, out var eventNo))
+            {
+                _socket.WoodManInfo.EventNo = eventNo;
+            }
+
             InfoUpdate?.Invoke();
 
             AutoSellItemUpdated?.Invoke();
