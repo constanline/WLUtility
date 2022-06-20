@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using WLUtility.Core;
 using WLUtility.DataManager;
 using WLUtility.Helper;
@@ -107,7 +109,7 @@ namespace WLUtility.Engine
 
         private void FightOver()
         {
-            byte emptyIdx = 0;
+            byte emptyIdx = 1;
             while (_waitingDropEquip.Count > 0)
             {
                 var equipPos = _waitingDropEquip.First();
@@ -128,22 +130,34 @@ namespace WLUtility.Engine
             }
             while (_waitingPetDropEquip.Count > 0)
             {
-                var equipPos = _waitingPetDropEquip.First();
-                var npcPos = (byte)(equipPos / 10);
-                equipPos = (byte)(equipPos % 10);
-                _socket.Log("尝试自动卸下装备" + _socket.PlayerInfo.Equips[equipPos].Name);
+                var petEquipPos = _waitingPetDropEquip.First();
+                var npcPos = (byte)(petEquipPos / 10);
+                var equipPos = (byte)(petEquipPos % 10);
                 var emptyPos = _socket.PlayerInfo.FindEmptyPos(emptyIdx);
+                _socket.Log("尝试自动卸下装备" + _socket.PlayerInfo.Pets[npcPos].Equips[equipPos].Name);
                 if (emptyPos == 0)
                 {
-                    _socket.Log("空间不足" + _socket.PlayerInfo.Equips[equipPos].Name);
+                    _socket.Log("空间不足" + _socket.PlayerInfo.Pets[npcPos].Equips[equipPos].Name);
                 }
                 else
                 {
                     emptyIdx = (byte)(emptyPos + 1);
-                    _socket.SendPacket(new PacketBuilder(0x17, 0x12).Add(npcPos).Add(equipPos)
-                        .Add(_socket.PlayerInfo.FindEmptyPos())
-                        .Build());
+                    ThreadPool.QueueUserWorkItem(e =>
+                    {
+                        try
+                        {
+                            Thread.Sleep(500);
+                            _socket.SendPacket(new PacketBuilder(0x17, 0x12).Add(npcPos).Add(equipPos)
+                                .Add(emptyPos)
+                                .Build());
+                        }
+                        catch (Exception ex)
+                        {
+                            _socket.Log(ex);
+                        }
+                    });
                 }
+                _waitingPetDropEquip.Remove(petEquipPos);
             }
         }
 
@@ -359,7 +373,7 @@ namespace WLUtility.Engine
 
             npc.Equips[equipPos].Damage = damage;
             _socket.Log(npc.Equips[equipPos].Name + "损坏度" + damage + "/250");
-            if (damage > 240)
+            if (damage > _socket.PlayerInfo.DropWhenDamage)
             {
                 _waitingPetDropEquip.Add((byte)(npcPos * 10 + equipPos));
                 _socket.Log("等待战斗结束卸下装备");

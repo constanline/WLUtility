@@ -48,11 +48,14 @@ namespace WLUtility.Engine
 
         public static void StopSocket(int socketId)
         {
-            if (!DicSocket.ContainsKey(socketId)) return;
+            lock (DicSocket)
+            {
+                if (!DicSocket.ContainsKey(socketId)) return;
 
-            var socket = DicSocket[socketId];
-            socket.Close();
-            DicSocket.Remove(socketId);
+                var socket = DicSocket[socketId];
+                socket.Close();
+                DicSocket.Remove(socketId);
+            }
         }
 
         private void SocketForward(object obj)
@@ -76,7 +79,10 @@ namespace WLUtility.Engine
                     remoteSocket.Connect(pm.GetRemoteEndPoint());
 
                     var socket = new ProxySocket(localSocket, remoteSocket) { SocketId = curNum };
-                    DicSocket.Add(curNum, socket);
+                    lock (DicSocket)
+                    {
+                        DicSocket.Add(curNum, socket);
+                    }
                     ConnectionBuilt?.Invoke(socket);
                 }
             }

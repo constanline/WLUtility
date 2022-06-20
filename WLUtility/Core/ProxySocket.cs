@@ -38,6 +38,11 @@ namespace WLUtility.Core
             _logger?.LogWithTime(msg);
         }
 
+        public void Log(Exception ex)
+        {
+            Log(ex.Message + "\r\n" + ex.StackTrace);
+        }
+
         public void SetRoleControl(RoleControl roleControl)
         {
             _roleControl = roleControl;
@@ -283,8 +288,16 @@ namespace WLUtility.Core
                         else
                             break;
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
+                        if (ex is SocketException)
+                        {
+
+                        }
+                        else
+                        {
+                            LogHelper.SilentLog(ex);
+                        }
                         break;
                     }
                 }
