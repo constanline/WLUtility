@@ -38,6 +38,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.tcInfo = new System.Windows.Forms.TabControl();
             this.tpBag = new System.Windows.Forms.TabPage();
+            this.bagItemBox1 = new WLUtility.CustomControl.BagItemBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tpCommon = new System.Windows.Forms.TabPage();
@@ -52,8 +53,11 @@
             this.chkAutoSell = new System.Windows.Forms.CheckBox();
             this.btnDelSellItem = new System.Windows.Forms.Button();
             this.lbAutoSellItem = new System.Windows.Forms.ListBox();
+            this.tpDropItem = new System.Windows.Forms.TabPage();
+            this.chkAutoDrop = new System.Windows.Forms.CheckBox();
+            this.btnDelDropItem = new System.Windows.Forms.Button();
+            this.lbAutoDropItem = new System.Windows.Forms.ListBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
-            this.bagItemBox1 = new WLUtility.CustomControl.BagItemBox();
             this.cmsLog.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -63,6 +67,7 @@
             this.tabControl1.SuspendLayout();
             this.tpCommon.SuspendLayout();
             this.tpSellItem.SuspendLayout();
+            this.tpDropItem.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -159,6 +164,16 @@
             this.tpBag.Text = "背包";
             this.tpBag.UseVisualStyleBackColor = true;
             // 
+            // bagItemBox1
+            // 
+            this.bagItemBox1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.bagItemBox1.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.bagItemBox1.Location = new System.Drawing.Point(3, 3);
+            this.bagItemBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
+            this.bagItemBox1.Name = "bagItemBox1";
+            this.bagItemBox1.Size = new System.Drawing.Size(237, 429);
+            this.bagItemBox1.TabIndex = 0;
+            // 
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.tabControl1);
@@ -176,6 +191,7 @@
             // 
             this.tabControl1.Controls.Add(this.tpCommon);
             this.tabControl1.Controls.Add(this.tpSellItem);
+            this.tabControl1.Controls.Add(this.tpDropItem);
             this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabControl1.Location = new System.Drawing.Point(4, 24);
             this.tabControl1.Name = "tabControl1";
@@ -347,7 +363,7 @@
             this.tpSellItem.Location = new System.Drawing.Point(4, 29);
             this.tpSellItem.Name = "tpSellItem";
             this.tpSellItem.Padding = new System.Windows.Forms.Padding(3);
-            this.tpSellItem.Size = new System.Drawing.Size(557, 123);
+            this.tpSellItem.Size = new System.Drawing.Size(557, 128);
             this.tpSellItem.TabIndex = 1;
             this.tpSellItem.Text = "贩卖";
             this.tpSellItem.UseVisualStyleBackColor = true;
@@ -391,8 +407,52 @@
             this.lbAutoSellItem.ItemHeight = 20;
             this.lbAutoSellItem.Location = new System.Drawing.Point(3, 3);
             this.lbAutoSellItem.Name = "lbAutoSellItem";
-            this.lbAutoSellItem.Size = new System.Drawing.Size(136, 117);
+            this.lbAutoSellItem.Size = new System.Drawing.Size(136, 122);
             this.lbAutoSellItem.TabIndex = 0;
+            // 
+            // tpDropItem
+            // 
+            this.tpDropItem.Controls.Add(this.chkAutoDrop);
+            this.tpDropItem.Controls.Add(this.btnDelDropItem);
+            this.tpDropItem.Controls.Add(this.lbAutoDropItem);
+            this.tpDropItem.Location = new System.Drawing.Point(4, 29);
+            this.tpDropItem.Name = "tpDropItem";
+            this.tpDropItem.Padding = new System.Windows.Forms.Padding(3);
+            this.tpDropItem.Size = new System.Drawing.Size(557, 123);
+            this.tpDropItem.TabIndex = 2;
+            this.tpDropItem.Text = "丢弃";
+            this.tpDropItem.UseVisualStyleBackColor = true;
+            // 
+            // chkAutoDrop
+            // 
+            this.chkAutoDrop.AutoSize = true;
+            this.chkAutoDrop.Location = new System.Drawing.Point(145, 42);
+            this.chkAutoDrop.Name = "chkAutoDrop";
+            this.chkAutoDrop.Size = new System.Drawing.Size(84, 24);
+            this.chkAutoDrop.TabIndex = 2;
+            this.chkAutoDrop.Text = "自动丢弃";
+            this.chkAutoDrop.UseVisualStyleBackColor = true;
+            this.chkAutoDrop.CheckedChanged += new System.EventHandler(this.chkAutoDrop_CheckedChanged);
+            // 
+            // btnDelDropItem
+            // 
+            this.btnDelDropItem.Location = new System.Drawing.Point(145, 6);
+            this.btnDelDropItem.Name = "btnDelDropItem";
+            this.btnDelDropItem.Size = new System.Drawing.Size(75, 30);
+            this.btnDelDropItem.TabIndex = 1;
+            this.btnDelDropItem.Text = "删除";
+            this.btnDelDropItem.UseVisualStyleBackColor = true;
+            this.btnDelDropItem.Click += new System.EventHandler(this.btnDelDropItem_Click);
+            // 
+            // lbAutoDropItem
+            // 
+            this.lbAutoDropItem.Dock = System.Windows.Forms.DockStyle.Left;
+            this.lbAutoDropItem.FormattingEnabled = true;
+            this.lbAutoDropItem.ItemHeight = 20;
+            this.lbAutoDropItem.Location = new System.Drawing.Point(3, 3);
+            this.lbAutoDropItem.Name = "lbAutoDropItem";
+            this.lbAutoDropItem.Size = new System.Drawing.Size(136, 117);
+            this.lbAutoDropItem.TabIndex = 0;
             // 
             // groupBox4
             // 
@@ -406,16 +466,6 @@
             this.groupBox4.TabIndex = 7;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "日志区";
-            // 
-            // bagItemBox1
-            // 
-            this.bagItemBox1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.bagItemBox1.Font = new System.Drawing.Font("微软雅黑", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.bagItemBox1.Location = new System.Drawing.Point(3, 3);
-            this.bagItemBox1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.bagItemBox1.Name = "bagItemBox1";
-            this.bagItemBox1.Size = new System.Drawing.Size(237, 429);
-            this.bagItemBox1.TabIndex = 0;
             // 
             // RoleControl
             // 
@@ -442,6 +492,8 @@
             this.tpCommon.PerformLayout();
             this.tpSellItem.ResumeLayout(false);
             this.tpSellItem.PerformLayout();
+            this.tpDropItem.ResumeLayout(false);
+            this.tpDropItem.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -473,5 +525,9 @@
         private System.Windows.Forms.CheckBox chkAutoSell;
         private System.Windows.Forms.ContextMenuStrip cmsLog;
         private System.Windows.Forms.ToolStripMenuItem tsmiClearLog;
+        private System.Windows.Forms.TabPage tpDropItem;
+        private System.Windows.Forms.CheckBox chkAutoDrop;
+        private System.Windows.Forms.Button btnDelDropItem;
+        private System.Windows.Forms.ListBox lbAutoDropItem;
     }
 }

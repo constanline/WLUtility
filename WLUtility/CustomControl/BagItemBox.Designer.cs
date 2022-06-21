@@ -38,6 +38,9 @@ namespace WLUtility.CustomControl
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiSellItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiAutoSell = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiDropItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiAutoDrop = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             ((System.ComponentModel.ISupportInitialize)(this.dgvItem)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -101,9 +104,12 @@ namespace WLUtility.CustomControl
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiSellItem,
-            this.tsmiAutoSell});
+            this.tsmiAutoSell,
+            this.toolStripSeparator1,
+            this.tsmiDropItem,
+            this.tsmiAutoDrop});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 70);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(181, 120);
             // 
             // tsmiSellItem
             // 
@@ -118,6 +124,25 @@ namespace WLUtility.CustomControl
             this.tsmiAutoSell.Size = new System.Drawing.Size(180, 22);
             this.tsmiAutoSell.Text = "添加到自动出售";
             this.tsmiAutoSell.Click += new System.EventHandler(this.tsmiAutoSell_Click);
+            // 
+            // tsmiDropItem
+            // 
+            this.tsmiDropItem.Name = "tsmiDropItem";
+            this.tsmiDropItem.Size = new System.Drawing.Size(180, 22);
+            this.tsmiDropItem.Text = "丢弃(&D)";
+            this.tsmiDropItem.Click += new System.EventHandler(this.tsmiDropItem_Click);
+            // 
+            // tsmiAutoDrop
+            // 
+            this.tsmiAutoDrop.Name = "tsmiAutoDrop";
+            this.tsmiAutoDrop.Size = new System.Drawing.Size(180, 22);
+            this.tsmiAutoDrop.Text = "添加到自动丢弃";
+            this.tsmiAutoDrop.Click += new System.EventHandler(this.tsmiAutoDrop_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // BagItemBox
             // 
@@ -144,5 +169,8 @@ namespace WLUtility.CustomControl
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvItem_Qty;
         private System.Windows.Forms.DataGridViewTextBoxColumn dgvItem_Durable;
         private System.Windows.Forms.ToolStripMenuItem tsmiAutoSell;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem tsmiDropItem;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAutoDrop;
     }
 }

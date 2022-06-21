@@ -30,14 +30,13 @@ namespace WLUtility.CustomControl
             bagItemBox1.SetProxy(_socket);
 
             _socket.PlayerInfo.AutoSellItemUpdated += PlayerInfo_AutoSellItemUpdated;
+            _socket.PlayerInfo.AutoDropItemUpdated += PlayerInfo_AutoDropItemUpdated;
             _socket.PlayerInfo.InfoUpdate += PlayerInfo_InfoUpdate;
         }
 
         private void PlayerInfo_InfoUpdate()
         {
             UpdateBaseInfo();
-
-            numWoodManPos.Text = _socket.WoodManInfo.EventNo.ToString();
         }
 
         private void UpdateBaseInfo()
@@ -50,6 +49,8 @@ namespace WLUtility.CustomControl
             {
                 lblId.Text = $@"[{_socket.PlayerInfo.Id}]";
                 lblName.Text = _socket.PlayerInfo.Name;
+
+                numWoodManPos.Text = _socket.WoodManInfo.EventNo.ToString();
             }
         }
 
@@ -94,7 +95,7 @@ namespace WLUtility.CustomControl
 
         private void btnUpdateDropDamage_Click(object sender, EventArgs e)
         {
-            _socket.PlayerInfo.DropWhenDamage = numDropDamage.ByteValue ?? 240;
+            _socket.PlayerInfo.UnfitWhenDamage = numDropDamage.ByteValue ?? 240;
         }
 
         private void chkAutoSell_CheckedChanged(object sender, EventArgs e)
@@ -110,6 +111,38 @@ namespace WLUtility.CustomControl
         private void tsmiClearLog_Click(object sender, EventArgs e)
         {
             rtxtLog.Clear();
+        }
+
+        private void btnDelDropItem_Click(object sender, EventArgs e)
+        {
+            if (lbAutoDropItem.SelectedIndex < 0) return;
+
+            _socket.PlayerInfo.DelAutoDropItemIdx(lbAutoDropItem.SelectedIndex);
+        }
+
+        private void chkAutoDrop_CheckedChanged(object sender, EventArgs e)
+        {
+            _socket.PlayerInfo.SwitchAutoDrop(chkAutoDrop.Checked);
+        }
+
+        private void PlayerInfo_AutoDropItemUpdated()
+        {
+            RefreshAutoDropInfo();
+        }
+
+        private void RefreshAutoDropInfo()
+        {
+            if (InvokeRequired)
+            {
+                Invoke(new Action(RefreshAutoDropInfo));
+            }
+            else
+            {
+                chkAutoDrop.Checked = _socket.PlayerInfo.IsAutoDrop;
+                lbAutoDropItem.DataSource = _socket.PlayerInfo.AutoDropItemList
+                    .Select(e => DataManagers.ItemManager.GetName(e)).ToList();
+                lbAutoDropItem.Refresh();
+            }
         }
     }
 }

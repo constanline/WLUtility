@@ -28,15 +28,21 @@ namespace WLUtility.Model
 
         public bool IsSellWhenFull { get; set; }
 
-        public byte DropWhenDamage { get; set; } = 240;
+        public List<ushort> AutoDropItemList { get; } = new List<ushort>();
 
         public event Action AutoSellItemUpdated;
+
+        public bool IsAutoDrop { get; set; }
+
+        public event Action AutoDropItemUpdated;
+
+        public byte UnfitWhenDamage { get; set; } = 240;
 
         public event Action InfoUpdate;
 
         private readonly ProxySocket _socket;
 
-        public bool IsAutoSelling;
+        public bool IsAutoSellingOrDropping;
 
         public PlayerInfo(ProxySocket socket)
         {
@@ -74,6 +80,19 @@ namespace WLUtility.Model
             if (bool.TryParse(isSellWhenFull, out result))
                 IsSellWhenFull = result;
 
+            var autoDropItem = IniHelper.Account.GetString(Id.ToString(), "AutoDropItem");
+            var spDropItem = autoDropItem.Split('|');
+            foreach (var item in spDropItem)
+            {
+                if (ushort.TryParse(item, out var id))
+                {
+                    AutoDropItemList.Add(id);
+                }
+            }
+            var isAutoDrop = IniHelper.Account.GetString(Id.ToString(), "IsAutoDrop");
+            if (bool.TryParse(isAutoDrop, out result))
+                IsAutoDrop = result;
+
             var eventNoStr = IniHelper.Account.GetString(Id.ToString(), "WoodManEventNo");
             if (byte.TryParse(eventNoStr, out var eventNo))
             {
@@ -83,38 +102,44 @@ namespace WLUtility.Model
             InfoUpdate?.Invoke();
 
             AutoSellItemUpdated?.Invoke();
+            AutoDropItemUpdated?.Invoke();
 
             AutoSellItemUpdated += PlayerInfo_AutoSellItemUpdated;
+            AutoDropItemUpdated += PlayerInfo_AutoDropItemUpdated;
         }
 
-        public void SellItem()
+        public void SellAndDropItem()
         {
-            if(!IsAutoSell)return;
-            if (IsAutoSelling) return;
+            if(!IsAutoSell && !IsAutoDrop)return;
+            if (IsAutoSellingOrDropping) return;
 
-            IsAutoSelling = true;
+            IsAutoSellingOrDropping = true;
             var bagItems = BagItems;
-            for (byte i = 1; i <= 50; i++)
+            for (byte pos = 1; pos <= 50; pos++)
             {
-                if (bagItems[i].Id > 0)
-                {
-                    if (AutoSellItemList.Contains(bagItems[i].Id))
-                    {
-                        var flag = true;
-                        if (IsSellWhenFull)
-                        {
-                            flag = (bagItems[i].Qty == 50 || !DataManagers.ItemManager.IsOverlap(bagItems[i].Id));
-                        }
+                if (bagItems[pos].Id <= 0) continue;
 
-                        if (flag)
-                        {
-                            _socket.SendPacket(new PacketBuilder(0x1B, 0x03).Add(i).Build());
-                            return;
-                        }
+                if (IsAutoSell && AutoSellItemList.Contains(bagItems[pos].Id))
+                {
+                    var flag = true;
+                    if (IsSellWhenFull)
+                    {
+                        flag = (bagItems[pos].Qty == 50 || !DataManagers.ItemManager.IsOverlap(bagItems[pos].Id));
+                    }
+
+                    if (flag)
+                    {
+                        _socket.SendPacket(new PacketBuilder(0x1B, 0x03).Add(pos).Build());
+                        return;
                     }
                 }
+                else if (IsAutoDrop && AutoDropItemList.Contains(bagItems[pos].Id))
+                {
+                    _socket.SendPacket(new PacketBuilder(0x17, 0x03).Add(pos).Add(bagItems[pos].Qty).Add((byte)1).Build());
+                    _socket.SendPacket(new PacketBuilder(0x17, 0x7C).Add(pos).Add(bagItems[pos].Qty).Add((byte)2).Build());
+                    return;
+                }
             }
-            IsAutoSelling = false;
         }
 
         private void PlayerInfo_AutoSellItemUpdated()
@@ -122,7 +147,15 @@ namespace WLUtility.Model
             var autoSellItem = string.Join("|", AutoSellItemList.ToArray());
             IniHelper.Account.WriteString(Id.ToString(), "AutoSellItem", autoSellItem);
             
-            SellItem();
+            SellAndDropItem();
+        }
+
+        private void PlayerInfo_AutoDropItemUpdated()
+        {
+            var autoDropItem = string.Join("|", AutoDropItemList.ToArray());
+            IniHelper.Account.WriteString(Id.ToString(), "AutoDropItem", autoDropItem);
+
+            SellAndDropItem();
         }
 
         public void AddAutoSellItemIdx(int idx)
@@ -148,7 +181,7 @@ namespace WLUtility.Model
             IniHelper.Account.WriteString(Id.ToString(), "IsAutoSell", isAutoSell.ToString());
 
             if(isAutoSell)
-                SellItem();
+                SellAndDropItem();
         }
 
         public void SwitchSellWhenFull(bool isSellWhenFull)
@@ -157,7 +190,33 @@ namespace WLUtility.Model
             IniHelper.Account.WriteString(Id.ToString(), "IsSellWhenFull", isSellWhenFull.ToString());
 
             if (!isSellWhenFull)
-                SellItem();
+                SellAndDropItem();
+        }
+
+        public void AddAutoDropItemIdx(int idx)
+        {
+            if (idx <= 0 || idx >= BagItems.Length || BagItems[idx].Id == 0) return;
+            if (AutoDropItemList.Contains(BagItems[idx].Id)) return;
+            AutoDropItemList.Add(BagItems[idx].Id);
+
+            AutoDropItemUpdated?.Invoke();
+        }
+
+        public void DelAutoDropItemIdx(int idx)
+        {
+            if (AutoDropItemList.Count <= idx) return;
+            AutoDropItemList.RemoveAt(idx);
+
+            AutoDropItemUpdated?.Invoke();
+        }
+
+        public void SwitchAutoDrop(bool isAutoDrop)
+        {
+            _socket.PlayerInfo.IsAutoDrop = isAutoDrop;
+            IniHelper.Account.WriteString(Id.ToString(), "IsAutoDrop", isAutoDrop.ToString());
+
+            if (isAutoDrop)
+                SellAndDropItem();
         }
 
         public void AddBagItem(ushort id, byte qty, byte damage, int durable, byte defPos = 0)
@@ -182,8 +241,6 @@ namespace WLUtility.Model
                     if (pos == 0) pos = FindEmptyPos();
                 }
                 remaining = BagItems[pos].AddItem(id, num, damage, durable);
-
-                //GetBagItemMsg?.Invoke("得到物品" + DataMgrs.ItemData.GetName(id) + "*" + remaining + ",放到物品栏第" + pos + "个位置");
             }
         }
 

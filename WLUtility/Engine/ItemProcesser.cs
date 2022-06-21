@@ -180,7 +180,7 @@ namespace WLUtility.Engine
             }
             _socket.UpdateBag(bagItems);
 
-            _socket.PlayerInfo.SellItem();
+            _socket.PlayerInfo.SellAndDropItem();
         }
 
         private void SetGold(List<byte> packet)
@@ -201,7 +201,7 @@ namespace WLUtility.Engine
 
             _socket.UpdateBag(_socket.PlayerInfo.BagItems);
 
-            _socket.PlayerInfo.SellItem();
+            _socket.PlayerInfo.SellAndDropItem();
         }
 
         private void DelItem(List<byte> packet)
@@ -236,6 +236,8 @@ namespace WLUtility.Engine
             _socket.PlayerInfo.DelBagItemWithPos(pos, qty);
 
             _socket.UpdateBag(_socket.PlayerInfo.BagItems);
+            _socket.PlayerInfo.IsAutoSellingOrDropping = false;
+            _socket.PlayerInfo.SellAndDropItem();
         }
 
         private void MoveItem(List<byte> packet)
@@ -263,8 +265,8 @@ namespace WLUtility.Engine
             _socket.RevPacket(new PacketBuilder(0x17, 0x09).Add(pos).Add(qty).Build());
 
             _socket.UpdateBag(_socket.PlayerInfo.BagItems);
-            _socket.PlayerInfo.IsAutoSelling = false;
-            _socket.PlayerInfo.SellItem();
+            _socket.PlayerInfo.IsAutoSellingOrDropping = false;
+            _socket.PlayerInfo.SellAndDropItem();
         }
 
         private void InitEquip(List<byte> buffer)
@@ -340,7 +342,7 @@ namespace WLUtility.Engine
 
             _socket.PlayerInfo.Equips[equipPos].Damage = damage;
             _socket.Log(_socket.PlayerInfo.Equips[equipPos].Name + "损坏度" + damage + "/250");
-            if (damage > _socket.PlayerInfo.DropWhenDamage)
+            if (damage > _socket.PlayerInfo.UnfitWhenDamage)
             {
                 _waitingDropEquip.Add(equipPos);
                 _socket.Log("等待战斗结束卸下装备");
@@ -373,7 +375,7 @@ namespace WLUtility.Engine
 
             npc.Equips[equipPos].Damage = damage;
             _socket.Log(npc.Equips[equipPos].Name + "损坏度" + damage + "/250");
-            if (damage > _socket.PlayerInfo.DropWhenDamage)
+            if (damage > _socket.PlayerInfo.UnfitWhenDamage)
             {
                 _waitingPetDropEquip.Add((byte)(npcPos * 10 + equipPos));
                 _socket.Log("等待战斗结束卸下装备");
