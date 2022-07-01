@@ -23,12 +23,12 @@ namespace WLUtility.Helper
 
         public static void Log(Exception e)
         {
-            Log(e.StackTrace);
+            Log(e.Message + "\r\n" + e.StackTrace);
         }
 
         public static void SilentLog(Exception e)
         {
-            SilentLog(e.StackTrace);
+            SilentLog(e.Message + "\r\n" + e.StackTrace);
         }
 
         public static void LogPacket(byte[] buffer, bool isSend)

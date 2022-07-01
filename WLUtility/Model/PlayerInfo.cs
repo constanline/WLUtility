@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
 using WLUtility.Core;
 using WLUtility.DataManager;
 using WLUtility.Helper;
@@ -22,6 +23,28 @@ namespace WLUtility.Model
 
         public string Name { get; set; }
 
+        #region PK信息
+
+        public int TotalWin { get; set; } = 0;
+
+        public ushort CurrentWin { get; set; } = 0;
+
+        public byte OfflineFlag { get; set; } = 0;
+
+        public byte[] TreasureState { get; set; } = new byte[4];
+
+        public ushort[] TreasureKind { get; set; } = new ushort[4];
+
+        public byte Energy { get; private set; }
+
+        public int Rank { get; set; } = 0;
+
+        public event Action<byte> EnergyUpdated;
+
+        public event Action TreasureUpdated;
+
+        #endregion
+
         public List<ushort> AutoSellItemList { get; } = new List<ushort>();
 
         public bool IsAutoSell { get; set; }
@@ -38,11 +61,14 @@ namespace WLUtility.Model
 
         public byte UnfitWhenDamage { get; set; } = 240;
 
-        public event Action InfoUpdate;
+        public event Action InfoUpdated;
 
         private readonly ProxySocket _socket;
 
         public bool IsAutoSellingOrDropping;
+
+        private bool _isSellOrDropAnswer;
+
 
         public PlayerInfo(ProxySocket socket)
         {
@@ -99,13 +125,47 @@ namespace WLUtility.Model
                 _socket.WoodManInfo.EventNo = eventNo;
             }
 
-            InfoUpdate?.Invoke();
+            InfoUpdated?.Invoke();
 
             AutoSellItemUpdated?.Invoke();
             AutoDropItemUpdated?.Invoke();
 
             AutoSellItemUpdated += PlayerInfo_AutoSellItemUpdated;
             AutoDropItemUpdated += PlayerInfo_AutoDropItemUpdated;
+        }
+
+        public void UpdateEnergy(byte energy)
+        {
+            Energy = energy;
+            EnergyUpdated?.Invoke(energy);
+        }
+
+        public void UpdateTreasure()
+        {
+            TreasureUpdated?.Invoke();
+        }
+
+        public void OpenTreasure(byte idx)
+        {
+            if (idx <= 0 || idx >= TreasureState.Length) return;
+            if (TreasureState[idx] == 1 || TreasureState[idx] == 3)
+            {
+                _socket.SendPacket(new PacketBuilder(0xB7, 0x0B).Add(idx).Build());
+            }
+        }
+
+        public void SellOrDropAnswered()
+        {
+            _isSellOrDropAnswer = true;
+            IsAutoSellingOrDropping = false;
+            SellAndDropItem();
+        }
+
+        private void CheckSellOrDropAnswer(object obj)
+        {
+            if (_isSellOrDropAnswer) return;
+            IsAutoSellingOrDropping = false;
+            SellAndDropItem();
         }
 
         public void SellAndDropItem()
@@ -115,30 +175,40 @@ namespace WLUtility.Model
 
             IsAutoSellingOrDropping = true;
             var bagItems = BagItems;
+            var flag = false;
             for (byte pos = 1; pos <= 50; pos++)
             {
                 if (bagItems[pos].Id <= 0) continue;
 
                 if (IsAutoSell && AutoSellItemList.Contains(bagItems[pos].Id))
                 {
-                    var flag = true;
                     if (IsSellWhenFull)
-                    {
                         flag = (bagItems[pos].Qty == 50 || !DataManagers.ItemManager.IsOverlap(bagItems[pos].Id));
-                    }
+                    else
+                        flag = true;
 
                     if (flag)
                     {
                         _socket.SendPacket(new PacketBuilder(0x1B, 0x03).Add(pos).Build());
-                        return;
+                        break;
                     }
                 }
                 else if (IsAutoDrop && AutoDropItemList.Contains(bagItems[pos].Id))
                 {
+                    flag = true;
                     _socket.SendPacket(new PacketBuilder(0x17, 0x03).Add(pos).Add(bagItems[pos].Qty).Add((byte)1).Build());
                     _socket.SendPacket(new PacketBuilder(0x17, 0x7C).Add(pos).Add(bagItems[pos].Qty).Add((byte)2).Build());
-                    return;
+                    break;
                 }
+            }
+
+            if (flag)
+            {
+                var _ = new Timer(CheckSellOrDropAnswer, null, 2000, Timeout.Infinite);
+            }
+            else
+            {
+                IsAutoSellingOrDropping = false;
             }
         }
 

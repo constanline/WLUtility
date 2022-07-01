@@ -16,19 +16,17 @@ namespace WLUtility.Core
 
         protected byte[] LastPacket;
 
-        public int SocketId;
+        protected int SocketId;
 
         public abstract bool Connected { get; }
 
         protected virtual void RevMessage(int len)
         {
-            byte aType;
             var buffer = new byte[0];
             lock (ListBuffer)
             {
                 LastPacket = ListBuffer.Take(len).ToArray();
-
-                aType = ListBuffer[0];
+                
                 ListBuffer.RemoveAt(0);
                 if (len > 5)
                 {
@@ -40,7 +38,6 @@ namespace WLUtility.Core
             {
                 LogHelper.LogPacket(LastPacket, false);
             }
-            aType = (byte)(aType ^ XOR_BYTE);
             for (var i = 0; i < buffer.Length; i++)
             {
                 buffer[i] = (byte)(buffer[i] ^ XOR_BYTE);

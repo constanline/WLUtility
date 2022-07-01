@@ -78,7 +78,7 @@ namespace WLUtility.Engine
                     var remoteSocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                     remoteSocket.Connect(pm.GetRemoteEndPoint());
 
-                    var socket = new ProxySocket(localSocket, remoteSocket) { SocketId = curNum };
+                    var socket = new ProxySocket(curNum, localSocket, remoteSocket);
                     lock (DicSocket)
                     {
                         DicSocket.Add(curNum, socket);

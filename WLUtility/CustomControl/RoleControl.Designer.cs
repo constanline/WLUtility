@@ -33,6 +33,11 @@
             this.cmsLog = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsmiClearLog = new System.Windows.Forms.ToolStripMenuItem();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.lblEnergy = new System.Windows.Forms.Label();
+            this.btnTreasure3 = new System.Windows.Forms.Button();
+            this.btnTreasure2 = new System.Windows.Forms.Button();
+            this.btnTreasure1 = new System.Windows.Forms.Button();
             this.lblName = new System.Windows.Forms.Label();
             this.lblId = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -100,6 +105,11 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.lblEnergy);
+            this.groupBox1.Controls.Add(this.btnTreasure3);
+            this.groupBox1.Controls.Add(this.btnTreasure2);
+            this.groupBox1.Controls.Add(this.btnTreasure1);
             this.groupBox1.Controls.Add(this.lblName);
             this.groupBox1.Controls.Add(this.lblId);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -111,6 +121,54 @@
             this.groupBox1.TabIndex = 4;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "状态区";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(299, 54);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(37, 20);
+            this.label3.TabIndex = 6;
+            this.label3.Text = "能量";
+            // 
+            // lblEnergy
+            // 
+            this.lblEnergy.AutoSize = true;
+            this.lblEnergy.Location = new System.Drawing.Point(342, 54);
+            this.lblEnergy.Name = "lblEnergy";
+            this.lblEnergy.Size = new System.Drawing.Size(17, 20);
+            this.lblEnergy.TabIndex = 5;
+            this.lblEnergy.Text = "0";
+            // 
+            // btnTreasure3
+            // 
+            this.btnTreasure3.Location = new System.Drawing.Point(203, 47);
+            this.btnTreasure3.Name = "btnTreasure3";
+            this.btnTreasure3.Size = new System.Drawing.Size(90, 34);
+            this.btnTreasure3.TabIndex = 4;
+            this.btnTreasure3.Text = "未获得";
+            this.btnTreasure3.UseVisualStyleBackColor = true;
+            this.btnTreasure3.Click += new System.EventHandler(this.btnTreasure_Click);
+            // 
+            // btnTreasure2
+            // 
+            this.btnTreasure2.Location = new System.Drawing.Point(107, 47);
+            this.btnTreasure2.Name = "btnTreasure2";
+            this.btnTreasure2.Size = new System.Drawing.Size(90, 34);
+            this.btnTreasure2.TabIndex = 3;
+            this.btnTreasure2.Text = "未获得";
+            this.btnTreasure2.UseVisualStyleBackColor = true;
+            this.btnTreasure2.Click += new System.EventHandler(this.btnTreasure_Click);
+            // 
+            // btnTreasure1
+            // 
+            this.btnTreasure1.Location = new System.Drawing.Point(11, 47);
+            this.btnTreasure1.Name = "btnTreasure1";
+            this.btnTreasure1.Size = new System.Drawing.Size(90, 34);
+            this.btnTreasure1.TabIndex = 2;
+            this.btnTreasure1.Text = "未获得";
+            this.btnTreasure1.UseVisualStyleBackColor = true;
+            this.btnTreasure1.Click += new System.EventHandler(this.btnTreasure_Click);
             // 
             // lblName
             // 
@@ -418,7 +476,7 @@
             this.tpDropItem.Location = new System.Drawing.Point(4, 29);
             this.tpDropItem.Name = "tpDropItem";
             this.tpDropItem.Padding = new System.Windows.Forms.Padding(3);
-            this.tpDropItem.Size = new System.Drawing.Size(557, 123);
+            this.tpDropItem.Size = new System.Drawing.Size(557, 128);
             this.tpDropItem.TabIndex = 2;
             this.tpDropItem.Text = "丢弃";
             this.tpDropItem.UseVisualStyleBackColor = true;
@@ -451,7 +509,7 @@
             this.lbAutoDropItem.ItemHeight = 20;
             this.lbAutoDropItem.Location = new System.Drawing.Point(3, 3);
             this.lbAutoDropItem.Name = "lbAutoDropItem";
-            this.lbAutoDropItem.Size = new System.Drawing.Size(136, 117);
+            this.lbAutoDropItem.Size = new System.Drawing.Size(136, 122);
             this.lbAutoDropItem.TabIndex = 0;
             // 
             // groupBox4
@@ -529,5 +587,10 @@
         private System.Windows.Forms.CheckBox chkAutoDrop;
         private System.Windows.Forms.Button btnDelDropItem;
         private System.Windows.Forms.ListBox lbAutoDropItem;
+        private System.Windows.Forms.Button btnTreasure3;
+        private System.Windows.Forms.Button btnTreasure2;
+        private System.Windows.Forms.Button btnTreasure1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label lblEnergy;
     }
 }

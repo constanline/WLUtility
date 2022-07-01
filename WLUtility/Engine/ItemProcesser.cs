@@ -236,8 +236,7 @@ namespace WLUtility.Engine
             _socket.PlayerInfo.DelBagItemWithPos(pos, qty);
 
             _socket.UpdateBag(_socket.PlayerInfo.BagItems);
-            _socket.PlayerInfo.IsAutoSellingOrDropping = false;
-            _socket.PlayerInfo.SellAndDropItem();
+            _socket.PlayerInfo.SellOrDropAnswered();
         }
 
         private void MoveItem(List<byte> packet)
@@ -265,8 +264,7 @@ namespace WLUtility.Engine
             _socket.RevPacket(new PacketBuilder(0x17, 0x09).Add(pos).Add(qty).Build());
 
             _socket.UpdateBag(_socket.PlayerInfo.BagItems);
-            _socket.PlayerInfo.IsAutoSellingOrDropping = false;
-            _socket.PlayerInfo.SellAndDropItem();
+            _socket.PlayerInfo.SellOrDropAnswered();
         }
 
         private void InitEquip(List<byte> buffer)

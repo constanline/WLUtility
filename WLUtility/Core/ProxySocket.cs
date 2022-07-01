@@ -33,6 +33,8 @@ namespace WLUtility.Core
 
         private RoleControl _roleControl;
 
+        public override bool Connected => LocalSocket.Connected && RemoteSocket.Connected;
+
         public void Log(string msg)
         {
             _logger?.LogWithTime(msg);
@@ -253,8 +255,9 @@ namespace WLUtility.Core
             return bytes.Take(len).ToArray();
         }
 
-        public ProxySocket(Socket localSocket, Socket remoteSocket)
+        public ProxySocket(int socketId, Socket localSocket, Socket remoteSocket)
         {
+            SocketId = socketId;
             _processes = new List<IProcesser>
             {
                 new ItemProcesser(this),
@@ -262,7 +265,8 @@ namespace WLUtility.Core
                 new LotteryProcesser(this),
                 new PlayerProcesser(this),
                 new WoodManProcesser(this),
-                new PetProcesser(this)
+                new PetProcesser(this),
+                new PkProcesser(this)
             };
             PlayerInfo = new PlayerInfo(this);
             WoodManInfo = new WoodManInfo(this);
@@ -390,9 +394,6 @@ namespace WLUtility.Core
             }
             return LocalSocket.Send(packet);
         }
-
-
-        public override bool Connected => LocalSocket.Connected && RemoteSocket.Connected;
 
         protected override void RevMessage(int len)
         {
