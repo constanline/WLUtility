@@ -34,7 +34,9 @@ namespace WLUtility
             this.skinMenuStrip1 = new CCWin.SkinControl.SkinMenuStrip();
             this.tsmiFile = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiExit = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiInject = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiHook = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiAutoInject = new System.Windows.Forms.ToolStripMenuItem();
+            this.tsmiUnInject = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiOption = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiSetting = new System.Windows.Forms.ToolStripMenuItem();
             this.tsmiProxySetting = new System.Windows.Forms.ToolStripMenuItem();
@@ -99,7 +101,7 @@ namespace WLUtility
             this.skinMenuStrip1.ItemRadiusStyle = CCWin.SkinClass.RoundStyle.All;
             this.skinMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsmiFile,
-            this.tsmiInject,
+            this.tsmiHook,
             this.tsmiOption,
             this.tsmiAbout});
             this.skinMenuStrip1.Location = new System.Drawing.Point(4, 28);
@@ -128,12 +130,28 @@ namespace WLUtility
             this.tsmiExit.Text = "退出(&X)";
             this.tsmiExit.Click += new System.EventHandler(this.tsmiExit_Click);
             // 
-            // tsmiInject
+            // tsmiHook
             // 
-            this.tsmiInject.Name = "tsmiInject";
-            this.tsmiInject.Size = new System.Drawing.Size(56, 21);
-            this.tsmiInject.Text = "注入(&I)";
-            this.tsmiInject.Click += new System.EventHandler(this.tsmiInject_Click);
+            this.tsmiHook.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tsmiAutoInject,
+            this.tsmiUnInject});
+            this.tsmiHook.Name = "tsmiHook";
+            this.tsmiHook.Size = new System.Drawing.Size(52, 21);
+            this.tsmiHook.Text = "Hook";
+            // 
+            // tsmiAutoInject
+            // 
+            this.tsmiAutoInject.Name = "tsmiAutoInject";
+            this.tsmiAutoInject.Size = new System.Drawing.Size(180, 22);
+            this.tsmiAutoInject.Text = "自动注入";
+            this.tsmiAutoInject.Click += new System.EventHandler(this.tsmiAutoInject_Click);
+            // 
+            // tsmiUnInject
+            // 
+            this.tsmiUnInject.Name = "tsmiUnInject";
+            this.tsmiUnInject.Size = new System.Drawing.Size(180, 22);
+            this.tsmiUnInject.Text = "取消注入";
+            this.tsmiUnInject.Click += new System.EventHandler(this.tsmiUnInject_Click);
             // 
             // tsmiOption
             // 
@@ -392,12 +410,14 @@ namespace WLUtility
         private CCWin.SkinControl.SkinCheckBox chkRecordPacket;
         private CCWin.SkinControl.SkinTabPage skinTabPage3;
         private CCWin.SkinControl.RtfRichTextBox rtxtLog;
-        private System.Windows.Forms.ToolStripMenuItem tsmiInject;
         private System.Windows.Forms.TabControl tcAccount;
         private System.Windows.Forms.NotifyIcon notifyIcon1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem cmsDisplay;
         private System.Windows.Forms.ToolStripMenuItem cmsExit;
+        private System.Windows.Forms.ToolStripMenuItem tsmiHook;
+        private System.Windows.Forms.ToolStripMenuItem tsmiAutoInject;
+        private System.Windows.Forms.ToolStripMenuItem tsmiUnInject;
     }
 }
 

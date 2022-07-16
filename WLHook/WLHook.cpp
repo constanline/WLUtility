@@ -99,9 +99,10 @@ BOOL APIENTRY DllMain(HMODULE hModule,
 
 		//SimpleLog("InstallHookApi");
 		DisableThreadLibraryCalls(hModule);
-		if (GetCurrentProcessId() == g_dwTarget) //必须在loadlibary之前设置g_dwTarget
+		//if (GetCurrentProcessId() == g_dwTarget) //必须在loadlibary之前设置g_dwTarget
 		{
 			g_pHookConnect = InstallHookApi("ws2_32.dll", "connect", HookConnect);
+			SimpleLog(GetCurrentProcessId());
 		}
 		break;
 	case DLL_PROCESS_DETACH:

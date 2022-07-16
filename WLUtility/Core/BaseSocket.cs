@@ -113,7 +113,7 @@ namespace WLUtility.Core
                         }
                         else
                         {
-                            Console.WriteLine(BitConverter.ToString(LastPacket.ToArray(), 0).Replace("-", string.Empty).ToLower());
+                            Console.WriteLine(BitConverter.ToString(LastPacket, 0).Replace("-", string.Empty).ToLower());
                         }
                     }
                     else

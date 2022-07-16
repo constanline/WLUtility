@@ -440,12 +440,18 @@ namespace WLUtility.Core
             if (LocalSocket.Connected)
             {
                 LocalSocket.Close();
+            }
+            if(LocalSocket != null)
+            {
                 LocalSocket.Dispose();
             }
 
             if (RemoteSocket.Connected)
             {
                 RemoteSocket.Close();
+            }
+            if (RemoteSocket != null)
+            {
                 RemoteSocket.Dispose();
             }
         }

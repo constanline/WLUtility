@@ -9,6 +9,7 @@ using WLUtility.CustomControl;
 using WLUtility.DataManager;
 using WLUtility.Engine;
 using WLUtility.Helper;
+using System.Threading;
 
 namespace WLUtility
 {
@@ -20,7 +21,11 @@ namespace WLUtility
 
         private bool _isInjected;
 
+        private bool _isAutoInjected;
+
         private readonly Dictionary<string, ProxySocket> _dicProxySocket = new Dictionary<string, ProxySocket>();
+
+        private readonly List<int> _hookedProcessList = new List<int>();
 
 
         public FrmMain()
@@ -217,6 +222,63 @@ namespace WLUtility
         private void notifyIcon1_MouseDoubleClick(object sender, MouseEventArgs e)
         {
             Show();
+        }
+
+        private void tsmiAutoInject_Click(object sender, EventArgs e)
+        {
+            _isAutoInjected = !_isAutoInjected;
+            tsmiHook.Checked = _isAutoInjected;
+            if (_isAutoInjected)
+            {
+                ThreadPool.QueueUserWorkItem((o) =>
+                {
+                    AutoInject();
+                });
+            }
+            else
+            {
+                _socketEngine.StopForward();
+            }
+        }
+
+        private void AutoInject()
+        {
+            try
+            {
+                _socketEngine.StartForward();
+
+                while (_isAutoInjected)
+                {
+                    var path = Application.StartupPath + "\\WLHook.dll";
+                    var processes = new List<Process>();
+                    processes.AddRange(Process.GetProcessesByName("wlmfree"));
+                    processes.AddRange(Process.GetProcessesByName("Nana"));
+                    processes.AddRange(Process.GetProcessesByName("Nana1.2.9"));
+
+                    foreach (var process in processes)
+                    {
+                        if (_hookedProcessList.Contains(process.Id)) return;
+                        var result = InjectHelper.GetInstance.Inject((uint)process.Id, path);
+                        if (result != DllInjectionResult.Success)
+                        {
+                            LogHelper.Log($"[{process.Id}]{process.ProcessName}注入失败");
+                        }
+                        _hookedProcessList.Add(process.Id);
+                    }
+                    Thread.Sleep(1000);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.SilentLog(ex);
+                _socketEngine.StopForward();
+                _isAutoInjected = false;
+            }
+        }
+
+        private void tsmiUnInject_Click(object sender, EventArgs e)
+        {
+            _isAutoInjected = false;
         }
     }
 }

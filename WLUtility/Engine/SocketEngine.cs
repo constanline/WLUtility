@@ -54,6 +54,7 @@ namespace WLUtility.Engine
 
                 var socket = DicSocket[socketId];
                 socket.Close();
+                socket = null;
                 DicSocket.Remove(socketId);
             }
         }
@@ -95,6 +96,7 @@ namespace WLUtility.Engine
 
         internal void StartForward()
         {
+            if (IsRunning) return;
             try
             {
                 IsRunning = true;
